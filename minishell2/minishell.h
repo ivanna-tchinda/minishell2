@@ -41,10 +41,13 @@ int tab_of_cmd(s_cmd *prompt, s_token *token);
 void attribute_types(s_token *token, char *line);
 void free_prompt(s_cmd *prompt);
 int parse_command(s_cmd *prompt, int len_cmd);
+int tab_of_cmd(s_cmd *prompt, s_token *token);
+void add_totab(s_info *cmd, s_token *token, int *i);
 
 
 //UTILS
 void free_token(s_token *token);
 void free_tab(char **tabl);
+char	**ft_split(char const *s, char c);
 
 #endif
