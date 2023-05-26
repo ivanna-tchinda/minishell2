@@ -16,6 +16,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <sys/ioctl.h>
+#include <sys/wait.h>
 
 typedef struct t_token{
     char token;
@@ -29,6 +30,11 @@ typedef struct t_info{
 
 typedef struct t_cmd{
     s_info *cmd;
+    char *infile;
+    char *outfile;
+    int nb_tabs;
+    int nb_cmd;
+    int exitstatus;
 }               s_cmd;
 
 
@@ -44,10 +50,17 @@ int parse_command(s_cmd *prompt, int len_cmd);
 int tab_of_cmd(s_cmd *prompt, s_token *token);
 void add_totab(s_info *cmd, s_token *token, int *i);
 
+//PIPEX
+void pipex(s_cmd *cmd, char *env[]);
+void process(s_info *cmd, int *fd, char *env[]);
+void execute(s_cmd cmd, char *env[]);
+int assign_files(s_cmd *cmd);
 
 //UTILS
 void free_token(s_token *token);
 void free_tab(char **tabl);
 char	**ft_split(char const *s, char c);
+char	*ft_strjoin(char *s1, char *s2);
+
 
 #endif

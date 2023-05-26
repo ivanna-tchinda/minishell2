@@ -3,6 +3,7 @@ NAME= minishell
 SRC=	  main.c\
 			parsing.c\
 			utils.c\
+			pipex.c\
 
 CC= cc  
 
