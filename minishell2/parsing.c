@@ -36,13 +36,14 @@ void add_totab(s_info *cmd, s_token *token, int *i)
     {
         if(token[*i].token == 34)
         {
-            printf("quote %c %c\n", token[*i].token, token[j].token);
-            while(token[++j].token != 34);
+            printf("1quote %c %c\n", token[*i].token, token[j].token);
+            printf("here\n");
+            while(token[j].token && token[++j].token != 34);
             j++;
         }
         else if(token[*i].token == 39)
         {
-            printf("quote %c %c\n", token[*i].token, token[j].token);
+            printf("2quote %c %c\n", token[*i].token, token[j].token);
             while(token[++j].token != 39);
             j++;
         }
@@ -56,16 +57,16 @@ void add_totab(s_info *cmd, s_token *token, int *i)
         j = (*i);
         if(token[*i].token == 34)
         {
-            while(token[++j].token != 34);
+            while(token[++j].token != 34 && token[*i].token);
             j++;
         }
-        if(token[*i].token == 39)
+        else if(token[*i].token == 39)
         {
-            printf("quote %c %c\n", token[*i].token, token[j].token);
+            printf("3quote %c %c\n", token[*i].token, token[j].token);
             while(token[++j].token != 39);
             j++;
         }
-        if(token[j].type != token[j+1].type)
+        else if(token[j].type != token[j+1].type)
             cmd->tab = substr_cmd(token, (*i)++, j);
         j++;
     }
@@ -147,9 +148,34 @@ void attribute_types(s_token *token, char *line)
     }
 }
 
+int unclosed_quote(char *line)
+{
+    int i;
+
+    i = -1;
+    while(line[++i])
+    {
+        if(line[i] == 34)
+        {
+            while(line[i] && line[++i] != 34);
+            if(i == (int)ft_strlen(line))
+                return(1);
+        }
+        else if(line[i] == 39)
+        {
+            while(line[i] && line[++i] != 39);
+            if(i == (int)ft_strlen(line))
+                return(1);
+        }
+    }
+    return(0);
+}
+
 int ft_parsing(s_cmd *prompt, s_token *token, char *line)
 {
     int len_cmd;
+    if(unclosed_quote(line))
+        return(write(1, "error: unclosed quote\n", 22), 1);
     attribute_types(token, line);
     len_cmd = tab_of_cmd(prompt, token);
     prompt->nb_tabs = len_cmd;
@@ -157,7 +183,7 @@ int ft_parsing(s_cmd *prompt, s_token *token, char *line)
     int i;
 
     i = 0;
-    printf("nb cmd: %d\n", len_cmd);
+    printf("nb cmd: %d\n", prompt->nb_tabs);
     while(i < len_cmd)
     {
         printf("prompt->cmd[%d].tab = %s\n", i, prompt->cmd[i].tab);

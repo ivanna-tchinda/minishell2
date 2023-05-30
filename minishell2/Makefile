@@ -5,6 +5,8 @@ SRC=	  main.c\
 			parse2.c\
 			utils.c\
 			pipex.c\
+			builtin.c\
+			expand.c\
 
 CC= cc  
 

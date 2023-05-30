@@ -52,6 +52,13 @@ void add_totab(s_info *cmd, s_token *token, int *i);
 void free_pmt(s_cmd *prompt);
 int check_pipe(s_info *cmd, int len_cmd);
 int check_redif(s_info *cmd, int len_cmd);
+int is_builtin(s_cmd *prompt);
+int built_intab(char *tab);
+int check_command(char *tab, char *bltn);
+int around_bltn(char *tab, char *bltn, int j);
+
+//EXPAND
+void expand_cmd(s_cmd *prompt);
 
 //PIPEX
 void pipex(s_cmd *cmd, char *env[]);
@@ -64,6 +71,10 @@ void free_token(s_token *token);
 void free_tab(char **tabl);
 char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char *s1, char *s2);
+size_t	ft_strlen(const char *s);
+char	**ft_split(char const *s, char c);
+size_t	count_words(char const *s, char c);
+void	ft_allocate(char **s2, char const *s, char c);
 
 
 #endif
