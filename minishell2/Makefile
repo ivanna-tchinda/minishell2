@@ -2,6 +2,7 @@ NAME= minishell
 
 SRC=	  main.c\
 			parsing.c\
+			parse2.c\
 			utils.c\
 			pipex.c\
 

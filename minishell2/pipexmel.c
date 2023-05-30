@@ -1,141 +1,371 @@
-#include "minishell.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
 
-char	*to_find(char **path, char *new_av)
+size_t	ft_strlen(const char *s)
 {
-	int		i;
-	char	*to_find;
+	size_t	i;
 
 	i = 0;
-	while (path[i])
+	while (s[i])
+		i++;
+	return (i);
+}
+
+static char	*ft_malloc(char const *s, unsigned int start, size_t len)
+{
+	char	*s2;
+
+	if (ft_strlen(s) == 1 && start > ft_strlen(s))
+		s2 = (char *)malloc(sizeof(char));
+	else if (len > ft_strlen(s))
+		s2 = (char *)malloc(sizeof(char) * (ft_strlen(s) + 1));
+	else if (start > ft_strlen(s))
+		s2 = (char *)malloc(sizeof(char));
+	else if (len == ft_strlen(s) && start < len && len != 0)
+		s2 = (char *)malloc(sizeof(char) * (len - start) + 1);
+	else
+		s2 = (char *)malloc(sizeof(char) * (len + 1));
+	return (s2);
+}
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	size_t	i;
+	char	*s2;
+
+	i = 0;
+	if (!s)
+		return (NULL);
+	s2 = ft_malloc(s, start, len);
+	if (!s2)
+		return (NULL);
+	while (i < len && s[i] && start < ft_strlen(s))
 	{
-		to_find = ft_strjoin(path[i], new_av);
-		free(path[i]);
-		if (access(to_find, R_OK) == 0)
-		{
-			free(new_av);
-			while (path[++i] != NULL)
-				free(path[i]);
-			free(path);
-			return (to_find);
-		}
-		free(to_find);
+		s2[i] = s[start];
+		i++;
+		start++;
+	}
+	s2[i] = '\0';
+	return (s2);
+}
+
+char	*ft_strjoin(char *s1, char *s2)
+{
+	char	*join;
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	join = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!join)
+		return (NULL);
+	while (s1[i])
+	{
+		join[i] = s1[i];
 		i++;
 	}
-	free(path);
-	free(new_av);
-	return (NULL);
+	while (s2[j])
+	{
+		join[i + j] = s2[j];
+		j++;
+	}
+	join[i + j] = '\0';
+	return (join);
 }
 
-char* get_command_path(const char* command) 
+static int	count_words(char const *s, char c)
 {
-    char* path = NULL;
-    char command_line[256];
-    FILE* pipe;
+	int	i;
+	int	count;
 
-    // Construction de la commande "which <command>"
-    snprintf(command_line, sizeof(command_line), "which %s", command);
-
-    // Exécution de la commande "which" dans un pipe
-    pipe = popen(command_line, "r");
-    if (pipe != NULL) 
-    {
-        // Lecture de la sortie du pipe
-        char output[256];
-        if (fgets(output, sizeof(output), pipe) != NULL) 
-        {
-            // Suppression du saut de ligne à la fin
-            char* newline = strchr(output, '\n');
-            if (newline != NULL) 
-            {
-                *newline = '\0';
-            }
-            // Allocation et copie du chemin complet
-            path = strdup(output);
-        }
-        pclose(pipe);
-    }
-    return path;
+	i = 0;
+	count = 0;
+	while (s[i] && s)
+	{
+		if (s[i] != c)
+		{
+			count++;
+			while (s[i] != c && s[i])
+				i++;
+		}
+		else
+			i++;
+	}
+	return (count);
 }
 
+void	ft_allocate(char **s2, char const *s, char c)
+{
+	char	**tab_s2;
+	char	*tmp;
 
-int main(int argc, char* argv[], char *envp[]) {
-    if (argc >= 3) {
-        int num_commands = argc - 2; // Nombre de commandes (à partir de av[2])
-        char **commands = argv + 2; // Pointeur vers le tableau des commandes
+	tmp = (char *)s;
+	tab_s2 = s2;
+	while (*tmp)
+	{
+		while (*s == c)
+			++s;
+		tmp = (char *)s;
+		while (*tmp && *tmp != c)
+			++tmp;
+		if (*tmp == c || tmp > s)
+		{
+			*tab_s2 = ft_substr(s, 0, tmp - s);
+			s = tmp;
+			++tab_s2;
+		}
+	}
+	*tab_s2 = NULL;
+}
 
-        int prev_pipe[2]; // Descripteurs de fichier pour le tuyau précédent
-        int next_pipe[2]; // Descripteurs de fichier pour le tuyau suivant
+char	**ft_split(char const *s, char c)
+{
+	char	**s2;
+	int		size;
 
-        // Initialisation du tuyau précédent
-        pipe(prev_pipe);
+	if (!s)
+		return (NULL);
+	size = count_words(s, c);
+	s2 = (char **) malloc (sizeof(char *) * (size + 1));
+	if (!s2)
+		return (NULL);
+	ft_allocate(s2, s, c);
+	return (s2);
+}
 
-        for (int i = 0; i < num_commands; i++) {
-            char* command = commands[i];
-            char* path = get_command_path(command);
-            char **args = ft_split(command, ' ');
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	if (n == 0)
+	{
+		return (0);
+	}
+	while ((unsigned char)*s1 == (unsigned char)*s2 && *s1 != '\0' && n - 1 > 0)
+	{
+		s1++;
+		s2++;
+		n--;
+	}
+	return ((unsigned char)*s1 - (unsigned char)*s2);
+}
 
-            // Vérification des valeurs de path et args
-            if (path != NULL && args != NULL) {
-                // Si ce n'est pas la dernière commande, créez un nouveau tuyau
-                if (i < num_commands - 1) {
-                    pipe(next_pipe);
-                }
+char	**ft_recup_envp(char **envp)
+{
+	char	*env;
+	char	**new_env;
+	int		i;
 
-                pid_t child_pid = fork();
-                if (child_pid == 0) {
-                    // Code du processus enfant
+	env = NULL;
+	new_env = NULL;
+	i = 0;
+	if (envp)
+	{
+		while (envp[i] != NULL)
+		{
+			if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+			{
+				env = envp[i] + 5; 
+				break ;
+			}
+			i++;
+		}
+	}
+	if (!env)
+		return (new_env);
+	else
+		new_env = ft_split(env, ':');
+	return (new_env);
+}
 
-                    // Redirection des descripteurs de fichier pour l'entrée et la sortie
-                    if (i > 0) {
-                        dup2(prev_pipe[0], STDIN_FILENO);
-                        close(prev_pipe[1]);
-                        close(prev_pipe[0]);
-                    }
+void	free_tab(char **tab)
+{
+	int	i;
 
-                    if (i < num_commands - 1) {
-                        dup2(next_pipe[1], STDOUT_FILENO);
-                        close(next_pipe[0]);
-                        close(next_pipe[1]);
-                    }
+	i = 0;
+	if (tab == NULL)
+		return ;
+	while (tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
+}
 
-                    execve(path, args, envp);
-                    exit(EXIT_FAILURE); // Sortie du processus enfant en cas d'échec de l'exécution de la commande
-                } else if (child_pid > 0) {
-                    // Code du processus parent
+char	*ft_recup_path(char *command, char **envp)
+{
+	char	**allpath;
+	char	*allpathnew;
+	char	*cmdpath;
+	int		j;
 
-                    // Fermeture des descripteurs de fichier utilisés par le processus parent
-                    if (i > 0) {
-                        close(prev_pipe[0]);
-                        close(prev_pipe[1]);
-                    }
+	allpath = ft_recup_envp(envp);
+	j = 0;
+	if (!allpath)
+		return (command);
+	while (allpath[++j])
+	{
+		allpathnew = ft_strjoin(allpath[j], "/");
+		cmdpath = ft_strjoin(allpathnew, command); 
+		if (access(cmdpath, R_OK) != -1)
+		{
+			free_tab(allpath);
+			free(allpathnew);
+			//vars->flag = 1;
+			return (cmdpath); 
+		}	  
+		free(allpathnew);
+		free(cmdpath); 
+	} 
+	free_tab(allpath);
+	return (command);
+}
 
-                    if (i < num_commands - 1) {
-                        prev_pipe[0] = next_pipe[0];
-                        prev_pipe[1] = next_pipe[1];
-                    }
-                } else {
-                    fprintf(stderr, "Erreur lors de la création du processus enfant.\n");
-                    exit(EXIT_FAILURE);
-                }
+char	*ft_command(char *av)
+{
+	int		i;
+	int		j;
+	char	*command;
 
-                free(path);
-                free(args);
-            } else {
-                fprintf(stderr, "Erreur lors de l'extraction du chemin ou des arguments de la commande '%s'.\n", command);
-            }
-        }
+	i = 0;
+	j = 0;
+	while (av[i] == ' ')
+		i++;
+	j = i;
+	while (av[j] != ' ' && av[j])
+		j++;
+	command = ft_substr(av, i, j);
+	return (command);
+}
 
-        // Fermeture des descripteurs de fichier restants dans le processus parent
-        close(prev_pipe[0]);
-        close(prev_pipe[1]);
+// Si ce n'est pas la dernière commande, créez un nouveau tuyau
+void not_last_command(int i, int num_commands, int *next_pipe, int *prev_pipe)
+{
+	if (i < num_commands - 1) 
+	{
+		pipe(next_pipe);
+	}
+}
 
-        // Attente de la terminaison de tous les processus enfants
-        for (int i = 0; i < num_commands; i++) {
-            wait(NULL);
-        }
-    } else {
-        printf("Veuillez spécifier au moins une commande en tant qu'argument.\n");
-    }
+void	process_child(int i, int *prev_pipe, int *next_pipe, int num_commands)
+{
+	// Code du processus enfant
+	// Redirection des descripteurs de fichier pour l'entrée et la sortie
+	if (i > 0) 
+	{
+		dup2(prev_pipe[0], STDIN_FILENO);
+		close(prev_pipe[1]);
+		close(prev_pipe[0]);
+	}
 
-    return 0;
+	if (i < num_commands - 1) 
+	{
+		dup2(next_pipe[1], STDOUT_FILENO);
+		close(next_pipe[0]);
+		close(next_pipe[1]);
+	}
+
+
+
+}
+
+void	process_father(int i, int *prev_pipe, int *next_pipe, int num_commands)
+{
+	if (i > 0) 
+	{
+		close(prev_pipe[0]);
+		close(prev_pipe[1]);
+	}
+
+	if (i < num_commands - 1) 
+	{
+		prev_pipe[0] = next_pipe[0];
+		prev_pipe[1] = next_pipe[1];
+	}
+}
+
+// Fermeture des descripteurs de fichier restants dans le processus parent
+// et attente de la terminaison de tous les processus enfants
+void	close_and_wait(int *prev_pipe, int num_commands)
+{
+	close(prev_pipe[0]);
+	close(prev_pipe[1]);
+
+	int i = 0;
+	while (i++ < num_commands) 
+	{
+		wait(NULL);
+	}
+}
+
+int	ft_execve(char *path, char **args, char *envp[], char **av)
+{
+	//access a modifier apres selon le parsing et ou peut/se situera l'infile
+	/*if (access(av[1], R_OK) == -1)
+	  {
+	  write(2, "zsh: permission denied\n", 23);
+	  exit(EXIT_FAILURE);
+	  }*/
+	if (execve(path, args, envp) == -1)
+	{
+		free(path);
+		free_tab(args);
+		write(2, "zsh: command not found\n", 23);
+		exit(EXIT_FAILURE);
+	}
+	return (0);
+}
+
+int main(int argc, char* argv[], char* envp[]) 
+{
+	if (argc >= 3) 
+	{
+		int num_commands = argc - 2;
+		int prev_pipe[2]; // Descripteurs de fichier pour le tuyau précédent
+		int next_pipe[2]; // Descripteurs de fichier pour le tuyau suivant
+
+		// Initialisation du tuyau précédent
+		pipe(prev_pipe);
+		int i = 0;
+		while(i < num_commands) 
+		{
+			char *command = ft_command(argv[i + 2]);
+			char *path = ft_recup_path(command, envp);
+			char **args = ft_split(argv[i + 2], ' ');
+			if (path != NULL) 
+			{
+				not_last_command(i, num_commands, next_pipe, prev_pipe);
+				pid_t child_pid = fork();
+				if (child_pid == 0) 
+				{
+					process_child(i, prev_pipe, next_pipe, num_commands);
+					ft_execve(path, args, envp, argv);
+					exit(EXIT_FAILURE);
+				} 
+				else if (child_pid > 0) 
+				{
+					process_father(i, prev_pipe, next_pipe, num_commands);
+				}
+				else 
+				{
+					printf("Erreur lors de la création du processus enfant.\n");
+					exit(EXIT_FAILURE);
+				}
+			}
+			i++;
+		}
+		close_and_wait(prev_pipe, num_commands);
+	}
+	return 0;
 }

@@ -2,6 +2,19 @@
 
 // void set_envir(char *envp[])
 
+void free_pmt(s_cmd *prompt)
+{
+    int i;
+
+    i = 0;
+    while(i < prompt->nb_tabs)
+    {
+        prompt->cmd[i].tab = NULL;
+        prompt->cmd[i].type = NULL;
+        i++;
+    }
+}
+
 int main(int ac, char **av, char *envp[])
 {
     (void)ac;
@@ -17,13 +30,16 @@ int main(int ac, char **av, char *envp[])
         if(line && ft_parsing(&prompt, token, line))
         {
             prompt.exitstatus = 1;
-            printf("err\n");
+            free_token(token);
+            free(line);
+            // free_pmt(&prompt);
             continue;
         }
         add_history(line);
-        pipex(&prompt, envp);
+        // pipex(&prompt, envp);
+        // free_pmt(&prompt);
         free_token(token);
         free(line);
     }
-    return(0);
+    return(1);
 }

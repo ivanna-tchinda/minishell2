@@ -49,6 +49,9 @@ void free_prompt(s_cmd *prompt);
 int parse_command(s_cmd *prompt, int len_cmd);
 int tab_of_cmd(s_cmd *prompt, s_token *token);
 void add_totab(s_info *cmd, s_token *token, int *i);
+void free_pmt(s_cmd *prompt);
+int check_pipe(s_info *cmd, int len_cmd);
+int check_redif(s_info *cmd, int len_cmd);
 
 //PIPEX
 void pipex(s_cmd *cmd, char *env[]);
