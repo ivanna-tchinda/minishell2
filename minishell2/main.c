@@ -31,18 +31,17 @@ int main(int ac, char **av, char *envp[])
         {
             prompt.exitstatus = 1;
             free_token(token);
+            add_history(line);
             free(line);
-            // free_pmt(&prompt);
             continue;
         }
         add_history(line);
-        if(is_builtin(&prompt))
-        {
-            printf("we have to expand\n");
-            expand_cmd(&prompt);
-        }
-        // pipex(&prompt, envp);
-        // free_pmt(&prompt);
+        expand_cmd(&prompt, envp);
+        // if(is_builtin(&prompt))
+        // {
+        //     printf("we have to expand\n");
+        //     // expand_cmd(&prompt);
+        // }
         free_token(token);
         free(line);
     }

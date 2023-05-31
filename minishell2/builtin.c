@@ -5,8 +5,12 @@ int around_bltn(char *tab, char *bltn, int j)
     if(tab[j + 1] && (tab[j + 1] != 34 || tab[j + 1] != 39 || tab[j+1] != 32))
         return(1);
     while(--j > (int)ft_strlen(bltn));
+    j--;
     if(tab[j - 1] && (tab[j - 1] != 34 || tab[j - 1] != 39 || tab[j-1] != 32))
+    {
+        printf("%c\n", tab[j]);
         return(1);
+    }
     return(0);
 }
 
@@ -43,6 +47,7 @@ int built_intab(char *tab)
     char *tmptab;
 
     tmptab = tab;
+    // tab = unquote_tab(tab);
     while(*tmptab)
     {
         printf("tab: %s\n", tmptab);

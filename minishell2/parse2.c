@@ -41,26 +41,11 @@ int ft_nbtokens(s_token *token)
     count = 0;
     while(token[i].token)
     {
-        if(token[i].token == 34) // dquote
-        {
-            while(token[++i].token != 34 && token[i].token);
+        if(token[i].type != token[i - 1].type && token[i].token)
             count++;
-            printf("+1 quote %c pos%d\n", token[i].token, i);
-        }
-        else if(token[i].token == 39) // quote
-        {
-            while(token[++i].token != 39 && token[i].token);
-            count++;
-            printf("+1 squote %c pos%d\n", token[i].token, i);
-        }
-        else if(token[i].type != token[i - 1].type && strcmp(token[i].type, "space")) //different du precedent
-        {
-            count++;
-            printf("+1 diff%c pos%d type %s\n", token[i].token, i, token[i].type);
-        }
         i++;
     }
-    printf("nb of types: %d\n", count);
+    // printf("nb of types: %d\n", count);
     return(count);
 }
 

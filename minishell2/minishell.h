@@ -58,7 +58,7 @@ int check_command(char *tab, char *bltn);
 int around_bltn(char *tab, char *bltn, int j);
 
 //EXPAND
-void expand_cmd(s_cmd *prompt);
+void expand_cmd(s_cmd *prompt, char *envp[]);
 
 //PIPEX
 void pipex(s_cmd *cmd, char *env[]);
@@ -75,6 +75,7 @@ size_t	ft_strlen(const char *s);
 char	**ft_split(char const *s, char c);
 size_t	count_words(char const *s, char c);
 void	ft_allocate(char **s2, char const *s, char c);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
 
 
 #endif

@@ -19,7 +19,7 @@ char *substr_cmd(s_token *token, int start, int end)
         start++;
     }
     cmd[i] = '\0';
-    printf("token: %s\n", cmd);
+    // printf("token: %s\n", cmd);
     return(cmd);
 }
 
@@ -34,21 +34,7 @@ void add_totab(s_info *cmd, s_token *token, int *i)
 
     if(token[j].type == token[j-1].type)
     {
-        if(token[*i].token == 34)
-        {
-            printf("1quote %c %c\n", token[*i].token, token[j].token);
-            printf("here\n");
-            while(token[j].token && token[++j].token != 34);
-            j++;
-        }
-        else if(token[*i].token == 39)
-        {
-            printf("2quote %c %c\n", token[*i].token, token[j].token);
-            while(token[++j].token != 39);
-            j++;
-        }
-        else
-            while((token[j].type == token[j-1].type && token[j++].type));
+        while((token[j].type == token[j-1].type && token[j++].type));
         cmd->tab = substr_cmd(token, *i, j);
         *i = j;
     }
@@ -62,7 +48,7 @@ void add_totab(s_info *cmd, s_token *token, int *i)
         }
         else if(token[*i].token == 39)
         {
-            printf("3quote %c %c\n", token[*i].token, token[j].token);
+            // printf("3quote %c %c\n", token[*i].token, token[j].token);
             while(token[++j].token != 39);
             j++;
         }
@@ -121,7 +107,7 @@ int tab_of_cmd(s_cmd *prompt, s_token *token)
     i = 0;
     i_tab = -1;
     nb_tokens = ft_nbtokens(token);
-    printf("nb token %d\n", nb_tokens);
+    // printf("nb token %d\n", nb_tokens);
     prompt->cmd = (s_info *)malloc(sizeof(s_info) * nb_tokens);
     while(++i_tab < nb_tokens)
         add_totab(&prompt->cmd[i_tab], token, &i);
@@ -139,8 +125,6 @@ void attribute_types(s_token *token, char *line)
             token[i].type = "pipe";
         else if(line[i] == 60 || line[i] == 62)
             token[i].type = "redir";
-        else if(line[i] == 32)
-            token[i].type = "space";
         else
             token[i].type = "char";
         token[i].token = line[i];
@@ -183,7 +167,7 @@ int ft_parsing(s_cmd *prompt, s_token *token, char *line)
     int i;
 
     i = 0;
-    printf("nb cmd: %d\n", prompt->nb_tabs);
+    // printf("nb cmd: %d\n", prompt->nb_tabs);
     while(i < len_cmd)
     {
         printf("prompt->cmd[%d].tab = %s\n", i, prompt->cmd[i].tab);
