@@ -72,7 +72,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	char	*s2;
 
 	i = 0;
-	if (!s)
+	if (!s || len == 0)
 		return (NULL);
 	s2 = ft_malloc(s, start, len);
 	if (!s2)

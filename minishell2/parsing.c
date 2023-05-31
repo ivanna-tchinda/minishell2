@@ -31,7 +31,6 @@ void add_totab(s_info *cmd, s_token *token, int *i)
         (*i)++;
     j = (*i) + 1;
     cmd->type = token[(*i)].type;
-
     if(token[j].type == token[j-1].type)
     {
         while((token[j].type == token[j-1].type && token[j++].type));
@@ -56,7 +55,7 @@ void add_totab(s_info *cmd, s_token *token, int *i)
             cmd->tab = substr_cmd(token, (*i)++, j);
         j++;
     }
-}
+} //+25 mais ok
 
 int parse_command(s_cmd *prompt, int len_cmd)
 {

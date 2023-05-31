@@ -16,7 +16,6 @@ void quote_type(s_token *token, char *line, int *i)
             if(line[*i] == 34)
                 break;
         }
-
     }
     else if(line[*i] == 39)
     {
