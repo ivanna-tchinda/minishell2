@@ -77,7 +77,7 @@ char *dollar_sign(char *new_prompt, char *prompt, char *envp[], int *i)
     char *goodenv;
 
     j = *i;
-    while(prompt[*i] != 34)
+    while(prompt[*i] != 34 && prompt[*i])
         (*i)++;
     varenv = ft_substr(prompt, j + 1, (*i) - j - 1);
     goodenv = findenv(varenv, envp);
@@ -93,10 +93,12 @@ char *dquoted_prompt(char *new_prompt, char *prompt, int *i, char *envp[])
     (void)envp;
     while(prompt[*i])
     {
-        if(prompt[*i] == 36)
+        if(prompt[*i] == 36 && prompt[*i - 1] != 92) //$
             new_prompt = dollar_sign(new_prompt, prompt, envp, i);
-        else if(prompt[*i] != 34)
+        else if(prompt[*i] != 34) //!= ""
         {
+            if(prompt[*i] == 92)
+                (*i)++;
             if(!new_prompt)
                 new_prompt = alloc_one(prompt[*i]);
             else
@@ -137,7 +139,7 @@ char  *expand_prompt(char *prompt, char *envp[])
     new_prompt = NULL;
     while(i < (int)ft_strlen(prompt))
     {
-        if(prompt[i] == 39)
+        if(prompt[i] == 39 || prompt[i] == 92)
             new_prompt = quoted_prompt(new_prompt, prompt, &i, 39);
         else if(prompt[i] == 34)
             new_prompt = dquoted_prompt(new_prompt, prompt, &i, envp);
