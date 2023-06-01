@@ -35,9 +35,10 @@ char *quoted_prompt(char *new_prompt, char *prompt, int *i, int quote_type)
     char *ret;
 
     ret = NULL;
+    printf("i: %d\n", *i);
     new_tab = malloc(sizeof(char) * (int)ft_strlen(prompt) - 1);
     j = 0;
-    while(*i < (int)ft_strlen(prompt))
+    while(*i < (int)ft_strlen(prompt) && prompt[*i] != quote_type)
     {
         if(prompt[*i] != quote_type && prompt[*i] && prompt[*i] != 92)
         {
@@ -48,22 +49,40 @@ char *quoted_prompt(char *new_prompt, char *prompt, int *i, int quote_type)
     }
     new_tab[j] = '\0';
     if(new_prompt)
+    {
         ret = ft_strjoin(new_prompt, new_tab);
+        printf("ret j: %s %d\n", ret, *i);
+    }
     else
+    {
         ret = new_tab;
+        printf("ret nt: %s\n", ret);
+    }
     return(ret);
+}
+
+char *before_equal(char *envp)
+{
+    int i;
+
+    i = -1;
+    while(envp[++i] && envp[i] != '=');
+    return(ft_substr(envp, 0, i));
+
 }
 
 char *findenv(char *varenv, char **envp)
 {
-    (void)varenv;
     int i;
+    char *beforeq;
+    (void)beforeq;
 
     i = 0;
     while(envp[i])
     {
-        if(strncmp(envp[i], varenv, ft_strlen(varenv)) == 0)
-            return(envp[i]);
+        beforeq = before_equal(envp[i]);
+        if(strncmp(beforeq, varenv, ft_strlen(beforeq)) == 0)
+            return(envp[i] + ft_strlen(beforeq) + 1);
         i++;
     }
     return(NULL);
@@ -71,7 +90,6 @@ char *findenv(char *varenv, char **envp)
 
 char *dollar_sign(char *new_prompt, char *prompt, char *envp[], int *i)
 {
-    (void)envp;
     int j;
     char *varenv;
     char *goodenv;
@@ -85,10 +103,9 @@ char *dollar_sign(char *new_prompt, char *prompt, char *envp[], int *i)
     }
     while(prompt[*i] != 34 && prompt[*i] != 39 && prompt[*i] && prompt[*i + 1] != 36) //!="" && existe && +1!=$
         (*i)++;
-    printf("%d %d\n", j + 1, (*i) - j - 1);
     varenv = ft_substr(prompt, j + 1, (*i) - j - 1);
     if(!varenv)
-        return(NULL);
+        return(new_prompt);
     goodenv = findenv(varenv, envp);
     if(!new_prompt && goodenv)
         return(goodenv);
@@ -130,6 +147,7 @@ char *dollar_prompt(char *new_prompt, char *prompt, int *i, char *envp[])
         if(prompt[*i] == 36) //$
         {
             new_prompt = dollar_sign(new_prompt, prompt, envp, i);
+            printf("in dollar %s\n", new_prompt);
             if(!new_prompt)
                 (*i)++;
         }
@@ -141,8 +159,14 @@ char *dollar_prompt(char *new_prompt, char *prompt, int *i, char *envp[])
             {
                 
                 if(prompt[*i - 1] == 36)
+                {
                     new_prompt = join_one(new_prompt, prompt[*i - 1]);
-                new_prompt = join_one(new_prompt, prompt[*i]);
+                    printf("in join1 %s\n", new_prompt);
+
+                }
+                if(prompt[*i] != 34 && prompt[*i] != 39)
+                    new_prompt = join_one(new_prompt, prompt[*i]);
+                printf("in join2 %s\n", new_prompt);
             }
         }
         (*i)++;
@@ -163,13 +187,20 @@ char  *expand_prompt(char *prompt, char *envp[])
     {
         if(prompt[i] == 39 || prompt[i] == 92)
         {
-            printf("n %c\n", prompt[i]);
+            printf("quote %s\n", new_prompt);
+            i++;
             new_prompt = quoted_prompt(new_prompt, prompt, &i, 39);
         }
         else if(prompt[i] == 34)
+        {
+            printf("dquote %s\n", new_prompt);
             new_prompt = dquoted_prompt(new_prompt, prompt, &i, envp);
+        }
         else if(prompt[i] == 36 &&  prompt[i + 1] != 64)
+        {
+            printf("dollar %s\n", new_prompt);
             new_prompt = dollar_prompt(new_prompt, prompt, &i, envp);
+        }
         else
         {
             if(prompt[i + 1] == 64)
@@ -178,6 +209,7 @@ char  *expand_prompt(char *prompt, char *envp[])
                 new_prompt = alloc_one(prompt[i]);
             else
             {
+                printf("here %s\n", new_prompt);
                 new_prompt = join_one(new_prompt, prompt[i]);
             }
         }
