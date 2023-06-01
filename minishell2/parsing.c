@@ -57,6 +57,25 @@ void add_totab(s_info *cmd, s_token *token, int *i)
     }
 } //+25 mais ok
 
+int check_and(s_info *cmd, int len_cmd)
+{
+    int i;
+
+    i = -1;
+    while(++i < len_cmd)
+    {
+        if(cmd[i].type && strcmp(cmd[i].type, "and") == 0)
+        {
+            if(i == 0)
+                return 1;
+            if(strcmp(cmd[i - 1].type, "char") != 0)
+                    return(1);
+        } 
+    }
+    printf("and: is it here?\n");
+    return 0;
+}
+
 int parse_command(s_cmd *prompt, int len_cmd)
 {
     int i;
@@ -70,6 +89,8 @@ int parse_command(s_cmd *prompt, int len_cmd)
         if(check_pipe(prompt->cmd, len_cmd))
             return(write(1, "zsh: parse error near `|'\n", 26));
         //cas2: redirection sans arg avant ou apres
+        else if(check_and(prompt->cmd, len_cmd))
+            return(write(1, "syntax error near unexpected token `&'\n", 39));
         else if(check_redif(prompt->cmd, len_cmd))
             return(write(1, "zsh: parse error\n", 17));
         i++;
@@ -88,6 +109,8 @@ int only_cmd(s_cmd *prompt)
         return(0);
     while(i < prompt->nb_tabs)
     {
+        if(!prompt->cmd[i].type)
+            break;
         if(strcmp(prompt->cmd[i].type, "char") != 0)
             count++;
         i++;
@@ -119,8 +142,12 @@ void attribute_types(s_token *token, char *line)
     i = -1;
     while(line[++i])
     {
-        if(line[i] == 124)
+        if((line[i] == 124 && line[i + 1] == 124) || (line[i] == 124 && line[i - 1] == 124))
+            token[i].type = "or";
+        else if(line[i] == 124)
             token[i].type = "pipe";
+        else if((line[i] == 38 && line[i + 1] == 38) || (line[i] == 38 && line[i - 1] == 38))
+            token[i].type = "and";
         else if(line[i] == 60 || line[i] == 62)
             token[i].type = "redir";
         else
@@ -152,11 +179,40 @@ int unclosed_quote(char *line)
     return(0);
 }
 
+int many_tokens(char *line)
+{
+    int i;
+    int count;
+
+    i = -1;
+    count = 0;
+    while(line[++i])
+    { 
+        if(line[i] == 124)
+        {
+            while(line[i++] == 124)
+                count++;
+            if(count > 2)
+                return 1;
+            count = 0;
+        }
+        else if(line[i] == 38)
+        {
+            while(line[i++] == 38)
+                count++;
+            if(count != 2)
+                return 1;
+            count = 0;
+        }
+    }
+    return 0;
+}
+
 int ft_parsing(s_cmd *prompt, s_token *token, char *line)
 {
     int len_cmd;
-    if(unclosed_quote(line))
-        return(write(1, "error: unclosed quote\n", 22), 1);
+    if(unclosed_quote(line) || many_tokens(line))
+        return(write(1, "error: parse error\n", 19), 1);
     attribute_types(token, line);
     len_cmd = tab_of_cmd(prompt, token);
     prompt->nb_tabs = len_cmd;
