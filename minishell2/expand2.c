@@ -1,8 +1,5 @@
 #include "minishell.h"
 
-
-
-
 char *quoted_prompt(char *new_prompt, char *prompt, int *i, int quote_type)
 {
     int j;

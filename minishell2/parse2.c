@@ -51,18 +51,17 @@ int check_pipe(s_info *cmd, int len_cmd)
     
     i = 0;
     // printf("nb cmd: %d\n", len_cmd);
+    printf("check pipe\n");
     while(i < len_cmd)
     {
         // printf("type: %s\n", cmd[i].type);
-        if(cmd[i].type && strcmp(cmd[i].type, "pipe") == 0)
+        if(cmd[i].type && (strcmp(cmd[i].type, "pipe") == 0 || strcmp(cmd[i].type, "or") == 0))
         {
             if(i == 0 || i == (len_cmd - 1))
                 return 1;
             if(!cmd[i + 1].tab || !cmd[i - 1].tab)
                 return(1);
-            if(strcmp(cmd[i - 1].type, "char") != 0
-                && strcmp(cmd[i - 1].type, "noexp$") != 0
-                && strcmp(cmd[i - 1].type, "noexp") != 0)
+            if(strcmp(cmd[i - 1].type, "char") != 0)
                     return(1);
         }
         i++;
@@ -77,9 +76,9 @@ int check_redif(s_info *cmd, int len_cmd)
     i = 0;
     while(i < len_cmd)
     {
-        if((strcmp(cmd[i].type, "redir") == 0))
+        if((cmd[i].type && strcmp(cmd[i].type, "redir") == 0))
         {
-            // printf("%d\n", len_cmd);
+            printf("type: %s\n", cmd[i].type);
             if(i == (len_cmd - 1))
                 return 1;
             if(!cmd[i + 1].type || !cmd[i - 1].type)
@@ -87,6 +86,6 @@ int check_redif(s_info *cmd, int len_cmd)
         }
         i++;
     }
-
+    printf("check pipe\n");
     return(0);
 }
