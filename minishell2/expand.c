@@ -1,162 +1,47 @@
 #include "minishell.h"
 
-char *alloc_one(char c)
+char *dollar_status(s_cmd *cmd, char *prompt)
 {
-    char *new_alloc;
-
-    new_alloc = malloc(sizeof(char) + 1);
-    new_alloc[0] = c;
-    new_alloc[1] = '\0';
-    return(new_alloc);
-}
-
-char *join_one(char *str, char c)
-{
-    char *new_str;
     int i;
+    char *new_prompt;
 
-    new_str = malloc(sizeof(char) * ft_strlen(str) + 2);
-    i = 0;
-    while(i < (int)ft_strlen(str))
+    i = -1;
+    new_prompt = malloc(sizeof(char) + 1);
+    while(prompt[++i])
     {
-        new_str[i] = str[i];
-        i++;
-    }
-    new_str[i] = c;
-    new_str[i + 1] = '\0';
-    return(new_str);
-}
-
-
-char *quoted_prompt(char *new_prompt, char *prompt, int *i, int quote_type)
-{
-    int j;
-    char *new_tab;
-    char *ret;
-
-    ret = NULL;
-    new_tab = malloc(sizeof(char) * (int)ft_strlen(prompt) - 1);
-    j = 0;
-    while(*i < (int)ft_strlen(prompt) && prompt[*i] != quote_type)
-    {
-        if(prompt[*i] != quote_type && prompt[*i] && prompt[*i] != 92)
+        if(prompt[i] == 63)
+            continue;
+        if(prompt[i] == 36 && prompt[i+1] == 63)
         {
-            new_tab[j] = prompt[*i];
-            j++;
+            if(!new_prompt)
+                new_prompt = alloc_one(cmd->exitstatus + '0');
+            else
+                new_prompt = join_one(new_prompt, cmd->exitstatus + '0');
         }
-        (*i)++;
+        else
+        {
+            if(!new_prompt)
+                new_prompt = alloc_one(prompt[i]);
+            else
+                new_prompt = join_one(new_prompt, prompt[i]);
+        }
+        printf("new_prompt: %s\n", new_prompt);
     }
-    new_tab[j] = '\0';
-    if(new_prompt)
-        ret = ft_strjoin(new_prompt, new_tab);
-    else
-        ret = new_tab;
-    return(ret);
+    new_prompt[i] = '\0';
+    return(new_prompt);
 }
 
-char *before_equal(char *envp)
+void expand_status(s_cmd *prompt)
 {
     int i;
 
     i = -1;
-    while(envp[++i] && envp[i] != '=');
-    return(ft_substr(envp, 0, i));
-
-}
-
-char *findenv(char *varenv, char **envp)
-{
-    int i;
-    char *beforeq;
-
-    i = 0;
-    while(envp[i])
+    while(++i < prompt->nb_tabs)
     {
-        beforeq = before_equal(envp[i]);
-        if(strncmp(beforeq, varenv, ft_strlen(varenv)) == 0)
-            return(envp[i] + ft_strlen(beforeq) + 1);
-        i++;
+        prompt->cmd[i].tab = dollar_status(prompt, prompt->cmd[i].tab);
+        printf("expanded status: %s\n", prompt->cmd[i].tab);
     }
-    return(NULL);
 }
-
-char *dollar_sign(char *new_prompt, char *prompt, char *envp[], int *i)
-{
-    int j;
-    char *varenv;
-    char *goodenv;
-
-    j = *i;
-    if(prompt[*i -1] == 92 || !prompt[*i + 1]) // \, dntexist
-        return(new_prompt);
-    while(prompt[*i] != 32 && prompt[*i] != 34 && prompt[*i] != 39
-        && prompt[*i] && prompt[*i + 1] != 36) //!="" && existe && +1!=$
-        (*i)++;
-    varenv = ft_substr(prompt, j + 1, (*i) - j - 1);
-    if(!varenv)
-        return(new_prompt);
-    goodenv = findenv(varenv, envp);
-    if(!new_prompt && goodenv)
-        return(goodenv);
-    if(!goodenv)
-        return((*i)--, ft_strjoin(new_prompt, ""));
-    return(ft_strjoin(new_prompt, goodenv));
-}
-
-
-char *dquoted_prompt(char *new_prompt, char *prompt, int *i, char *envp[])
-{
-    (void)envp;
-    while(prompt[*i])
-    {
-        if(prompt[*i] == 36 && prompt[*i - 1] != 92
-            && prompt[*i + 1] != 64 && prompt[*i + 1] != 34
-            && prompt[*i + 1] != 39) //$ && -1!=\ && +1!=@
-            new_prompt = dollar_sign(new_prompt, prompt, envp, i);
-        else if(prompt[*i] != 34) //!= ""
-        {
-            if(prompt[*i] == 92 || prompt[*i] == 64) //!=\ || !=@
-                (*i)++;
-            if(!new_prompt)
-                new_prompt = alloc_one(prompt[*i]);
-            else
-                new_prompt = join_one(new_prompt, prompt[*i]);
-        }
-        (*i)++;
-        if(prompt[*i] == 34)
-            break;
-    }
-    return(new_prompt);
-}
-
-char *dollar_prompt(char *new_prompt, char *prompt, int *i, char *envp[])
-{
-    while(prompt[*i])
-    {
-        if(prompt[*i] == 36) //$
-        {
-            new_prompt = dollar_sign(new_prompt, prompt, envp, i);
-            if(!new_prompt)
-                (*i)++;
-        }
-        else if(prompt[*i])
-        {
-            if(!new_prompt)
-                new_prompt = alloc_one(prompt[*i]);
-            else if((*i) < (int)ft_strlen(prompt))
-            {
-                if(prompt[*i - 1] == 36)
-                    new_prompt = join_one(new_prompt, prompt[*i - 1]);
-                if(prompt[*i] != 34 && prompt[*i] != 39)
-                    new_prompt = join_one(new_prompt, prompt[*i]);
-            }
-        }
-        (*i)++;
-    }
-    return(new_prompt);
-}
-
-
 
 char  *expand_prompt(char *prompt, char *envp[])
 {
@@ -174,7 +59,7 @@ char  *expand_prompt(char *prompt, char *envp[])
         }
         else if(prompt[i] == 34)
             new_prompt = dquoted_prompt(new_prompt, prompt, &i, envp);
-        else if(prompt[i] == 36 &&  prompt[i + 1] != 64 && prompt[i + 1] != 61)
+        else if(prompt[i] == 36 &&  prompt[i + 1] != 64 && prompt[i + 1] != 61 && prompt[i + 1] != 63)
             new_prompt = dollar_prompt(new_prompt, prompt, &i, envp);
         else
         {

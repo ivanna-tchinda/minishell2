@@ -52,6 +52,8 @@ void add_totab(s_info *cmd, s_token *token, int *i);
 void free_pmt(s_cmd *prompt);
 int check_pipe(s_info *cmd, int len_cmd);
 int check_redif(s_info *cmd, int len_cmd);
+
+//BUILTIN
 int is_builtin(s_cmd *prompt);
 int built_intab(char *tab);
 int check_command(char *tab, char *bltn);
@@ -59,6 +61,18 @@ int around_bltn(char *tab, char *bltn, int j);
 
 //EXPAND
 void expand_cmd(s_cmd *prompt, char *envp[]);
+char  *expand_prompt(char *prompt, char *envp[]);
+char *quoted_prompt(char *new_prompt, char *prompt, int *i, int quote_type);
+char *before_equal(char *envp);
+char *findenv(char *varenv, char **envp);
+char *dollar_sign(char *new_prompt, char *prompt, char *envp[], int *i);
+char *dquoted_prompt(char *new_prompt, char *prompt, int *i, char *envp[]);
+char *dollar_prompt(char *new_prompt, char *prompt, int *i, char *envp[]);
+
+//EXPAND STATUS
+void expand_status(s_cmd *prompt);
+char *dollar_status(s_cmd *cmd, char *prompt);
+
 
 //PIPEX
 void pipex(s_cmd *cmd, char *env[]);
@@ -76,6 +90,9 @@ char	**ft_split(char const *s, char c);
 size_t	count_words(char const *s, char c);
 void	ft_allocate(char **s2, char const *s, char c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
+char *alloc_one(char c);
+char *join_one(char *str, char c);
+size_t	len_int(int n);
 
 
 #endif

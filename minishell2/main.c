@@ -37,6 +37,7 @@ int main(int ac, char **av, char *envp[])
         }
         add_history(line);
         expand_cmd(&prompt, envp);
+        expand_status(&prompt);
         // if(is_builtin(&prompt))
         // {
         //     printf("we have to expand\n");

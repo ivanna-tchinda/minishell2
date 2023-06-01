@@ -1,8 +1,5 @@
 #include "minishell.h"
 
-
-
-
 void quote_type(s_token *token, char *line, int *i)
 {
     token[*i].token = line[*i];
@@ -80,10 +77,9 @@ int check_redif(s_info *cmd, int len_cmd)
     i = 0;
     while(i < len_cmd)
     {
-        if((strcmp(cmd[i].type, "redirin") == 0
-            || strcmp(cmd[i].type, "redirout") == 0) && i !=0)
+        if((strcmp(cmd[i].type, "redir") == 0))
         {
-            printf("%d\n", len_cmd);
+            // printf("%d\n", len_cmd);
             if(i == (len_cmd - 1))
                 return 1;
             if(!cmd[i + 1].type || !cmd[i - 1].type)

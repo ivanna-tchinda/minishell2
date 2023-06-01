@@ -175,3 +175,55 @@ char	**ft_split(char const *s, char c)
 	ft_allocate(s2, s, c);
 	return (s2);
 }
+
+
+char *alloc_one(char c)
+{
+    char *new_alloc;
+
+    new_alloc = malloc(sizeof(char) + 1);
+    new_alloc[0] = c;
+    new_alloc[1] = '\0';
+    return(new_alloc);
+}
+
+char *join_one(char *str, char c)
+{
+    char *new_str;
+    int i;
+
+    new_str = malloc(sizeof(char) * ft_strlen(str) + 2);
+    i = 0;
+    while(i < (int)ft_strlen(str))
+    {
+        new_str[i] = str[i];
+        i++;
+    }
+    new_str[i] = c;
+    new_str[i + 1] = '\0';
+    return(new_str);
+}
+
+size_t	len_int(int n)
+{
+	size_t	i;
+	long	nb;
+
+	nb = n;
+	i = 1;
+	if (nb == 2147483648)
+		return (10);
+	if (nb == -2147483648)
+		return (11);
+	if (nb < 0)
+	{
+		nb *= -1;
+		i++;
+	}
+	while (nb > 9)
+	{
+		nb = nb / 10;
+		i++;
+	}
+	return (i);
+}

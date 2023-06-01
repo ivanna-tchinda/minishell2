@@ -7,6 +7,7 @@ SRC=	  main.c\
 			pipex.c\
 			builtin.c\
 			expand.c\
+			expand2.c\
 
 CC= cc  
 
