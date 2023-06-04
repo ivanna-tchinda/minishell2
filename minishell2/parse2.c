@@ -1,5 +1,33 @@
 #include "minishell.h"
 
+int parentheses(char *cmd)
+{
+    int i;
+    int count;
+    int par;
+
+    i = 0;
+    count = 0;
+    par = 0;
+    while(i < (int)ft_strlen(cmd))
+    {
+        if(cmd[i] && (cmd[i] == 40 || cmd[i] == 41))
+            count++;
+        if(cmd[i] && cmd[i] == 40 && cmd[i + 1] == 41)
+            return (1);
+        if(cmd[i] && cmd[i] == 40)
+            par++;
+        else if(cmd[i] && cmd[i] == 41)
+            par--;
+        if(par < 0)
+            return(1);
+        i++;
+    }
+    if(count % 2 != 0)
+        return (1);
+    return (0);
+}
+
 void quote_type(s_token *token, char *line, int *i)
 {
     token[*i].token = line[*i];
@@ -41,7 +69,6 @@ int ft_nbtokens(s_token *token)
             count++;
         i++;
     }
-    // printf("nb of types: %d\n", count);
     return(count);
 }
 
@@ -50,11 +77,8 @@ int check_pipe(s_info *cmd, int len_cmd)
     int i;
     
     i = 0;
-    // printf("nb cmd: %d\n", len_cmd);
-    printf("check pipe\n");
     while(i < len_cmd)
     {
-        // printf("type: %s\n", cmd[i].type);
         if(cmd[i].type && (strcmp(cmd[i].type, "pipe") == 0 || strcmp(cmd[i].type, "or") == 0))
         {
             if(i == 0 || i == (len_cmd - 1))
@@ -78,7 +102,6 @@ int check_redif(s_info *cmd, int len_cmd)
     {
         if((cmd[i].type && strcmp(cmd[i].type, "redir") == 0))
         {
-            printf("type: %s\n", cmd[i].type);
             if(i == (len_cmd - 1))
                 return 1;
             if(!cmd[i + 1].type || !cmd[i - 1].type)
@@ -86,6 +109,5 @@ int check_redif(s_info *cmd, int len_cmd)
         }
         i++;
     }
-    printf("check pipe\n");
     return(0);
 }
