@@ -81,7 +81,7 @@ void exec_bltn(char *cmd, char *envp[])
     else if(strncmp(cmd, "pwd", 3) == 0)
         pwd_bltn(envp);
     else if(strncmp(cmd, "export", 6) == 0)
-        printf("export\n");
+        export_bltn(cmd);
     else if(strncmp(cmd, "unset", 5) == 0)
         printf("unset\n");
     else if(strncmp(cmd, "env", 3) == 0)

@@ -82,6 +82,10 @@ ssize_t find_good_env(char **env_real, const char *env_param) ;
 //ENV
 void set_envir(char *envp[]);
 
+//EXPORT
+void export_bltn(char *new_var);
+char *get_var(char *new_var);
+
 //EXPAND
 void expand_cmd(s_cmd *prompt, char *envp[]);
 char  *expand_prompt(char *prompt, char *envp[]);
@@ -126,6 +130,6 @@ char *join_one(char *str, char c);
 size_t	len_int(int n);
 int	ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
-
+char	*ft_strdup(char *src);
 
 #endif

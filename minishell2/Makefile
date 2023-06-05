@@ -11,6 +11,7 @@ SRC=	  main.c\
 			pwd-bltn.c\
 			expand.c\
 			expand2.c\
+			export-bltn.c\
 
 CC= cc  
 

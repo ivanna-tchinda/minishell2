@@ -12,7 +12,7 @@ void set_envir(char *envp[])
     while(envp[++len_env]);
     envir = (char **)malloc(sizeof(char *) * len_env);
     while(++i < len_env)
-        envir[i] = envp[i];
+        envir[i] = ft_strdup(envp[i]);
     envir[i] = NULL;
 }
 
