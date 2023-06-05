@@ -1,5 +1,14 @@
 #include "minishell.h"
 
+void env_bltn(void)
+{
+    int i;
+
+    i = -1;
+    while(envir[++i])
+        printf("%s\n", envir[i]);
+}
+
 int after_optn(char *line)
 {
     int i;
@@ -64,7 +73,7 @@ int is_optn(char *line)
         }
         return(0);
     }
-    return(0);
+    return(1);
 
 }
 
@@ -85,5 +94,4 @@ void echo_bltn(char *line)
     }
     if(is_optn(line))
         printf("\n");
-
 }

@@ -18,6 +18,8 @@
 #include <sys/ioctl.h>
 #include <sys/wait.h>
 
+extern char **envir;
+
 typedef struct t_token{
     char token;
     char *type;
@@ -38,34 +40,47 @@ typedef struct t_cmd{
     int index;
 }               s_cmd;
 
-
-void add_cmd(s_cmd *prompt, s_token *token);
+//PARSING
 int error_characters(char *lineav);
 int ft_parsing(s_cmd *prompt, s_token *token, char *line);
 int ft_nbtokens(s_token *token);
+void free_prompt(s_cmd *prompt);
+int parse_command(s_cmd *prompt, int len_cmd);
+int check_pipe(s_info *cmd, int len_cmd);
+int check_redif(s_info *cmd, int len_cmd);
+int parentheses(char *cmd);
+
+//TAB_OF_CMD
+void add_cmd(s_cmd *prompt, s_token *token);
 char *substr_cmd(s_token *token, int start, int end);
 int tab_of_cmd(s_cmd *prompt, s_token *token);
 void attribute_types(s_token *token, char *line);
-void free_prompt(s_cmd *prompt);
-int parse_command(s_cmd *prompt, int len_cmd);
 int tab_of_cmd(s_cmd *prompt, s_token *token);
 void add_totab(s_info *cmd, s_token *token, int *i);
 int only_cmd(s_cmd *prompt);
 void free_pmt(s_cmd *prompt);
-int parentheses(char *cmd);
-int check_pipe(s_info *cmd, int len_cmd);
-int check_redif(s_info *cmd, int len_cmd);
 
 //BUILTIN
 int is_builtin(char *cmd);
 int built_intab(char *tab);
 int check_command(char *tab, char *bltn);
 int around_bltn(char *tab, char *bltn, int j);
-void exec_bltn(char *cmd);
+void exec_bltn(char *cmd, char *envp[]);
+
+//ECHO
 void echo_bltn(char *line);
 int is_optn(char *line);
 int after_echo(char *line);
 int after_optn(char *line);
+void env_bltn(void);
+
+//PWD
+int	pwd_bltn(char **env_real);
+char *recup_env(char **env_real, const char *env_param);
+ssize_t find_good_env(char **env_real, const char *env_param) ;
+
+//ENV
+void set_envir(char *envp[]);
 
 //EXPAND
 void expand_cmd(s_cmd *prompt, char *envp[]);

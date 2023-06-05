@@ -71,20 +71,21 @@ int is_builtin(char *cmd)
     return(0);
 }
 
-void exec_bltn(char *cmd)
+void exec_bltn(char *cmd, char *envp[])
 {
+    // char **envir;
     if(strncmp(cmd, "echo", 4) == 0)
         echo_bltn(cmd);
     else if(strncmp(cmd, "cd", 2) == 0)
         printf("cd\n");
     else if(strncmp(cmd, "pwd", 3) == 0)
-        printf("pwd\n");
+        pwd_bltn(envp);
     else if(strncmp(cmd, "export", 6) == 0)
         printf("export\n");
     else if(strncmp(cmd, "unset", 5) == 0)
         printf("unset\n");
     else if(strncmp(cmd, "env", 3) == 0)
-        printf("env\n");
+        env_bltn();
     else if(strncmp(cmd, "exit", 4) == 0)
         printf("exit\n");
 }

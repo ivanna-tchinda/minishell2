@@ -8,6 +8,7 @@ SRC=	  main.c\
 			pipex.c\
 			builtin.c\
 			echo-bltn.c\
+			pwd-bltn.c\
 			expand.c\
 			expand2.c\
 

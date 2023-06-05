@@ -203,7 +203,7 @@ int ft_pipex(s_cmd *prompt, char* envp[])
 	while(i < prompt->nb_tabs) 
 	{
 		if(is_builtin(prompt->cmd[i].tab))
-			exec_bltn(prompt->cmd[i].tab);
+			exec_bltn(prompt->cmd[i].tab, envp);
 		else if(strcmp(prompt->cmd[i].type, "char") == 0)
 		{
 			char *command = ft_command(prompt->cmd[i].tab);

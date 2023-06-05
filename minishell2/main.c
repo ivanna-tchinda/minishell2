@@ -1,5 +1,21 @@
 #include "minishell.h"
 
+char **envir = NULL;
+
+void set_envir(char *envp[])
+{
+    int len_env;
+    int i;
+
+    len_env = -1;
+    i = -1;
+    while(envp[++len_env]);
+    envir = (char **)malloc(sizeof(char *) * len_env);
+    while(++i < len_env)
+        envir[i] = envp[i];
+    envir[i] = NULL;
+}
+
 int main(int ac, char **av, char *envp[])
 {
     (void)ac;
@@ -7,7 +23,7 @@ int main(int ac, char **av, char *envp[])
     s_token token[1000];
     s_cmd prompt;
     char *line;
-	// allsignals();
+    set_envir(envp);
     while(1)
     {
         line = readline("\033[0;36m\033[1m minishell> \033[0m");
