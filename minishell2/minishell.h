@@ -35,6 +35,7 @@ typedef struct t_cmd{
     int nb_tabs;
     int nb_cmd;
     int exitstatus;
+    int index;
 }               s_cmd;
 
 
@@ -77,10 +78,18 @@ char *dollar_status(s_cmd *cmd, char *prompt);
 
 
 //PIPEX
-void pipex(s_cmd *cmd, char *env[]);
-void process(s_info *cmd, int *fd, char *env[]);
-void execute(s_cmd cmd, char *env[]);
-int assign_files(s_cmd *cmd);
+int ft_pipex(s_cmd *prompt, char* envp[]);
+void allsignals();
+void sigquit(int signal);
+void sigint(int signal);
+int	ft_execve(char *path, char **args, char *envp[]);
+void	close_and_wait(int *prev_pipe, int num_commands);
+void	process_father(int i, int *prev_pipe, int *next_pipe, int num_commands);
+void	process_child(int i, int *prev_pipe, int *next_pipe, int num_commands);
+void not_last_command(int i, int num_commands, int *next_pipe);
+char	*ft_command(char *av);
+char	*ft_recup_path(char *command, char **envp);
+char	**ft_recup_envp(char **envp);
 
 //UTILS
 void free_token(s_token *token);
@@ -95,6 +104,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 char *alloc_one(char c);
 char *join_one(char *str, char c);
 size_t	len_int(int n);
+int	ft_strncmp(const char *s1, const char *s2, size_t n);
 
 
 #endif
