@@ -62,6 +62,10 @@ int built_intab(char *tab);
 int check_command(char *tab, char *bltn);
 int around_bltn(char *tab, char *bltn, int j);
 void exec_bltn(char *cmd);
+void echo_bltn(char *line);
+int is_optn(char *line);
+int after_echo(char *line);
+int after_optn(char *line);
 
 //EXPAND
 void expand_cmd(s_cmd *prompt, char *envp[]);
@@ -106,6 +110,7 @@ char *alloc_one(char c);
 char *join_one(char *str, char c);
 size_t	len_int(int n);
 int	ft_strncmp(const char *s1, const char *s2, size_t n);
+char	*ft_strnstr(const char *big, const char *little, size_t len);
 
 
 #endif

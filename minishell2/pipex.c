@@ -203,17 +203,12 @@ int ft_pipex(s_cmd *prompt, char* envp[])
 	while(i < prompt->nb_tabs) 
 	{
 		if(is_builtin(prompt->cmd[i].tab))
-		{
-			printf("bltn\n");
-			exec_bltn(prompt->cmd[i].type);
-		}
+			exec_bltn(prompt->cmd[i].tab);
 		else if(strcmp(prompt->cmd[i].type, "char") == 0)
 		{
-			printf("not bltn\n");
 			char *command = ft_command(prompt->cmd[i].tab);
 			char *path = ft_recup_path(command, envp);
 			char **args = ft_split(prompt->cmd[i].tab, ' ');
-			printf("cmd: %s, path: %s\n", command, path);
 			if (path != NULL) 
 			{
 				not_last_command(i, prompt->nb_tabs, next_pipe);

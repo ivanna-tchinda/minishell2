@@ -2,15 +2,12 @@
 
 int around_bltn(char *tab, char *bltn, int j)
 {
-    if(tab[j + 1] && (tab[j + 1] != 34 || tab[j + 1] != 39 || tab[j+1] != 32))
+    if(tab[j + 1] && (tab[j + 1] != 34 && tab[j + 1] != 39 && tab[j+1] != 32))
         return(1);
-    while(--j > (int)ft_strlen(bltn));
+    while(tab[--j] != bltn[0]);
     j--;
     if(tab[j - 1] && (tab[j - 1] != 34 || tab[j - 1] != 39 || tab[j-1] != 32))
-    {
-        printf("%c\n", tab[j]);
         return(1);
-    }
     return(0);
 }
 
@@ -26,10 +23,9 @@ int check_command(char *tab, char *bltn) //regarde s'il y a un pb a cote du bltn
         j = 0;
         if(tab[i] == bltn[j])
         {
-            while(tab[++i] == bltn[++j] && tab[i]);
+            while(tab[i] && tab[++i] == bltn[++j]);
             if(j == (int)ft_strlen(bltn))
             {
-                printf("ti: %c\n", tab[i]);
                 if(around_bltn(tab, bltn, i-1))
                 {
                     printf("problem around bltn\n");
@@ -39,7 +35,6 @@ int check_command(char *tab, char *bltn) //regarde s'il y a un pb a cote du bltn
         }
         i++;
     }
-    // printf("no problem around bltn\n");
     return(1);
 }
 
@@ -50,7 +45,6 @@ int built_intab(char *tab)
     tmptab = tab;
     while(*tmptab)
     {
-        printf("tab: %s\n", tmptab);
         if(strncmp(tmptab, "echo", 4) == 0)
             return(check_command(tab, "echo"));
         if(strncmp(tmptab, "cd", 2) == 0)
@@ -80,7 +74,7 @@ int is_builtin(char *cmd)
 void exec_bltn(char *cmd)
 {
     if(strncmp(cmd, "echo", 4) == 0)
-        printf("echo\n");
+        echo_bltn(cmd);
     else if(strncmp(cmd, "cd", 2) == 0)
         printf("cd\n");
     else if(strncmp(cmd, "pwd", 3) == 0)
