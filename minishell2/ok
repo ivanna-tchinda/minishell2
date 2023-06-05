@@ -1,0 +1,16 @@
+builtin.c
+exec.c
+expand2.c
+expand.c
+main.c
+Makefile
+minishell
+minishell.h
+obj
+ok
+parse2.c
+parse3.c
+parsing.c
+pipex.c
+utils.c
+/project/home/ivanna-tchinda/workspace/minishell2

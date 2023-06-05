@@ -14,7 +14,7 @@ int around_bltn(char *tab, char *bltn, int j)
     return(0);
 }
 
-int check_command(char *tab, char *bltn)
+int check_command(char *tab, char *bltn) //regarde s'il y a un pb a cote du bltn
 {
     int i;
     int j;
@@ -29,6 +29,7 @@ int check_command(char *tab, char *bltn)
             while(tab[++i] == bltn[++j] && tab[i]);
             if(j == (int)ft_strlen(bltn))
             {
+                printf("ti: %c\n", tab[i]);
                 if(around_bltn(tab, bltn, i-1))
                 {
                     printf("problem around bltn\n");
@@ -47,7 +48,6 @@ int built_intab(char *tab)
     char *tmptab;
 
     tmptab = tab;
-    // tab = unquote_tab(tab);
     while(*tmptab)
     {
         printf("tab: %s\n", tmptab);
@@ -70,19 +70,27 @@ int built_intab(char *tab)
     return(0);
 }
 
-int is_builtin(s_cmd *prompt)
+int is_builtin(char *cmd)
 {
-    int i;
-
-    i = 0;
-    while(i < prompt->nb_tabs)
-    {
-        if(built_intab(prompt->cmd[i].tab) == 1)
-        {
-            printf("there is a bltin %s\n", prompt->cmd[i].tab);
-            return(1);
-        }
-        i++;
-    }
+    if(built_intab(cmd) == 1)
+        return(1);
     return(0);
+}
+
+void exec_bltn(char *cmd)
+{
+    if(strncmp(cmd, "echo", 4) == 0)
+        printf("echo\n");
+    else if(strncmp(cmd, "cd", 2) == 0)
+        printf("cd\n");
+    else if(strncmp(cmd, "pwd", 3) == 0)
+        printf("pwd\n");
+    else if(strncmp(cmd, "export", 6) == 0)
+        printf("export\n");
+    else if(strncmp(cmd, "unset", 5) == 0)
+        printf("unset\n");
+    else if(strncmp(cmd, "env", 3) == 0)
+        printf("env\n");
+    else if(strncmp(cmd, "exit", 4) == 0)
+        printf("exit\n");
 }

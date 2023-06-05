@@ -195,7 +195,6 @@ void allsignals()
 
 int ft_pipex(s_cmd *prompt, char* envp[]) 
 {
-	int num_commands = 1;
 	int prev_pipe[2];
 	int next_pipe[2]; 
 	
@@ -203,32 +202,39 @@ int ft_pipex(s_cmd *prompt, char* envp[])
 	int i = 0;
 	while(i < prompt->nb_tabs) 
 	{
-		char *command = ft_command(prompt->cmd[i].tab);
-		char *path = ft_recup_path(command, envp);
-		char **args = ft_split(prompt->cmd[i].tab, ' ');
-		if (path != NULL) 
+		if(is_builtin(prompt->cmd[i].tab))
 		{
-			not_last_command(i, num_commands, next_pipe);
-			pid_t child_pid = fork();
-			if (child_pid == 0) 
+			printf("bltn\n");
+			exec_bltn(prompt->cmd[i].type);
+		}
+		else if(strcmp(prompt->cmd[i].type, "char") == 0)
+		{
+			printf("not bltn\n");
+			char *command = ft_command(prompt->cmd[i].tab);
+			char *path = ft_recup_path(command, envp);
+			char **args = ft_split(prompt->cmd[i].tab, ' ');
+			printf("cmd: %s, path: %s\n", command, path);
+			if (path != NULL) 
 			{
-				process_child(i, prev_pipe, next_pipe, num_commands);
-				ft_execve(path, args, envp);
-				exit(EXIT_FAILURE);
-			} 
-			else if (child_pid > 0) 
-				process_father(i, prev_pipe, next_pipe, num_commands);
-			else 
-			{
-				printf("Erreur lors de la création du processus enfant.\n");
-				exit(EXIT_FAILURE);
+				not_last_command(i, prompt->nb_tabs, next_pipe);
+				pid_t child_pid = fork();
+				if (child_pid == 0) 
+				{
+					process_child(i, prev_pipe, next_pipe, prompt->nb_tabs);
+					ft_execve(path, args, envp);
+					exit(EXIT_FAILURE);
+				} 
+				else if (child_pid > 0) 
+					process_father(i, prev_pipe, next_pipe, prompt->nb_tabs);
+				else 
+				{
+					printf("Erreur lors de la création du processus enfant.\n");
+					exit(EXIT_FAILURE);
+				}
 			}
 		}
-		else
-			printf("pipe\n");
 		i++;
 	}
-	close_and_wait(prev_pipe, num_commands);
-	// ft_pipex(prompt, envp);
+	close_and_wait(prev_pipe, prompt->nb_tabs);
 	return 0;
 }

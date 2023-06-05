@@ -40,7 +40,7 @@ void expand_status(s_cmd *prompt)
     {
         if(prompt->cmd[i].tab && strchr(prompt->cmd[i].tab, '$'))
             prompt->cmd[i].tab = dollar_status(prompt, prompt->cmd[i].tab);
-        printf("expanded status: %s\n", prompt->cmd[i].tab);
+        // printf("expanded status: %s\n", prompt->cmd[i].tab);
     }
 }
 
@@ -84,7 +84,7 @@ void expand_cmd(s_cmd *prompt, char *envp[])
     while(++i < prompt->nb_tabs)
     {
         prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab, envp);
-        printf("expanded cmd: %s\n", prompt->cmd[i].tab);
+        // printf("expanded cmd: %s\n", prompt->cmd[i].tab);
     }
     
 }

@@ -57,10 +57,11 @@ int check_pipe(s_info *cmd, int len_cmd);
 int check_redif(s_info *cmd, int len_cmd);
 
 //BUILTIN
-int is_builtin(s_cmd *prompt);
+int is_builtin(char *cmd);
 int built_intab(char *tab);
 int check_command(char *tab, char *bltn);
 int around_bltn(char *tab, char *bltn, int j);
+void exec_bltn(char *cmd);
 
 //EXPAND
 void expand_cmd(s_cmd *prompt, char *envp[]);
