@@ -59,9 +59,9 @@ char  *expand_prompt(char *prompt)
             new_prompt = quoted_prompt(new_prompt, prompt, &i, 39);
         }
         else if(prompt[i] == 34)
-            new_prompt = dquoted_prompt(new_prompt, prompt, &i, envir);
+            new_prompt = dquoted_prompt(new_prompt, prompt, &i);
         else if(prompt[i] == 36 &&  prompt[i + 1] != 64 && prompt[i + 1] != 61 && prompt[i + 1] != 63)
-            new_prompt = dollar_prompt(new_prompt, prompt, &i, envir);
+            new_prompt = dollar_prompt(new_prompt, prompt, &i);
         else
         {
             if(prompt[i + 1] == 64)

@@ -17,7 +17,7 @@ sig_atomic_t g_sigpid = 0;
 sig_atomic_t g_sigsigquit = 0;
 
 
-char	**ft_recup_envp(char **envp)
+char	**ft_recup_envp()
 {
 	char	*env;
 	char	**new_env;
@@ -26,13 +26,13 @@ char	**ft_recup_envp(char **envp)
 	env = NULL;
 	new_env = NULL;
 	i = 0;
-	if (envp)
+	if (envir)
 	{
-		while (envp[i] != NULL)
+		while (envir[i] != NULL)
 		{
-			if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+			if (ft_strncmp(envir[i], "PATH=", 5) == 0)
 			{
-				env = envp[i] + 5; 
+				env = envir[i] + 5; 
 				break ;
 			}
 			i++;
@@ -46,14 +46,14 @@ char	**ft_recup_envp(char **envp)
 }
 
 
-char	*ft_recup_path(char *command, char **envp)
+char	*ft_recup_path(char *command)
 {
 	char	**allpath;
 	char	*allpathnew;
 	char	*cmdpath;
 	int		j;
 
-	allpath = ft_recup_envp(envp);
+	allpath = ft_recup_envp();
 	j = 0;
 	if (!allpath)
 		return (command);
@@ -149,9 +149,9 @@ void	close_and_wait(int *prev_pipe, int num_commands)
 	}
 }
 
-int	ft_execve(char *path, char **args, char *envp[])
+int	ft_execve(char *path, char **args)
 {
-	if (execve(path, args, envp) == -1)
+	if (execve(path, args, envir) == -1)
 	{
 		free(path);
 		free_tab(args);
@@ -193,7 +193,7 @@ void allsignals()
 	signal(SIGQUIT, sigquit);
 }
 
-int ft_pipex(s_cmd *prompt, char* envp[]) 
+int ft_pipex(s_cmd *prompt) 
 {
 	int prev_pipe[2];
 	int next_pipe[2]; 
@@ -203,11 +203,11 @@ int ft_pipex(s_cmd *prompt, char* envp[])
 	while(i < prompt->nb_tabs) 
 	{
 		if(is_builtin(prompt->cmd[i].tab))
-			exec_bltn(prompt->cmd[i].tab, envp);
+			exec_bltn(prompt->cmd[i].tab);
 		else if(strcmp(prompt->cmd[i].type, "char") == 0)
 		{
 			char *command = ft_command(prompt->cmd[i].tab);
-			char *path = ft_recup_path(command, envp);
+			char *path = ft_recup_path(command);
 			char **args = ft_split(prompt->cmd[i].tab, ' ');
 			if (path != NULL) 
 			{
@@ -216,7 +216,7 @@ int ft_pipex(s_cmd *prompt, char* envp[])
 				if (child_pid == 0) 
 				{
 					process_child(i, prev_pipe, next_pipe, prompt->nb_tabs);
-					ft_execve(path, args, envp);
+					ft_execve(path, args);
 					exit(EXIT_FAILURE);
 				} 
 				else if (child_pid > 0) 

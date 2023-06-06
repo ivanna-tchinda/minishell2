@@ -41,9 +41,9 @@ int main(int ac, char **av, char *envp[])
             continue;
         }
         add_history(line);
-        expand_cmd(&prompt, envp);
+        expand_cmd(&prompt);
         expand_status(&prompt);
-        ft_pipex(&prompt, envp);
+        ft_pipex(&prompt);
         free_token(token);
         free(line);
     }

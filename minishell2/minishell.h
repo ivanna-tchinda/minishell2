@@ -65,7 +65,7 @@ int is_builtin(char *cmd);
 int built_intab(char *tab);
 int check_command(char *tab, char *bltn);
 int around_bltn(char *tab, char *bltn, int j);
-void exec_bltn(char *cmd, char *envp[]);
+void exec_bltn(char *cmd);
 
 //ECHO
 void echo_bltn(char *line);
@@ -75,9 +75,9 @@ int after_optn(char *line);
 void env_bltn(void);
 
 //PWD
-int	pwd_bltn(char **env_real);
-char *recup_env(char **env_real, const char *env_param);
-ssize_t find_good_env(char **env_real, const char *env_param) ;
+int	pwd_bltn();
+char *recup_env(const char *env_param);
+ssize_t find_good_env(const char *env_param) ;
 
 //ENV
 void set_envir(char *envp[]);
@@ -103,18 +103,18 @@ char *dollar_status(s_cmd *cmd, char *prompt);
 
 
 //PIPEX
-int ft_pipex(s_cmd *prompt, char* envp[]);
+int ft_pipex(s_cmd *prompt);
 void allsignals();
 void sigquit(int signal);
 void sigint(int signal);
-int	ft_execve(char *path, char **args, char *envp[]);
+int	ft_execve(char *path, char **args);
 void	close_and_wait(int *prev_pipe, int num_commands);
 void	process_father(int i, int *prev_pipe, int *next_pipe, int num_commands);
 void	process_child(int i, int *prev_pipe, int *next_pipe, int num_commands);
 void not_last_command(int i, int num_commands, int *next_pipe);
 char	*ft_command(char *av);
-char	*ft_recup_path(char *command, char **envp);
-char	**ft_recup_envp(char **envp);
+char	*ft_recup_path(char *command);
+char	**ft_recup_envp(void);
 
 //UTILS
 void free_token(s_token *token);

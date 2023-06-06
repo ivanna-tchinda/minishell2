@@ -71,7 +71,7 @@ int is_builtin(char *cmd)
     return(0);
 }
 
-void exec_bltn(char *cmd, char *envp[])
+void exec_bltn(char *cmd)
 {
     // char **envir;
     if(strncmp(cmd, "echo", 4) == 0)
@@ -79,7 +79,7 @@ void exec_bltn(char *cmd, char *envp[])
     else if(strncmp(cmd, "cd", 2) == 0)
         printf("cd\n");
     else if(strncmp(cmd, "pwd", 3) == 0)
-        pwd_bltn(envp);
+        pwd_bltn();
     else if(strncmp(cmd, "export", 6) == 0)
         export_bltn(cmd);
     else if(strncmp(cmd, "unset", 5) == 0)

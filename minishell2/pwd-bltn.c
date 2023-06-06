@@ -15,17 +15,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-ssize_t find_good_env(char **env_real, const char *env_param) 
+ssize_t find_good_env(const char *env_param) 
 {
-    if (!env_real || !env_param)
+    if (!envir || !env_param)
         return (-1);
 
     size_t len = strlen(env_param);
     size_t i = 0;
 
-    while (env_real[i++]) 
+    while (envir[i++]) 
     {
-        if (strncmp(env_real[i], env_param, len) == 0 && env_real[i][len] == '=') 
+        if (strncmp(envir[i], env_param, len) == 0 && envir[i][len] == '=') 
         {    
             return (i);
         }
@@ -33,22 +33,22 @@ ssize_t find_good_env(char **env_real, const char *env_param)
     return (-1);
 }
 
-char *recup_env(char **env_real, const char *env_param) 
+char *recup_env(const char *env_param) 
 {
-    ssize_t i = find_good_env(env_real, env_param);
+    ssize_t i = find_good_env(env_param);
 
     if (i != -1) 
     {
-        return (strdup(env_real[i] + strlen(env_param) + 1));
+        return (strdup(envir[i] + strlen(env_param) + 1));
     }
     return (NULL);
 }
 
-int	pwd_bltn(char **env_real)
+int	pwd_bltn()
 {   
 	char    *path;
 
-	path = recup_env(env_real, "PWD");
+	path = recup_env("PWD");
     printf("%s\n", path);
     return (0);
 }
