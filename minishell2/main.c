@@ -6,14 +6,19 @@ void set_envir(char *envp[])
 {
     int len_env;
     int i;
+    (void)i;
 
     len_env = -1;
     i = -1;
     while(envp[++len_env]);
-    envir = (char **)malloc(sizeof(char *) * len_env);
+    envir = (char **)malloc(sizeof(char *) * len_env + 1);
     while(++i < len_env)
+    {
         envir[i] = ft_strdup(envp[i]);
+        // printf("%d envir: %s\n", i, envir[i]);
+    }
     envir[i] = NULL;
+    // printf("%d envir: %s\n", i, envir[i]);
 }
 
 int main(int ac, char **av, char *envp[])
