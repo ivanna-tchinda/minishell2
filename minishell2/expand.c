@@ -44,7 +44,7 @@ void expand_status(s_cmd *prompt)
     }
 }
 
-char  *expand_prompt(char *prompt, char *envp[])
+char  *expand_prompt(char *prompt)
 {
     int i;
     char *new_prompt;
@@ -59,9 +59,9 @@ char  *expand_prompt(char *prompt, char *envp[])
             new_prompt = quoted_prompt(new_prompt, prompt, &i, 39);
         }
         else if(prompt[i] == 34)
-            new_prompt = dquoted_prompt(new_prompt, prompt, &i, envp);
+            new_prompt = dquoted_prompt(new_prompt, prompt, &i, envir);
         else if(prompt[i] == 36 &&  prompt[i + 1] != 64 && prompt[i + 1] != 61 && prompt[i + 1] != 63)
-            new_prompt = dollar_prompt(new_prompt, prompt, &i, envp);
+            new_prompt = dollar_prompt(new_prompt, prompt, &i, envir);
         else
         {
             if(prompt[i + 1] == 64)
@@ -76,14 +76,14 @@ char  *expand_prompt(char *prompt, char *envp[])
     return(new_prompt);
 }
 
-void expand_cmd(s_cmd *prompt, char *envp[])
+void expand_cmd(s_cmd *prompt)
 {
     int i;
 
     i = -1;
     while(++i < prompt->nb_tabs)
     {
-        prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab, envp);
+        prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
         // printf("expanded cmd: %s\n", prompt->cmd[i].tab);
     }
     
