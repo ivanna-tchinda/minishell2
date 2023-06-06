@@ -87,6 +87,9 @@ void export_bltn(char *new_var);
 char *get_var(char *new_var);
 void set_envir2(char *envp[]);
 
+//UNSET
+void unset_bltn(char *cmd);
+
 //EXPAND
 void expand_cmd(s_cmd *prompt);
 char  *expand_prompt(char *prompt);

@@ -83,7 +83,7 @@ void exec_bltn(char *cmd)
     else if(strncmp(cmd, "export", 6) == 0)
         export_bltn(cmd);
     else if(strncmp(cmd, "unset", 5) == 0)
-        printf("unset\n");
+        unset_bltn(cmd);
     else if(strncmp(cmd, "env", 3) == 0)
         env_bltn();
     else if(strncmp(cmd, "exit", 4) == 0)

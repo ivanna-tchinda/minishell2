@@ -12,6 +12,7 @@ SRC=	  main.c\
 			expand.c\
 			expand2.c\
 			export-bltn.c\
+			unset-bltn.c\
 
 CC= cc  
 
