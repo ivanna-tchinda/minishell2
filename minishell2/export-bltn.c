@@ -77,28 +77,28 @@ void export_bltn(char *new_var)
     int i;
     char **env_temp;
     char *nvar;
+    int new_len;
 
     nvar = get_var(new_var);
-    if(var_alreadyset(nvar))
-    {
-        printf("var is already here\n");
-        modify_env(nvar);
-        return;
-    }
     prev_len = -1;
     i = -1;
     while(envir[++prev_len]);
-    if(!nvar)
-        env_temp = (char **)malloc(sizeof(char *) * prev_len);
+    if(!nvar || var_alreadyset(nvar))
+        new_len = prev_len + 1;
     else 
-        env_temp = (char **)malloc(sizeof(char *) * prev_len + 1);
+        new_len = prev_len + 2;
+    env_temp = (char **)malloc(sizeof(char *) * prev_len + 2);
     while(envir[++i])
     {
-        env_temp[i] = ft_strdup(envir[i]);
+        // printf("bfeq: %s nvar: %s envir: %s\n", before_equal(envir[i]), nvar, envir[i]);
+        if(!strncmp(before_equal(envir[i]), nvar, ft_strlen((before_equal(envir[i])))))
+            env_temp[i] = ft_strdup(nvar);
+        else
+            env_temp[i] = ft_strdup(envir[i]);
         free(envir[i]);
     }
     free(envir);
-    if(nvar)
+    if(i == new_len - 2)
         env_temp[i] = ft_strdup(nvar);
     env_temp[++i] = NULL;
     set_envir(env_temp);
