@@ -28,22 +28,37 @@ char *get_unsetvar(char *cmd)
 
 }
 
+int equal_match(char *nvar)
+{
+    int i;
+
+    i = -1;
+    while(nvar[++i])
+    {
+        if(nvar[i] == '=')
+            return (1);
+    }
+    return (0);
+}
+
 void unset_bltn(char *cmd)
 {
     int new_len;
     int i;
+    int itab;
     char *nvar;
     char **env_temp;
 
     new_len = -1;
     i = -1;
+    itab = -1;
     nvar = get_unsetvar(cmd);
     while(envir[++new_len]);
     env_temp = (char **)malloc(sizeof(char *) * new_len);
     while(envir[++i])
     {
-        if(strncmp(envir[i], nvar, ft_strlen(before_equal(envir[i]))))
-            env_temp[i] = ft_strdup(envir[i]);
+        if(strncmp(envir[i], nvar, ft_strlen(nvar)) || equal_match(nvar))
+            env_temp[++itab] = ft_strdup(envir[i]);
         free(envir[i]);
     }
     env_temp[i] = NULL;
