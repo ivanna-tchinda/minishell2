@@ -13,6 +13,8 @@ SRC=	  main.c\
 			expand2.c\
 			expand3.c\
 			wildcard.c\
+			wildcard2.c\
+			wildcard3.c\
 			export-bltn.c\
 			unset-bltn.c\
 			exit-bltn.c\

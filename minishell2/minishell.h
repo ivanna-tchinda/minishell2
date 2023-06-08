@@ -113,7 +113,16 @@ char *modify_wildcard(char *prompt, s_cmd *cmd);
 char *one_asterisk(char *prompt, s_cmd *cmd);
 char *allfiles_wcd(s_cmd *cmd);
 char *before_wcd(char *prompt, s_cmd *cmd);
+char *after_wcd(char *prompt, s_cmd *cmd);
+int end_match(char *name, char *ext);
 char *two_asterisk(char *prompt, s_cmd *cmd);
+char *between_wcd(char *prompt, s_cmd *cmd);
+char *aftertwo_wcd(char *prompt, s_cmd *cmd);
+int between_match(char *name, char *ext);
+char **add_toprompt5(int nb_files, s_cmd *cmd, DIR *directory, struct dirent *direc, char *between_wcd, char *after_wcd);
+char **add_toprompt6(int nb_files, s_cmd *cmd, DIR *directory, struct dirent *direc, char *between_wcd, char *before_wcd);
+char *beforetwo_wcd(char *prompt, s_cmd *cmd);
+char *alltwo_wcd(char *prompt, s_cmd *cmd);
 
 //EXPAND STATUS
 void expand_status(s_cmd *prompt);

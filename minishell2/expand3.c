@@ -6,21 +6,22 @@ char *one_asterisk(char *prompt, s_cmd *cmd) // * || *.c || a*
         return(allfiles_wcd(cmd));
     else if(prompt[0] != 42) // a*
         return(before_wcd(prompt, cmd));
-    // return(after_wcd(prompt)); // *.c
+    else if(prompt[0] == 42)
+        return(after_wcd(prompt, cmd)); // *.c
     return(prompt);
 }
 
-// char *two_asterisk(char *prompt, s_cmd *cmd) // a*o* || *o* || *o*.c || a*o*.c
-// {
-//     if(prompt[0] == 42 && prompt[ft_strlen(prompt)] == 42) // *o*
-//         return(between_wcd(prompt));
-//     else if(prompt[0] == 42) // *o*.c
-//         return(aftertwo_wcd(prompt));
-//     else if(prompt[ft_strlen(prompt)] == 42) //a*o*
-//         return(beforetwo_wcd(prompt));
-//     return(alltwo_wcd(prompt));
-
-// }
+char *two_asterisk(char *prompt, s_cmd *cmd) // a*o* || *o* || *o*.c || a*o*.c
+{
+    (void)cmd;
+    if(prompt[0] == 42 && prompt[ft_strlen(prompt) - 1] == 42) // *o*
+        return(between_wcd(prompt, cmd));
+    else if(prompt[0] == 42) // *o*.c
+        return(aftertwo_wcd(prompt, cmd));
+    else if(prompt[ft_strlen(prompt) - 1] == 42) //a*o*
+        return(beforetwo_wcd(prompt, cmd));
+    return(alltwo_wcd(prompt, cmd)); //a*o*.c
+}
 
 char *modify_wildcard(char *prompt, s_cmd *cmd)
 {
@@ -36,8 +37,7 @@ char *modify_wildcard(char *prompt, s_cmd *cmd)
     }
     if(count_w == 1)
         return(one_asterisk(prompt, cmd));
-    // return(two_asterisk(prompt, cmd));
-    return(prompt);
+    return(two_asterisk(prompt, cmd));
 
 }
 

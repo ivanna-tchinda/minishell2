@@ -105,6 +105,31 @@ char **add_toprompt2(int nb_files, s_cmd *cmd, DIR *directory, struct dirent *di
     return (new_prompt);
 }
 
+char **add_toprompt3(int nb_files, s_cmd *cmd, DIR *directory, struct dirent *direc, char *after_wcd)
+{
+    char **new_prompt;
+    int i = -1;
+
+    new_prompt = (char **)malloc(sizeof(char *) * nb_files + 1);
+    if (getcwd(cmd->tab, sizeof(cmd->tab)) != NULL) // Obtenir le répertoire de travail actuel
+    {
+        directory = opendir(cmd->tab);
+        if (directory) 
+        {
+            while ((direc = readdir(directory)) != NULL) 
+            {
+                if (strcmp(direc->d_name, ".") != 0 
+                    && strcmp(direc->d_name, "..") != 0 
+                    && end_match(direc->d_name, after_wcd))
+                    new_prompt[++i] = direc->d_name;
+            }
+            closedir(directory);
+        } 
+    } 
+    new_prompt[++i] = NULL;
+    return (new_prompt);
+}
+
 char *before_wcd(char *prompt, s_cmd *cmd)
 {
     int len_before;
@@ -133,7 +158,62 @@ char *before_wcd(char *prompt, s_cmd *cmd)
             closedir(directory);
         } 
     }
-    new_prompt = add_toprompt2(nb_files, cmd, directory, direc, before_wcd);
-    prompt = tabtochar(new_prompt);
+    if(nb_files)
+    {
+        new_prompt = add_toprompt2(nb_files, cmd, directory, direc, before_wcd);
+        prompt = tabtochar(new_prompt);
+    }
+    return(prompt);
+}
+
+int end_match(char *name, char *ext)
+{
+    int i;
+    int len;
+
+    i = ft_strlen(name) - 1;
+    len = ft_strlen(ext) - 1;
+    while(len >= 0)
+    {
+        if(ext[len] != name[i])
+            return 0;
+        i--;
+        len--;
+    }
+    return(1);
+}
+
+char *after_wcd(char *prompt, s_cmd *cmd)
+{
+    int len_after;
+    DIR *directory;
+    int nb_files;
+    struct dirent *direc;
+    char **new_prompt;
+    char *after_wcd;
+
+    nb_files = 0;
+    len_after = ft_strlen(prompt) - 1;
+    after_wcd = ft_substr(prompt, 1, len_after);
+    if (getcwd(cmd->tab, sizeof(cmd->tab)) != NULL)
+    {
+        directory = opendir(cmd->tab);
+        if (directory) 
+        {
+            while ((direc = readdir(directory)) != NULL) 
+            {
+                if (strcmp(direc->d_name, ".") != 0 
+                    && strcmp(direc->d_name, "..") != 0
+                    && end_match(direc->d_name, after_wcd))
+                    nb_files++;
+            }
+            closedir(directory);
+        } 
+    }
+    if(nb_files)
+    {
+        new_prompt = add_toprompt3(nb_files, cmd, directory, direc, after_wcd);
+        prompt = tabtochar(new_prompt);
+    }
     return(prompt);
 }
