@@ -18,6 +18,7 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 #include <sys/wait.h>
+#include <dirent.h>
 
 extern char **envir;
 
@@ -39,6 +40,7 @@ typedef struct t_cmd{
     int nb_cmd;
     int exitstatus;
     int index;
+    char tab[1024];
 }               s_cmd;
 
 //PARSING
@@ -66,7 +68,7 @@ int is_builtin(char *cmd);
 int built_intab(char *tab);
 int check_command(char *tab, char *bltn);
 int around_bltn(char *tab, char *bltn, int j);
-void exec_bltn(char *cmd);
+void exec_bltn(char *cmd, s_cmd *prompt);
 
 //ECHO
 void echo_bltn(char *line);
@@ -86,10 +88,12 @@ void set_envir(char *envp[]);
 //EXPORT
 void export_bltn(char *new_var);
 char *get_var(char *new_var);
-void set_envir2(char *envp[]);
 
 //UNSET
 void unset_bltn(char *cmd);
+
+//EXIT
+void exit_bltn(s_cmd *prompt);
 
 //EXPAND
 void expand_cmd(s_cmd *prompt);
@@ -100,6 +104,16 @@ char *findenv(char *varenv);
 char *dollar_sign(char *new_prompt, char *prompt, int *i);
 char *dquoted_prompt(char *new_prompt, char *prompt, int *i);
 char *dollar_prompt(char *new_prompt, char *prompt, int *i);
+
+// WILDCARD EXPAND
+char *tabtochar(char **tab);
+char *wildcard_expand(char *prompt, s_cmd *cmd);
+char *wildcard_prompt(char *prompt, s_cmd *cmd);
+char *modify_wildcard(char *prompt, s_cmd *cmd);
+char *one_asterisk(char *prompt, s_cmd *cmd);
+char *allfiles_wcd(s_cmd *cmd);
+char *before_wcd(char *prompt, s_cmd *cmd);
+char *two_asterisk(char *prompt, s_cmd *cmd);
 
 //EXPAND STATUS
 void expand_status(s_cmd *prompt);

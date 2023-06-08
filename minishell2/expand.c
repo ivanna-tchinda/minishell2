@@ -84,7 +84,7 @@ void expand_cmd(s_cmd *prompt)
     while(++i < prompt->nb_tabs)
     {
         prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
-        // printf("expanded cmd: %s\n", prompt->cmd[i].tab);
+        prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
     }
     
 }

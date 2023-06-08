@@ -77,6 +77,8 @@ void export_bltn(char *new_var)
     int new_len;
 
     nvar = get_var(new_var);
+    if(!nvar)
+        return;
     prev_len = -1;
     i = -1;
     while(envir[++prev_len]);

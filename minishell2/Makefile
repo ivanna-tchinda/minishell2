@@ -11,8 +11,11 @@ SRC=	  main.c\
 			pwd-bltn.c\
 			expand.c\
 			expand2.c\
+			expand3.c\
+			wildcard.c\
 			export-bltn.c\
 			unset-bltn.c\
+			exit-bltn.c\
 
 CC= cc  
 

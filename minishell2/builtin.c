@@ -71,9 +71,8 @@ int is_builtin(char *cmd)
     return(0);
 }
 
-void exec_bltn(char *cmd)
+void exec_bltn(char *cmd, s_cmd *prompt)
 {
-    // char **envir;
     if(strncmp(cmd, "echo", 4) == 0)
         echo_bltn(cmd);
     else if(strncmp(cmd, "cd", 2) == 0)
@@ -87,5 +86,5 @@ void exec_bltn(char *cmd)
     else if(strncmp(cmd, "env", 3) == 0)
         env_bltn();
     else if(strncmp(cmd, "exit", 4) == 0)
-        printf("exit\n");
+        exit_bltn(prompt);
 }
