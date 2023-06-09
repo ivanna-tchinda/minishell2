@@ -9,25 +9,26 @@ typedef struct t_struct{
 
 int main() 
 {
-    struct t_struct var;
-    DIR *directory;
-    struct dirent *dirr;
+    // struct t_struct var;
+    // DIR *directory;
+    // struct dirent *dirr;
 
+    printf("%d\n", access("/usr/bin/ls", R_OK));
     // Obtenir le répertoire de travail actuel
-    if (getcwd(var.tab, sizeof(var.tab)) != NULL) {
-        directory = opendir(var.tab);
-        if (directory) {
-            while ((dirr = readdir(directory)) != NULL) {
-                printf("fichier : %s\n", dirr->d_name);
-            }
-            closedir(directory);
-        } else {
-            perror("Erreur lors de l'ouverture du répertoire");
-            return 1;
-        }
-    } else {
-        perror("Erreur lors de l'obtention du répertoire de travail actuel");
-        return 1;
-    }
+    // if (getcwd(var.tab, sizeof(var.tab)) != NULL) {
+    //     directory = opendir(var.tab);
+    //     if (directory) {
+    //         while ((dirr = readdir(directory)) != NULL) {
+    //             printf("fichier : %s\n", dirr->d_name);
+    //         }
+    //         closedir(directory);
+    //     } else {
+    //         perror("Erreur lors de l'ouverture du répertoire");
+    //         return 1;
+    //     }
+    // } else {
+    //     perror("Erreur lors de l'obtention du répertoire de travail actuel");
+    //     return 1;
+    // }
     return 0;
 }

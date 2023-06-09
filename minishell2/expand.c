@@ -49,8 +49,10 @@ char  *expand_prompt(char *prompt)
 
     i = 0;
     new_prompt = NULL;
+    // printf("prompt: %s\n", prompt);
     while(i < (int)ft_strlen(prompt))
     {
+        // printf("i: %d %c\n", i, prompt[i]);
         if(prompt[i] == 39 || prompt[i] == 92)
         {
             i++;
@@ -71,6 +73,7 @@ char  *expand_prompt(char *prompt)
         }
         i++;
     }
+    // printf("new_prompt: %s\n", new_prompt);
     return(new_prompt);
 }
 
@@ -83,6 +86,7 @@ void expand_cmd(s_cmd *prompt)
     {
         prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
         prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
+        // printf("cmd[%d]: %s type: %s", i, prompt->cmd[i].tab, prompt->cmd[i].type);
     }
     
 }

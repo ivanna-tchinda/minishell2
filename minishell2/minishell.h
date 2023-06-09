@@ -128,6 +128,8 @@ char *alltwo_wcd(char *prompt, s_cmd *cmd);
 void expand_status(s_cmd *prompt);
 char *dollar_status(s_cmd *cmd, char *prompt);
 
+//PARENTHESES
+// void parentheses(s_cmd *prompt);
 
 //PIPEX
 int ft_pipex(s_cmd *prompt);

@@ -18,6 +18,7 @@ SRC=	  main.c\
 			export-bltn.c\
 			unset-bltn.c\
 			exit-bltn.c\
+			parentheses.c\
 
 CC= cc  
 
