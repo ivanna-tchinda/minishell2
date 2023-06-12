@@ -55,9 +55,9 @@ char **add_toprompt(int nb_files, s_cmd *cmd, DIR *directory, struct dirent *dir
 
 char *allfiles_wcd(s_cmd *cmd)
 {
-    DIR *directory;
+    DIR *directory = NULL;
     int nb_files;
-    struct dirent *direc;
+    struct dirent *direc = NULL;
     char **new_prompt;
     char *prompt;
 
