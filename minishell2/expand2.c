@@ -42,11 +42,11 @@ char *findenv(char *varenv)
     char *beforeq;
 
     i = 0;
-    while(envir[i])
+    while(var_envir[i])
     {
-        beforeq = before_equal(envir[i]);
+        beforeq = before_equal(var_envir[i]);
         if(strncmp(beforeq, varenv, ft_strlen(varenv)) == 0)
-            return(envir[i] + ft_strlen(beforeq) + 1);
+            return(var_envir[i] + ft_strlen(beforeq) + 1);
         i++;
     }
     return(NULL);

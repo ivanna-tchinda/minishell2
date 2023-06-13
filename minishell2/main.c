@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char **envir = NULL;
+char **var_envir = NULL;
 
 void set_envir(char *envp[])
 {
@@ -11,14 +11,14 @@ void set_envir(char *envp[])
     len_env = -1;
     i = -1;
     while(envp[++len_env]);
-    envir = (char **)malloc(sizeof(char *) * len_env + 1);
+    var_envir = (char **)malloc(sizeof(char *) * len_env + 1);
     while(++i < len_env)
     {
-        envir[i] = ft_strdup(envp[i]);
-        // printf("%d envir: %s\n", i, envir[i]);
+        var_envir[i] = ft_strdup(envp[i]);
+        // printf("%d var_envir: %s\n", i, var_envir[i]);
     }
-    envir[i] = NULL;
-    // printf("%d envir: %s\n", i, envir[i]);
+    var_envir[i] = NULL;
+    // printf("%d var_envir: %s\n", i, var_envir[i]);
 }
 
 int main(int ac, char **av, char *envp[])

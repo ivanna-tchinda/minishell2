@@ -20,7 +20,7 @@
 #include <sys/wait.h>
 #include <dirent.h>
 
-extern char **envir;
+extern char **var_envir;
 
 typedef struct t_token{
     char token;
@@ -133,17 +133,16 @@ char *dollar_status(s_cmd *cmd, char *prompt);
 
 //PIPEX
 int ft_pipex(s_cmd *prompt);
-void allsignals();
-void sigquit(int signal);
-void sigint(int signal);
-int	ft_execve(char *path, char **args);
-void	close_and_wait(int *prev_pipe, int num_commands);
-void	process_father(int i, int *prev_pipe, int *next_pipe, int num_commands);
-void	process_child(int i, int *prev_pipe, int *next_pipe, int num_commands);
-void not_last_command(int i, int num_commands, int *next_pipe);
+void ft_firstcmd(s_cmd *prompt, int *i);
+void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe);
+void exec_lastcmd(s_cmd *prompt, int *i, int prevpipe);
+
+//UTILS PIPEX
+char	*ft_envir(char **env);
+char	*to_find(char **path, char *new_av);
+char	*which_envbis(char *av, char **env);
 char	*ft_command(char *av);
-char	*ft_recup_path(char *command);
-char	**ft_recup_envp(void);
+char	*ft_path(char *av, char **envp);
 
 //UTILS
 void free_token(s_token *token);

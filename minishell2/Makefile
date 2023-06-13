@@ -19,6 +19,7 @@ SRC=	  main.c\
 			unset-bltn.c\
 			exit-bltn.c\
 			parentheses.c\
+			utils_pipex.c\
 
 CC= cc  
 

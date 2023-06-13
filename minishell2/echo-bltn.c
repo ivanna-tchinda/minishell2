@@ -5,8 +5,8 @@ void env_bltn(void)
     int i;
 
     i = -1;
-    while(envir[++i])
-        printf("%s\n", envir[i]);
+    while(var_envir[++i])
+        printf("%s\n", var_envir[i]);
 }
 
 int after_optn(char *line)

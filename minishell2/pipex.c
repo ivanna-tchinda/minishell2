@@ -1,235 +1,87 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   pipex4.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: melissaadjogoua <marvin@42.fr>             +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/05 11:08:21 by melissaadjogo     #+#    #+#             */
-/*   Updated: 2023/06/05 16:01:08 by melissaadjogo    ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 #include "minishell.h"
 
-sig_atomic_t g_sigsigint = 0;
-sig_atomic_t g_sigexit_status = 0;
-sig_atomic_t g_sigpid = 0;
-sig_atomic_t g_sigsigquit = 0;
-
-
-char	**ft_recup_envp()
+void exec_lastcmd(s_cmd *prompt, int *i, int prevpipe)
 {
-	char	*env;
-	char	**new_env;
-	int		i;
+	char *path;
+	char **args;
+	pid_t pid;
 
-	env = NULL;
-	new_env = NULL;
-	i = 0;
-	if (envir)
+	path = ft_path(prompt->cmd[(*i)].tab, var_envir);
+	args = ft_split(prompt->cmd[(*i)].tab, ' ');
+	pid = fork();
+	if(pid == 0)
 	{
-		while (envir[i] != NULL)
-		{
-			if (ft_strncmp(envir[i], "PATH=", 5) == 0)
-			{
-				env = envir[i] + 5; 
-				break ;
-			}
-			i++;
-		}
+		dup2(prevpipe, STDIN_FILENO);
+		close(prevpipe);
+		if(execve(path, args, var_envir) == -1)
+			write(2, "minishell: cmd not found\n", 25);
 	}
-	if (!env)
-		return (new_env);
 	else
-		new_env = ft_split(env, ':');
-	return (new_env);
-}
-
-
-char	*ft_recup_path(char *command)
-{
-	char	**allpath;
-	char	*allpathnew;
-	char	*cmdpath;
-	int		j;
-
-	allpath = ft_recup_envp();
-	j = 0;
-	if (!allpath)
-		return (command);
-	while (allpath[++j])
 	{
-		allpathnew = ft_strjoin(allpath[j], "/");
-		cmdpath = ft_strjoin(allpathnew, command); 
-		if (access(cmdpath, R_OK) != -1)
-		{
-			free_tab(allpath);
-			free(allpathnew);
-			//vars->flag = 1;
-			return (cmdpath); 
-		}	  
-		free(allpathnew);
-		free(cmdpath); 
-	} 
-	free_tab(allpath);
-	return (command);
+		close(prevpipe);
+		while (wait (NULL) != -1)
+			;
+	}
 }
 
-char	*ft_command(char *av)
+void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe)
 {
-	int		i;
-	int		j;
-	char	*command;
+	int fd[2];
+	pid_t pid;
+	char *path;
+	char **args;
+
+	path = ft_path(prompt->cmd[(*i)].tab, var_envir);
+	args = ft_split(prompt->cmd[(*i)].tab, ' ');
+	pipe(fd);
+	pid = fork();
+	if(pid == -1)
+		return;
+	if(pid == 0)
+	{
+		close(fd[0]);
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[0]);
+		dup2(*prevpipe, STDIN_FILENO);
+		close(*prevpipe);
+		if(execve(path, args, var_envir) == -1)
+			write(2, "minishell: cmd not found\n", 25);
+	}
+	else
+	{
+		close(fd[1]);
+		close(*prevpipe);
+		*prevpipe = fd[0];
+		(*i) += 2;
+		ft_firstcmd(prompt, i);
+	}
+
+}
+
+void ft_firstcmd(s_cmd *prompt, int *i)
+{
+	int prevpipe;
+
+	prevpipe = dup(0);
+	if((*i) + 1 == prompt->nb_tabs) //si c'est la derniere commande
+		exec_lastcmd(prompt, i, prevpipe);
+	else if(!strcmp(prompt->cmd[(*i) + 1].type, "pipe"))
+		pipex_cmd(prompt, i, &prevpipe);
+	else if(!strcmp(prompt->cmd[(*i) + 1].type, "and"))
+	{
+		exec_lastcmd(prompt, i, prevpipe);
+		(*i) += 2;
+		ft_firstcmd(prompt, i);
+	}
+	
+}
+
+int ft_pipex(s_cmd *prompt)
+{
+	int i;
 
 	i = 0;
-	j = 0;
-	while (av[i] == ' ')
-		i++;
-	j = i;
-	while (av[j] != ' ' && av[j])
-		j++;
-	command = ft_substr(av, i, j);
-	return (command);
-}
-
-// Si ce n'est pas la dernière commande, créez un nouveau tuyau
-void not_last_command(int i, int num_commands, int *next_pipe)
-{
-	if (i < num_commands - 1) 
-	{
-		pipe(next_pipe);
-	}
-}
-
-void	process_child(int i, int *prev_pipe, int *next_pipe, int num_commands)
-{
-	// Code du processus enfant
-	// Redirection des descripteurs de fichier pour l'entrée et la sortie
-	if (i > 0) 
-	{
-		dup2(prev_pipe[0], STDIN_FILENO);
-		close(prev_pipe[1]);
-		close(prev_pipe[0]);
-	}
-
-	if (i < num_commands - 1) 
-	{
-		dup2(next_pipe[1], STDOUT_FILENO);
-		close(next_pipe[0]);
-		close(next_pipe[1]);
-	}
-}
-
-void	process_father(int i, int *prev_pipe, int *next_pipe, int num_commands)
-{
-	if (i > 0) 
-	{
-		close(prev_pipe[0]);
-		close(prev_pipe[1]);
-	}
-
-	if (i < num_commands - 1) 
-	{
-		prev_pipe[0] = next_pipe[0];
-		prev_pipe[1] = next_pipe[1];
-	}
-}
-
-// Fermeture des descripteurs de fichier restants dans le processus parent
-// et attente de la terminaison de tous les processus enfants
-void	close_and_wait(int *prev_pipe, int num_commands)
-{
-	close(prev_pipe[0]);
-	close(prev_pipe[1]);
-
-	int i = 0;
-	while (i++ < num_commands) 
-	{
-		wait(NULL);
-	}
-}
-
-int	ft_execve(char *path, char **args)
-{
-	if (execve(path, args, envir) == -1)
-	{
-		free(path);
-		free_tab(args);
-		write(2, "zsh: command not found\n", 23);
-		exit(EXIT_FAILURE);
-	}
-	return (0);
-}
-
-void sigint(int signal) 
-{
-	(void)signal;
-		if (g_sigpid == 0) 
-		{
-			write(STDERR_FILENO, "\n\033[0;36m\033[1m👍 minishell> \033[0m", 29);
-			g_sigexit_status = 1;
-		} 
-		else 
-		{
-			printf("\n");
-			g_sigexit_status = 130;
-		}
-		g_sigsigint = 1;
-}
-
-void sigquit(int signal) 
-{
-	(void)signal;
-		if (g_sigsigint) 
-			g_sigsigint = 1;
-		else 
-			write(STDERR_FILENO, "\b\b  \b\b", 6);	
-}
-
-
-void allsignals()
-{
-	signal(SIGINT, sigint);
-	signal(SIGQUIT, sigquit);
-}
-
-int ft_pipex(s_cmd *prompt) 
-{
-	int prev_pipe[2];
-	int next_pipe[2]; 
-	
-	pipe(prev_pipe);
-	int i = 0;
-	while(i < prompt->nb_tabs) 
-	{
-		if(is_builtin(prompt->cmd[i].tab))
-			exec_bltn(prompt->cmd[i].tab, prompt);
-		else if(strcmp(prompt->cmd[i].type, "char") == 0)
-		{
-			char *command = ft_command(prompt->cmd[i].tab);
-			char *path = ft_recup_path(command);
-			char **args = ft_split(prompt->cmd[i].tab, ' ');
-			if (path != NULL) 
-			{
-				not_last_command(i, prompt->nb_tabs, next_pipe);
-				pid_t child_pid = fork();
-				if (child_pid == 0) 
-				{
-					process_child(i, prev_pipe, next_pipe, prompt->nb_tabs);
-					ft_execve(path, args);
-					exit(EXIT_FAILURE);
-				} 
-				else if (child_pid > 0) 
-					process_father(i, prev_pipe, next_pipe, prompt->nb_tabs);
-				else 
-				{
-					printf("Erreur lors de la création du processus enfant.\n");
-					exit(EXIT_FAILURE);
-				}
-			}
-		}
-		i++;
-	}
-	close_and_wait(prev_pipe, prompt->nb_tabs);
-	return 0;
+	if(!strcmp(prompt->cmd[i].type, "char"))
+		ft_firstcmd(prompt, &i);
+	return(0);
 }

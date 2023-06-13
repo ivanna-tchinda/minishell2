@@ -17,15 +17,15 @@
 
 ssize_t find_good_env(const char *env_param) 
 {
-    if (!envir || !env_param)
+    if (!var_envir || !env_param)
         return (-1);
 
     size_t len = strlen(env_param);
     size_t i = 0;
 
-    while (envir[i++]) 
+    while (var_envir[i++]) 
     {
-        if (strncmp(envir[i], env_param, len) == 0 && envir[i][len] == '=') 
+        if (strncmp(var_envir[i], env_param, len) == 0 && var_envir[i][len] == '=') 
         {    
             return (i);
         }
@@ -39,7 +39,7 @@ char *recup_env(const char *env_param)
 
     if (i != -1) 
     {
-        return (strdup(envir[i] + strlen(env_param) + 1));
+        return (strdup(var_envir[i] + strlen(env_param) + 1));
     }
     return (NULL);
 }

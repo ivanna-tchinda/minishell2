@@ -44,9 +44,9 @@ int var_alreadyset(char *new_var)
 
     i = -1;
     new_var = before_equal(new_var);
-    while(envir[++i])
+    while(var_envir[++i])
     {
-        if(!strncmp(envir[i], new_var, ft_strlen(new_var)))
+        if(!strncmp(var_envir[i], new_var, ft_strlen(new_var)))
             return 1;
     }
     return 0;
@@ -57,12 +57,12 @@ void modify_env(char *nvar)
     int i;
 
     i=-1;
-    while(envir[++i])
+    while(var_envir[++i])
     {
-        if(strncmp(envir[i], nvar, ft_strlen(nvar)))
+        if(strncmp(var_envir[i], nvar, ft_strlen(nvar)))
         {
-            free(envir[i]);
-            envir[i] = ft_strdup(nvar);
+            free(var_envir[i]);
+            var_envir[i] = ft_strdup(nvar);
             return;
         }
     }
@@ -81,21 +81,21 @@ void export_bltn(char *new_var)
         return;
     prev_len = -1;
     i = -1;
-    while(envir[++prev_len]);
+    while(var_envir[++prev_len]);
     if(!nvar || var_alreadyset(nvar))
         new_len = prev_len;
     else 
         new_len = prev_len + 1;
     env_temp = (char **)malloc(sizeof(char *) * new_len);
-    while(envir[++i])
+    while(var_envir[++i])
     {
-        if(!strncmp(before_equal(envir[i]), nvar, ft_strlen((before_equal(envir[i])))))
+        if(!strncmp(before_equal(var_envir[i]), nvar, ft_strlen((before_equal(var_envir[i])))))
             env_temp[i] = ft_strdup(nvar);
         else
-            env_temp[i] = ft_strdup(envir[i]);
-        free(envir[i]);
+            env_temp[i] = ft_strdup(var_envir[i]);
+        free(var_envir[i]);
     }
-    free(envir);
+    free(var_envir);
     if(i < new_len)
         env_temp[i] = ft_strdup(nvar);
     env_temp[++i] = NULL;

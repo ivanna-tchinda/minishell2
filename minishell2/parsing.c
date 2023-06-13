@@ -26,8 +26,8 @@ void attribute_types(s_token *token, char *line)
         //     token[i].type = "or";
         if((line[i] == 124 && line[i + 1] != 124 && line[i - 1] != 124) )
             token[i].type = "pipe";
-        // else if((line[i] == 38 && line[i + 1] == 38) || (line[i] == 38 && line[i - 1] == 38))
-        //     token[i].type = "and";
+        else if((line[i] == 38 && line[i + 1] == 38) || (line[i] == 38 && line[i - 1] == 38))
+            token[i].type = "and";
         else if(line[i] == 60 || line[i] == 62)
             token[i].type = "redir";
         else
