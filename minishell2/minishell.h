@@ -133,9 +133,11 @@ char *dollar_status(s_cmd *cmd, char *prompt);
 
 //PIPEX
 int ft_pipex(s_cmd *prompt);
-void ft_firstcmd(s_cmd *prompt, int *i);
+void ft_firstcmd(s_cmd *prompt, int *i, int infile);
 void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe);
-void exec_lastcmd(s_cmd *prompt, int *i, int prevpipe);
+void exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile);
+void ft_firstredirin(s_cmd *prompt, int *i);
+void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, char *outfile);
 
 //UTILS PIPEX
 char	*ft_envir(char **env);

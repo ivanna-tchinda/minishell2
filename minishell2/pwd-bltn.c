@@ -50,5 +50,6 @@ int	pwd_bltn()
 
 	path = recup_env("PWD");
     printf("%s\n", path);
+    exit(1);
     return (0);
 }

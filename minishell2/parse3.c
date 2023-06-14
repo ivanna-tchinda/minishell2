@@ -99,6 +99,8 @@ int only_cmd(s_cmd *prompt)
 
     i = 0;
     count = 0;
+    if(!prompt->cmd[i].type)
+        return(0);
     if(!prompt->nb_tabs)
         return(0);
     while(i < prompt->nb_tabs)

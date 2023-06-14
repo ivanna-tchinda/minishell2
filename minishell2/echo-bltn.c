@@ -90,8 +90,11 @@ void echo_bltn(char *line)
     while(line[i])
     {
         printf("%c", line[i]);
+        // write(1, &line[i], 1);
         i++;
     }
     if(is_optn(line))
         printf("\n");
+        // write(1, "\n", 1);
+    exit(1);
 }

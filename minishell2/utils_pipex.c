@@ -66,7 +66,7 @@ char	*ft_command(char *av)
 
 	i = 0;
 	j = 0;
-	while (av[i] == ' ')
+	while (av[i] && av[i] == ' ')
 		i++;
 	j = i;
 	while (av[j] != ' ' && av[j])

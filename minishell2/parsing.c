@@ -68,7 +68,7 @@ int many_tokens(char *line)
     count = 0;
     while(line[++i])
     { 
-        if(line[i] == 124)
+        if(line[i] == 124) // |
         {
             while(line[i++] == 124)
                 count++;
@@ -97,7 +97,6 @@ int ft_parsing(s_cmd *prompt, s_token *token, char *line)
     len_cmd = tab_of_cmd(prompt, token);
     prompt->nb_tabs = len_cmd;
     prompt->nb_cmd = only_cmd(prompt);
-    //checker l'ordre des arguments
     if(parse_command(prompt, len_cmd))
         return (1);
     return(0);
