@@ -5,7 +5,9 @@ SRC=	  main.c\
 			parse2.c\
 			parse3.c\
 			utils.c\
-			pipex.c\
+			exec.c\
+			exec2.c\
+			exec3.c\
 			builtin.c\
 			echo-bltn.c\
 			pwd-bltn.c\

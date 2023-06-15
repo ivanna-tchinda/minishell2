@@ -43,7 +43,7 @@ int main(int ac, char **av, char *envp[])
         add_history(line);
         expand_cmd(&prompt);
         expand_status(&prompt);
-        ft_pipex(&prompt);
+        ft_exec(&prompt);
         free_token(token);
         free(line);
     }

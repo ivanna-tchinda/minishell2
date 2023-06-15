@@ -27,10 +27,7 @@ int check_command(char *tab, char *bltn) //regarde s'il y a un pb a cote du bltn
             if(j == (int)ft_strlen(bltn))
             {
                 if(around_bltn(tab, bltn, i-1))
-                {
-                    printf("problem around bltn\n");
                     return(0);
-                }
             }
         }
         i++;

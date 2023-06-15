@@ -131,13 +131,20 @@ char *dollar_status(s_cmd *cmd, char *prompt);
 //PARENTHESES
 // void parentheses(s_cmd *prompt);
 
-//PIPEX
-int ft_pipex(s_cmd *prompt);
+//EXEC
+int ft_exec(s_cmd *prompt);
 void ft_firstcmd(s_cmd *prompt, int *i, int infile);
 void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe);
 void exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile);
 void ft_firstredirin(s_cmd *prompt, int *i);
 void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, char *outfile);
+char *after_infile(char *prompt);
+void ft_and(s_cmd *prompt, int *i);
+char *without_spaces(char *cmd);
+void exec_all(s_cmd *prompt, int *i, int prevpipe, char *outfile);
+void ft_redirout(s_cmd *prompt, int *i);
+void outfile_cmd(char *cmd, s_cmd *prompt, int *i, int infile);
+void ft_pipe(s_cmd *prompt, int *i);
 
 //UTILS PIPEX
 char	*ft_envir(char **env);

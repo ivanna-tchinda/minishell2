@@ -82,7 +82,7 @@ void expand_cmd(s_cmd *prompt)
     int i;
 
     i = -1;
-    while(++i < prompt->nb_tabs)
+    while(prompt->cmd[++i].type)
     {
         prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
         prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
