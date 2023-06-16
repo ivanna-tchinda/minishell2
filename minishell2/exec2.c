@@ -30,6 +30,7 @@ void ft_pipe(s_cmd *prompt, int *i)
 void ft_and(s_cmd *prompt, int *i)
 {
 	(*i)++;
+	printf("and\n");
 	// printf("i: %d\n", *i);
 	// printf("cmd: %s\n", prompt->cmd[*i].tab);
 	if((*i) == prompt->nb_tabs)
@@ -43,18 +44,18 @@ void ft_and(s_cmd *prompt, int *i)
 	}
 }
 
-void exec_all(s_cmd *prompt, int *i, int prevpipe, char *outfile)
-{
-    char *cmd;
+// void exec_all(s_cmd *prompt, int *i, int prevpipe, char *outfile)
+// {
+//     char *cmd;
 
-    cmd = NULL;
-    (*i) += 2;
-    cmd = ft_strjoin(cmd, prompt->cmd[*i].tab);
-    cmd = ft_strjoin(cmd, " ");
-    ft_execve(cmd, prevpipe, prompt, outfile);
-}
+//     cmd = NULL;
+//     (*i) += 2;
+//     cmd = ft_strjoin(cmd, prompt->cmd[*i].tab);
+//     cmd = ft_strjoin(cmd, " ");
+//     ft_execve(cmd, prevpipe, prompt, outfile);
+// }
 
-void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, char *outfile)
+void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int outfile)
 {
 	char *path;
 	char **args;
@@ -66,15 +67,9 @@ void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, char *outfile)
 	pid = fork();
 	if(pid == 0)
 	{
-		if(outfile)
-		{
-			int out;
-			char **tab_otf;
-			tab_otf = ft_split(outfile, ' ');
-			out = open(tab_otf[0], O_TRUNC | O_CREAT | O_WRONLY, 0644);
-			dup2(out, STDOUT_FILENO);
-			close(out);
-		}
+		
+		dup2(outfile, STDOUT_FILENO);
+		close(outfile);
 		dup2(prevpipe, STDIN_FILENO);
 		close(prevpipe);
 		if(is_builtin(cmd))

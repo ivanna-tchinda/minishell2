@@ -13,7 +13,8 @@ void outfile_cmd(char *cmd, s_cmd *prompt, int *i, int infile)
         outfile = open(tab_outfile[0], O_TRUNC | O_CREAT | O_WRONLY, 0644);
         (*i)++;
     }
-    ft_execve(cmd, infile, prompt, tab_outfile[0]);
+    if(cmd)
+        ft_execve(cmd, infile, prompt, outfile);
     if(*i < prompt->nb_tabs)
     {
         if(!strcmp(prompt->cmd[*i].tab, "&&"))
@@ -43,8 +44,12 @@ void ft_redirout(s_cmd *prompt, int *i)
         return;
     else if(prompt->cmd[*i].tab[0] == '>')
         ft_redirout(prompt, i);
-    else if(strcmp(prompt->cmd[*i].tab, "<"))
+    else if(!strcmp(prompt->cmd[*i].tab, "<"))
         ft_firstredirin(prompt, i);
-    else if(strcmp(prompt->cmd[*i].type, "char"))
+    else if(!strcmp(prompt->cmd[*i].type, "char"))
         ft_firstcmd(prompt, i, 0);
+    else if(!strcmp(prompt->cmd[*i].type, "and"))
+        ft_and(prompt, i);
+    else if(!strcmp(prompt->cmd[*i].type, "pipe"))
+        ft_pipe(prompt, i);
 }

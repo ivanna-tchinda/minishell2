@@ -36,18 +36,21 @@ void add_totab(s_info *cmd, s_token *token, int *i)
     else
     {
         j = (*i);
-        if(token[*i].token == 34)
+        if(token[*i].token == 34) // "
         {
             while(token[++j].token != 34 && token[*i].token);
             j++;
         }
-        else if(token[*i].token == 39)
+        else if(token[*i].token == 39) // '
         {
             while(token[++j].token != 39);
             j++;
         }
         else if(token[j].type != token[j+1].type)
+        {
+            printf("sub\n");
             cmd->tab = substr_cmd(token, (*i)++, j);
+        }
         j++;
     }
 } //+25 mais ok
@@ -63,20 +66,110 @@ int check_and(s_info *cmd, int len_cmd)
         {
             if(i == 0)
                 return 1;
-            if(strcmp(cmd[i - 1].type, "char") != 0)
+            if(strcmp(cmd[i - 1].type, "char") != 0 && strcmp(cmd[i - 1].type, "parentheses"))
                     return(1);
         } 
     }
     return 0;
 }
 
-int parse_command(s_cmd *prompt, int len_cmd)
+char *remove_parentheses(char *prompt)
+{
+    int i;
+    int j;
+    char *no_par;
+
+    i = 1;
+    j = 0;
+    no_par = malloc(sizeof(char) * (int)ft_strlen(prompt) - 1);
+    while(i < (int)ft_strlen(prompt) - 1)
+    {
+        no_par[j] = prompt[i];
+        j++;
+        i++;
+    }
+    no_par[j] = '\0';
+    return(no_par);
+}
+
+int parse_parentheses(s_cmd *prompt, int *i)
+{
+    int j;
+
+    (*i)--;
+    j = ft_strlen(prompt->cmd[*i].tab) - 1;
+    while(prompt->cmd[*i].tab[--j] == 32);
+    if(isalpha(prompt->cmd[*i].tab[j]) && (prompt->cmd[*i + 1].type && (strcmp(prompt->cmd[*i + 1].type, "and") && strcmp(prompt->cmd[*i + 1].type, "or"))))
+        return(write(2, "error: unexpected token before ')'\n", 35));
+    return(0);
+}
+
+int check_parentheses(s_cmd *prompt)
 {
     int i;
 
     i = 0;
-    if(prompt->nb_cmd == 0)
+    while(i < prompt->nb_tabs && prompt->cmd[i].type)
+    {
+        if(!strcmp(prompt->cmd[i].type, "parentheses"))
+        {
+            
+            i++;
+            if(strchr(prompt->cmd[i - 1].tab, '|') && strncmp(strchr(prompt->cmd[i - 1].tab, '|'), "||", 2))
+                prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);
+            else if(strchr(prompt->cmd[i - 1].tab, '>') || strchr(prompt->cmd[i - 1].tab, '<'))
+                prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);
+            else if(prompt->cmd[i].type && strcmp(prompt->cmd[i].type, "and") && strcmp(prompt->cmd[i].type, "or") && strcmp(prompt->cmd[i].type, "char"))
+                prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);
+            else if((i - 2) > -1 && strcmp(prompt->cmd[i - 2].type, "and") && strcmp(prompt->cmd[i - 2].type, "or") && strcmp(prompt->cmd[i - 2].type, "char"))
+                prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);
+            else if (parse_parentheses(prompt, &i))
+                return (1);
+        }
+        i++;
+    }
+    return(0);
+}
+
+void split_parentheses(s_cmd *prompt, s_token *token)
+{
+    int i;
+    // int j;
+    // int i_line;
+    int count;
+    char *new_line;
+
+    i = 0;
+    // j = 0;
+    // i_line = 0;
+    count = 0;
+    while(i < prompt->nb_tabs)
+    {
+        count += ft_strlen(prompt->cmd[i].tab);
+        i++;
+    }
+    new_line = NULL;
+    i = 0;
+    while(i < prompt->nb_tabs)
+    {
+        new_line = ft_strjoin(new_line, prompt->cmd[i].tab);
+        i++;
+    }
+    free_token(token);
+    attribute_types(token, new_line);
+    prompt->nb_tabs = tab_of_cmd(prompt, token);
+}
+
+int parse_command(s_cmd *prompt, int len_cmd, s_token *token)
+{
+    int i;
+
+    i = 0;
+    if(len_cmd == 0)
         return (1);
+    if(check_parentheses(prompt))
+        return(1);
+    split_parentheses(prompt, token);
     while(i < len_cmd)
     {
         //cas1: pipe sans arg avant ou apres

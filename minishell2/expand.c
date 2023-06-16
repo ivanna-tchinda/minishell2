@@ -81,12 +81,13 @@ void expand_cmd(s_cmd *prompt)
 {
     int i;
 
-    i = -1;
-    while(prompt->cmd[++i].type)
+    i = 0;
+    while(i < prompt->nb_tabs && prompt->cmd[i].type)
     {
-        prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
-        prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
-        // printf("cmd[%d]: %s type: %s\n", i, prompt->cmd[i].tab, prompt->cmd[i].type);
+        // prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
+        // prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
+        printf("cmd[%d]: %s type: %s\n", i, prompt->cmd[i].tab, prompt->cmd[i].type);
+        i++;
     }
-    
+    prompt->nb_tabs = i;
 }

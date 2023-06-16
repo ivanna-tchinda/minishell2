@@ -65,11 +65,11 @@ int ft_nbtokens(s_token *token)
     count = 0;
     while(token[i].token)
     {
-        if(token[i].type != token[i - 1].type && token[i].token)
+        if(token[i].type != token[i - 1].type && token[i].token && token[i].token != 34 && token[i].token != 32)
             count++;
         i++;
     }
-    return(count);
+    return(count + 1);
 }
 
 int check_pipe(s_info *cmd, int len_cmd)
@@ -85,8 +85,8 @@ int check_pipe(s_info *cmd, int len_cmd)
                 return 1;
             if(!cmd[i + 1].tab || !cmd[i - 1].tab)
                 return(1);
-            if(strcmp(cmd[i - 1].type, "char") != 0)
-                    return(1);
+            if(strcmp(cmd[i - 1].type, "char") && strcmp(cmd[i - 1].type, "parentheses"))
+                return(1);
         }
         i++;
     }

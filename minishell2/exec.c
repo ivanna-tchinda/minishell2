@@ -66,8 +66,14 @@ void ft_firstcmd(s_cmd *prompt, int *i, int infile)
 			(*i)++;
 			ft_firstredirin(prompt, i);
 		}
-		else // cmd + false
-			exec_lastcmd(prompt, i, infile, NULL);
+		else if(!strncmp(prompt->cmd[*i + 1].tab, ">>", ft_strlen(prompt->cmd[*i].tab)))
+		{
+			printf("redirdoc\n");
+			(*i)++;
+			ft_redirdoc(prompt->cmd[*i - 1].tab, prompt, i, prevpipe);
+		}
+		// else // cmd + false
+		// 	exec_lastcmd(prompt, i, infile, NULL);
 	}
 }
 
@@ -77,6 +83,8 @@ void ft_firstredirin(s_cmd *prompt, int *i)
 	int infile;
 	char **tab_redir;
 
+	printf("redir\n");
+	printf("redir tab[%d]: %s\n", *i, prompt->cmd[(*i)].tab);
 	if((*i) == prompt->nb_tabs) //si le redir est a la fin
 		return;
 	tab_redir = ft_split(prompt->cmd[(*i) + 1].tab, ' ');
@@ -105,6 +113,61 @@ void ft_firstredirin(s_cmd *prompt, int *i)
 	}
 }
 
+void ft_heredoc(s_cmd *prompt, int *i)
+{
+	char *delim;
+	char *line;
+	char **nospace;
+	int filestdin;
+
+	(*i)++;
+	filestdin = open("/dev/stdin", O_RDONLY);
+	dup(filestdin);
+	nospace = ft_split(prompt->cmd[*i].tab, ' ');
+	delim = nospace[0];
+	while(1)
+	{
+		line = readline(">");
+		if(!strncmp(line, delim, ft_strlen(delim)))
+			break;
+	}
+	if(prompt->cmd[*i + 1].type)
+	{
+		(*i)++;
+		if(!strncmp(prompt->cmd[(*i)].tab, ">", ft_strlen(prompt->cmd[(*i)].tab)))
+			ft_redirout(prompt, i);
+		else if(!strncmp(prompt->cmd[*i].tab, "<", ft_strlen(prompt->cmd[*i].tab)))
+			ft_firstredirin(prompt, i);
+		else if(!strcmp(prompt->cmd[*i].type, "and"))
+			ft_and(prompt, i);
+		else if(!strcmp(prompt->cmd[*i].type, "pipe"))
+			ft_pipe(prompt, i);
+	}
+}
+
+void ft_redirdoc(char *cmd, s_cmd *prompt, int *i, int infile)
+{
+	char **doc;
+	int outfile;
+	(void)infile;
+	(void)outfile;
+	(void)cmd;
+
+
+	while((*i) < prompt->nb_tabs && !strcmp(prompt->cmd[*i].tab, ">>"))
+	{
+		(*i)++;
+		doc = ft_split(prompt->cmd[*i].tab, ' ');
+		outfile = open(doc[0], O_CREAT | O_WRONLY | O_APPEND, 0664);
+		(*i)++;
+	}
+	if(cmd)
+		ft_execve(cmd, infile, prompt, outfile);
+	return;
+
+
+}
+
 int ft_exec(s_cmd *prompt)
 {
 	int i;
@@ -112,11 +175,15 @@ int ft_exec(s_cmd *prompt)
 	i = 0;
 	if(!strcmp(prompt->cmd[i].type, "char")) //si on commance par une commande
 		ft_firstcmd(prompt, &i, 0);
+	//si on commence par un heredoc <<
+	else if(!strncmp(prompt->cmd[i].tab, "<<", ft_strlen(prompt->cmd[i].tab)))
+		ft_heredoc(prompt, &i);
+	else if(!strncmp(prompt->cmd[i].tab, ">>", ft_strlen(prompt->cmd[i].tab)))
+		ft_redirdoc(NULL, prompt, &i, 0);
 	else if(!strncmp(prompt->cmd[i].tab, "<", ft_strlen(prompt->cmd[i].tab))) //si on commence par un redirin
 		ft_firstredirin(prompt, &i);
-	//si on commence par un heredoc
-	//si on commence par un redirout
 	else if(!strncmp(prompt->cmd[i].tab, ">", ft_strlen(prompt->cmd[i].tab)))
 		ft_redirout(prompt, &i);
+	//si on commence par un heredoc >>
 	return(0);
 }

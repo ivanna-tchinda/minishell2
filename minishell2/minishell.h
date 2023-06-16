@@ -48,7 +48,7 @@ int error_characters(char *lineav);
 int ft_parsing(s_cmd *prompt, s_token *token, char *line);
 int ft_nbtokens(s_token *token);
 void free_prompt(s_cmd *prompt);
-int parse_command(s_cmd *prompt, int len_cmd);
+int parse_command(s_cmd *prompt, int len_cmd, s_token *token);
 int check_pipe(s_info *cmd, int len_cmd);
 int check_redif(s_info *cmd, int len_cmd);
 int parentheses(char *cmd);
@@ -137,7 +137,7 @@ void ft_firstcmd(s_cmd *prompt, int *i, int infile);
 void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe);
 void exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile);
 void ft_firstredirin(s_cmd *prompt, int *i);
-void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, char *outfile);
+void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int outfile);
 char *after_infile(char *prompt);
 void ft_and(s_cmd *prompt, int *i);
 char *without_spaces(char *cmd);
@@ -145,6 +145,7 @@ void exec_all(s_cmd *prompt, int *i, int prevpipe, char *outfile);
 void ft_redirout(s_cmd *prompt, int *i);
 void outfile_cmd(char *cmd, s_cmd *prompt, int *i, int infile);
 void ft_pipe(s_cmd *prompt, int *i);
+void ft_redirdoc(char *cmd, s_cmd *prompt, int *i, int infile);
 
 //UTILS PIPEX
 char	*ft_envir(char **env);

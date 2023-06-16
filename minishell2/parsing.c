@@ -24,7 +24,21 @@ void attribute_types(s_token *token, char *line)
     {
         // if((line[i] == 124 && line[i + 1] == 124) || (line[i] == 124 && line[i - 1] == 124))
         //     token[i].type = "or";
-        if((line[i] == 124 && line[i + 1] != 124 && line[i - 1] != 124) )
+        if(line[i] == 40)
+        {
+            token[i].type = "parentheses";
+            token[i].token = line[i];
+            while(line[++i] != 41)
+            {
+                token[i].type = "parentheses";
+                token[i].token = line[i];
+            }
+            token[i].type = "parentheses";
+            token[i].token = line[i];
+        }
+        else if((line[i] == 124 && (line[i + 1] == 124 || line[i - 1] == 124)) )
+            token[i].type = "or";
+        else if((line[i] == 124 && line[i + 1] != 124 && line[i - 1] != 124) )
             token[i].type = "pipe";
         else if((line[i] == 38 && line[i + 1] == 38) || (line[i] == 38 && line[i - 1] == 38))
             token[i].type = "and";
@@ -97,7 +111,7 @@ int ft_parsing(s_cmd *prompt, s_token *token, char *line)
     len_cmd = tab_of_cmd(prompt, token);
     prompt->nb_tabs = len_cmd;
     prompt->nb_cmd = only_cmd(prompt);
-    if(parse_command(prompt, len_cmd))
+    if(parse_command(prompt, len_cmd, token))
         return (1);
     return(0);
 }
