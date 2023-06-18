@@ -31,49 +31,46 @@ char *without_spaces(char *cmd)
 void ft_firstcmd(s_cmd *prompt, int *i, int infile)
 {
 	int prevpipe;
+	int ret_val;
 
 	prevpipe = dup(infile);
+	ret_val = 0;
 	if((*i) + 1 > prompt->nb_tabs)
 		return;
 	if((*i) + 1 == prompt->nb_tabs) //si c'est la derniere commande cmd
-	{
-		// printf("last cmd\n");
 		exec_lastcmd(prompt, i, prevpipe, NULL);
-	}
 	else
 	{
-		// printf("cmd: %s\n", prompt->cmd[(*i)].tab);
-		if(!strcmp(prompt->cmd[(*i) + 1].type, "pipe")) // cmd | ...
+		if(!strcmp(prompt->cmd[(*i) + 1].type, "or")) // cmd | ...
+		{
+			ret_val = exec_lastcmd(prompt, i, prevpipe, NULL);
+			printf("ret_val: %d\n", ret_val);
+			or_cmd(ret_val, prompt, i);
+		}
+		else if(!strcmp(prompt->cmd[(*i) + 1].type, "pipe")) // cmd | ...
 			pipex_cmd(prompt, i, &prevpipe);
 		else if(!strcmp(prompt->cmd[(*i) + 1].type, "and")) // cmd && ...
 		{
-			// printf("here\n");
-			exec_lastcmd(prompt, i, prevpipe, NULL);
-			(*i) += 2;
-			// printf("cmd: %s\n", prompt->cmd[(*i)].tab);
-			ft_firstcmd(prompt, i, infile);
+			ret_val = exec_lastcmd(prompt, i, prevpipe, NULL);
+			(*i)++;
+			ft_and(prompt, i, ret_val);
 		}
 		else if(!strncmp(prompt->cmd[(*i) + 1].tab, ">", ft_strlen(prompt->cmd[(*i) + 1].tab))) // cmd > outfile ...
 		{
-			// printf("outfile detected\n");
 			(*i)++;
 			outfile_cmd(prompt->cmd[(*i) - 1].tab, prompt, i, prevpipe);
 		}
 		else if(!strncmp(prompt->cmd[(*i) + 1].tab, "<", ft_strlen(prompt->cmd[(*i) + 1].tab)))
 		{
-			// printf("redirin\n");
 			exec_lastcmd(prompt, i, prevpipe, NULL);
 			(*i)++;
 			ft_firstredirin(prompt, i);
 		}
 		else if(!strncmp(prompt->cmd[*i + 1].tab, ">>", ft_strlen(prompt->cmd[*i].tab)))
 		{
-			printf("redirdoc\n");
 			(*i)++;
 			ft_redirdoc(prompt->cmd[*i - 1].tab, prompt, i, prevpipe);
 		}
-		// else // cmd + false
-		// 	exec_lastcmd(prompt, i, infile, NULL);
 	}
 }
 
@@ -83,8 +80,6 @@ void ft_firstredirin(s_cmd *prompt, int *i)
 	int infile;
 	char **tab_redir;
 
-	printf("redir\n");
-	printf("redir tab[%d]: %s\n", *i, prompt->cmd[(*i)].tab);
 	if((*i) == prompt->nb_tabs) //si le redir est a la fin
 		return;
 	tab_redir = ft_split(prompt->cmd[(*i) + 1].tab, ' ');
@@ -105,12 +100,35 @@ void ft_firstredirin(s_cmd *prompt, int *i)
 		ft_pipe(prompt, i);
 	else if(!strcmp(prompt->cmd[*i].type, "char"))
 		ft_firstcmd(prompt, i, infile);
-	else if(!strcmp(prompt->cmd[*i].type, "and"))
-		ft_and(prompt, i);
+	// else if(!strcmp(prompt->cmd[*i].type, "and"))
+	// 	ft_and(prompt, i);
 	else if(!strncmp(prompt->cmd[(*i)].tab, ">", ft_strlen(prompt->cmd[(*i)].tab)))
 	{
 		ft_redirout(prompt, i);
 	}
+}
+
+void ft_heredocpipex2(s_cmd *prompt, int *i, int ret_val)
+{
+	(void)i;
+	(void)prompt;
+	char *line;
+	(void)line;
+		
+	line = readline(">");
+	if(ret_val)
+		exec_lastcmddoc(line ,prompt, 0, NULL, i);
+}
+
+void ft_heredocpipex(s_cmd *prompt, int *i)
+{
+	(void)i;
+	(void)prompt;
+	char *line;
+	(void)line;
+		
+	line = readline(">");
+	exec_lastcmddoc(line ,prompt, 0, NULL, i);
 }
 
 void ft_heredoc(s_cmd *prompt, int *i)
@@ -121,14 +139,19 @@ void ft_heredoc(s_cmd *prompt, int *i)
 	int filestdin;
 
 	(*i)++;
+	if(*i >= prompt->nb_tabs)
+		nospace = NULL;
+	else
+		nospace = ft_split(prompt->cmd[*i].tab, ' ');
 	filestdin = open("/dev/stdin", O_RDONLY);
 	dup(filestdin);
-	nospace = ft_split(prompt->cmd[*i].tab, ' ');
-	delim = nospace[0];
+	delim = NULL;
+	if(nospace)
+		delim = nospace[0];
 	while(1)
 	{
 		line = readline(">");
-		if(!strncmp(line, delim, ft_strlen(delim)))
+		if(delim && !strncmp(line, delim, ft_strlen(delim)))
 			break;
 	}
 	if(prompt->cmd[*i + 1].type)
@@ -138,8 +161,8 @@ void ft_heredoc(s_cmd *prompt, int *i)
 			ft_redirout(prompt, i);
 		else if(!strncmp(prompt->cmd[*i].tab, "<", ft_strlen(prompt->cmd[*i].tab)))
 			ft_firstredirin(prompt, i);
-		else if(!strcmp(prompt->cmd[*i].type, "and"))
-			ft_and(prompt, i);
+		// else if(!strcmp(prompt->cmd[*i].type, "and"))
+		// 	ft_and(prompt, i);
 		else if(!strcmp(prompt->cmd[*i].type, "pipe"))
 			ft_pipe(prompt, i);
 	}
@@ -162,7 +185,7 @@ void ft_redirdoc(char *cmd, s_cmd *prompt, int *i, int infile)
 		(*i)++;
 	}
 	if(cmd)
-		ft_execve(cmd, infile, prompt, outfile);
+		ft_execve(cmd, infile, prompt, i);
 	return;
 
 

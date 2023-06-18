@@ -9,7 +9,7 @@ char *dollar_status(s_cmd *cmd, char *prompt)
     new_prompt = malloc(sizeof(char) + 1);
     while(prompt[++i])
     {
-        if(prompt[i] == 63)
+        if(prompt[i] == 63) // ?
             continue;
         if(prompt[i] == 36 && prompt[i+1] == 63)
         {
@@ -84,9 +84,9 @@ void expand_cmd(s_cmd *prompt)
     i = 0;
     while(i < prompt->nb_tabs && prompt->cmd[i].type)
     {
-        // prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
-        // prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
-        printf("cmd[%d]: %s type: %s\n", i, prompt->cmd[i].tab, prompt->cmd[i].type);
+        prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
+        prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
+        // printf("cmd[%d]: %s type: %s\n", i, prompt->cmd[i].tab, prompt->cmd[i].type);
         i++;
     }
     prompt->nb_tabs = i;

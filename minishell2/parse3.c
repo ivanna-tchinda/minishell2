@@ -47,10 +47,7 @@ void add_totab(s_info *cmd, s_token *token, int *i)
             j++;
         }
         else if(token[j].type != token[j+1].type)
-        {
-            printf("sub\n");
             cmd->tab = substr_cmd(token, (*i)++, j);
-        }
         j++;
     }
 } //+25 mais ok

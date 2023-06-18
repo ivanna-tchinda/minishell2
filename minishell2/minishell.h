@@ -135,17 +135,21 @@ char *dollar_status(s_cmd *cmd, char *prompt);
 int ft_exec(s_cmd *prompt);
 void ft_firstcmd(s_cmd *prompt, int *i, int infile);
 void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe);
-void exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile);
+int exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile);
 void ft_firstredirin(s_cmd *prompt, int *i);
-void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int outfile);
+void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int *i);
 char *after_infile(char *prompt);
-void ft_and(s_cmd *prompt, int *i);
+void ft_and(s_cmd *prompt, int *i, int ret_value);
 char *without_spaces(char *cmd);
-void exec_all(s_cmd *prompt, int *i, int prevpipe, char *outfile);
 void ft_redirout(s_cmd *prompt, int *i);
 void outfile_cmd(char *cmd, s_cmd *prompt, int *i, int infile);
 void ft_pipe(s_cmd *prompt, int *i);
 void ft_redirdoc(char *cmd, s_cmd *prompt, int *i, int infile);
+void or_cmd(int ret_val, s_cmd *prompt, int *i);
+void ft_heredoc(s_cmd *prompt, int *i);
+void ft_heredocpipex(s_cmd *prompt, int *i);
+int exec_lastcmddoc(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *i);
+void ft_heredocpipex2(s_cmd *prompt, int *i, int ret_val);
 
 //UTILS PIPEX
 char	*ft_envir(char **env);
