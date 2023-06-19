@@ -27,6 +27,7 @@ char *dollar_status(s_cmd *cmd, char *prompt)
         }
     }
     new_prompt[i] = '\0';
+    printf("np: %s, %d\n", new_prompt, cmd->exitstatus);
     return(new_prompt);
 }
 
@@ -52,7 +53,6 @@ char  *expand_prompt(char *prompt)
     // printf("prompt: %s\n", prompt);
     while(i < (int)ft_strlen(prompt))
     {
-        // printf("i: %d %c\n", i, prompt[i]);
         if(prompt[i] == 39 || prompt[i] == 92)
         {
             i++;
@@ -82,6 +82,7 @@ void expand_cmd(s_cmd *prompt)
     int i;
 
     i = 0;
+    expand_status(prompt);
     while(i < prompt->nb_tabs && prompt->cmd[i].type)
     {
         prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);

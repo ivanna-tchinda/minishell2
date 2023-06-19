@@ -160,20 +160,14 @@ void ft_redirout(s_cmd *prompt, int *i)
         ft_pipe(prompt, i);
 }
 
-void ft_parentheses(s_cmd *prompt, int *i)
-{
-	(void)prompt;
-	(void)i;
-	return;
-}
-
-int ft_exec(s_cmd *prompt)
+int ft_exec(s_cmd *prompt, s_token *token)
 {
 	int i;
+	s_cmd par_prompt;
 
 	i = 0;
-	if(!strcmp(prompt->cmd[i].type, "char")) //si on commance par des parentheses
-		ft_parentheses(prompt, &i);
+	if(!strcmp(prompt->cmd[i].type, "parentheses")) //si on commance par des parentheses
+		ft_parentheses(prompt->cmd[i].tab, token, &par_prompt);
 	else if(!strcmp(prompt->cmd[i].type, "char")) //si on commance par une commande
 		ft_firstcmd(prompt, &i, 0);
 	else if(!strncmp(prompt->cmd[i].tab, "<<", ft_strlen(prompt->cmd[i].tab))) //si on commence par un heredoc <<
