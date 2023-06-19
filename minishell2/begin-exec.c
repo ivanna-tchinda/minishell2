@@ -19,8 +19,8 @@ void ft_firstcmd(s_cmd *prompt, int *i, int infile)
 			pipex_cmd(prompt, i, &prevpipe);
 		else if(!strcmp(prompt->cmd[(*i) + 1].type, "and")) // cmd && ...
 		{
-			exec_lastcmd(prompt, i, prevpipe, NULL);
-			(*i)++;
+			// exec_lastcmd(prompt, i, prevpipe, NULL);
+			// (*i)++;
 			ft_and(prompt, i, prompt->ret);
 		}
 		else if(!strncmp(prompt->cmd[*i + 1].tab, ">>", ft_strlen(prompt->cmd[*i].tab)))

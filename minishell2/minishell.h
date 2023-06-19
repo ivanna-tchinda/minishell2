@@ -131,6 +131,9 @@ char *dollar_status(s_cmd *cmd, char *prompt);
 
 //PARENTHESES
 void ft_parentheses(s_cmd *prompt, int *i, s_token *token, s_cmd *par_prompt);
+int exec_par(char *cmd, s_cmd *prompt, int prevpipe, int *i);
+int ft_execpar(s_cmd *prompt, int *i);
+void ft_andpar(s_cmd *prompt, int *i, int ret);
 
 //EXEC
 int ft_exec(s_cmd *prompt, s_token *token);

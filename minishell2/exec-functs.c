@@ -129,8 +129,9 @@ void ft_and(s_cmd *prompt, int *i, int ret_value)
 		ft_heredocpipex3(prompt, i, ret_value);
 		return;
 	}
-	else if(!strcmp(prompt->cmd[*i].type, "char"))
-		ft_firstcmd(prompt, i, 0);
+	else if(!strcmp(prompt->cmd[*i + 1].type, "char"))
+		exec_lastcmddoc(prompt->cmd[*i - 2].tab, prompt, 0, NULL, i);
+		// ft_firstcmd(prompt, i, 0);
 }
 
 void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe)

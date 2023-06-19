@@ -65,8 +65,11 @@ int ft_nbtokens(s_token *token)
     count = 0;
     while(token[i].token)
     {
-        if(token[i].type != token[i - 1].type && token[i].token && token[i].token != 34 && token[i].token != 32)
+        if(token[i].type != token[i - 1].type && token[i].token && token[i].token != 34)
+        {
+            // printf("%d token %c\n", i, token[i].token);
             count++;
+        }
         i++;
     }
     return(count + 1);

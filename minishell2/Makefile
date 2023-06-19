@@ -21,6 +21,7 @@ SRC=	  main.c\
 			unset-bltn.c\
 			exit-bltn.c\
 			parentheses.c\
+			parentheses-utils.c\
 			utils_pipex.c\
 			utils-exec.c\
 

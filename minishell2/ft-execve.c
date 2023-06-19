@@ -98,6 +98,7 @@ int exec_lastcmddoc(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *
 	(void)prompt;
 	char *path;
 	char **args;
+	int exitStatus = 0;
 	pid_t pid;
 
 
@@ -133,16 +134,17 @@ int exec_lastcmddoc(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *
             perror("Erreur lors de l'appel à wait");
             exit(1);
         }
-		int exitStatus = WEXITSTATUS(childStatus);
-        printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d\n", exitStatus);
-		if(exitStatus)
-		{
-			path = ft_path(cmd, var_envir);
-			args = ft_split(cmd, ' ');
-			execve(path, args, var_envir);
-		}
+		exitStatus = WEXITSTATUS(childStatus);
+        printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d %s\n", exitStatus, cmd);
+		// if(exitStatus)
+		// {
+		// 	path = ft_path(cmd, var_envir);
+		// 	args = ft_split(cmd, ' ');
+		// 	execve(path, args, var_envir);
+		// }
+		return(exitStatus);
 	}
-	return(0);
+	return(exitStatus);
 }
 
 void exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
