@@ -9,7 +9,7 @@ void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int *i, int outfile)
 	(void)i;
 
 	cmd = without_spaces(cmd);
-	printf("cmd: %s\n", cmd);
+	// printf("cmd: %s\n", cmd);
 	path = ft_path(cmd, var_envir);
 	args = ft_split(cmd, ' ');
 	pid = fork();

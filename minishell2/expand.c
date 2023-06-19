@@ -27,7 +27,7 @@ char *dollar_status(s_cmd *cmd, char *prompt)
         }
     }
     new_prompt[i] = '\0';
-    printf("np: %s, %d\n", new_prompt, cmd->exitstatus);
+    // printf("np: %s, %d\n", new_prompt, cmd->exitstatus);
     return(new_prompt);
 }
 
@@ -87,7 +87,7 @@ void expand_cmd(s_cmd *prompt)
     {
         prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
         prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
-        printf("cmd[%d]: %s type: %s\n", i, prompt->cmd[i].tab, prompt->cmd[i].type);
+        // printf("cmd[%d]: %s type: %s\n", i, prompt->cmd[i].tab, prompt->cmd[i].type);
         i++;
     }
     prompt->nb_tabs = i;

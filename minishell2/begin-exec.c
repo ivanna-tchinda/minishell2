@@ -3,10 +3,10 @@
 void ft_firstcmd(s_cmd *prompt, int *i, int infile)
 {
 	int prevpipe;
-	int ret_val;
+	// int ret_val;
 
 	prevpipe = dup(infile);
-	ret_val = 0;
+	// ret_val = 0;
 	if((*i) + 1 > prompt->nb_tabs)
 		return;
 	if((*i) + 1 == prompt->nb_tabs) //si c'est la derniere commande cmd
@@ -19,6 +19,7 @@ void ft_firstcmd(s_cmd *prompt, int *i, int infile)
 			pipex_cmd(prompt, i, &prevpipe);
 		else if(!strcmp(prompt->cmd[(*i) + 1].type, "and")) // cmd && ...
 		{
+			exec_lastcmd(prompt, i, prevpipe, NULL);
 			(*i)++;
 			ft_and(prompt, i, prompt->ret);
 		}
@@ -167,7 +168,7 @@ int ft_exec(s_cmd *prompt, s_token *token)
 
 	i = 0;
 	if(!strcmp(prompt->cmd[i].type, "parentheses")) //si on commance par des parentheses
-		ft_parentheses(prompt->cmd[i].tab, token, &par_prompt);
+		ft_parentheses(prompt, &i, token, &par_prompt);
 	else if(!strcmp(prompt->cmd[i].type, "char")) //si on commance par une commande
 		ft_firstcmd(prompt, &i, 0);
 	else if(!strncmp(prompt->cmd[i].tab, "<<", ft_strlen(prompt->cmd[i].tab))) //si on commence par un heredoc <<

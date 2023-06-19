@@ -122,17 +122,15 @@ void ft_and(s_cmd *prompt, int *i, int ret_value)
 	// printf
 	// if(ret_value)
 	// 	return;
-	printf("%d and cmd: %s\n", *i, prompt->cmd[*i].tab);
+	// printf("%d and cmd: %s\n", *i, prompt->cmd[*i].tab);
 	if((*i) == prompt->nb_tabs)
 	{
-		printf("ft_heredocpipex2\n");
+		// printf("ft_heredocpipex2\n");
 		ft_heredocpipex3(prompt, i, ret_value);
 		return;
 	}
 	else if(!strcmp(prompt->cmd[*i].type, "char"))
 		ft_firstcmd(prompt, i, 0);
-	else if(!strcmp(prompt->cmd[*i].type, "pipe"))
-		ft_pipe(prompt, i);
 }
 
 void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe)
@@ -144,7 +142,7 @@ void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe)
 	(void)path;
 	(void)args;
 
-	printf("cmd pipex: %s\n", prompt->cmd[(*i)].tab);
+	// printf("cmd pipex: %s\n", prompt->cmd[(*i)].tab);
 	path = ft_path(prompt->cmd[(*i)].tab, var_envir);
 	args = ft_split(prompt->cmd[(*i)].tab, ' ');
 	pipe(fd);

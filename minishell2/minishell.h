@@ -130,7 +130,7 @@ void expand_status(s_cmd *prompt);
 char *dollar_status(s_cmd *cmd, char *prompt);
 
 //PARENTHESES
-void ft_parentheses(char *prompt, s_token *token, s_cmd *par_prompt);
+void ft_parentheses(s_cmd *prompt, int *i, s_token *token, s_cmd *par_prompt);
 
 //EXEC
 int ft_exec(s_cmd *prompt, s_token *token);

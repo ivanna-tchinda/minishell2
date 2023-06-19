@@ -12,7 +12,7 @@ int tab_of_cmd(s_cmd *prompt, s_token *token)
     prompt->cmd = (s_info *)malloc(sizeof(s_info) * nb_tokens);
     while(++i_tab < nb_tokens)
         add_totab(&prompt->cmd[i_tab], token, &i);
-    printf("%d\n", nb_tokens);
+    // printf("%d\n", nb_tokens);
     return(nb_tokens);
 }
 
