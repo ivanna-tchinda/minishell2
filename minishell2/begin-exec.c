@@ -1,33 +1,5 @@
 #include "minishell.h"
 
-char *without_spaces(char *cmd)
-{
-	char **no_space;
-	char *to_ret;
-	int i;
-
-	i = 0;
-	no_space = ft_split(cmd, ' ');
-	while(no_space[i])
-	{
-		i++;
-	}
-	if(i > 1)
-	{
-		i = 0;
-		to_ret = NULL;
-		while(no_space[i])
-		{
-			to_ret = ft_strjoin(to_ret, no_space[i]);
-			to_ret = ft_strjoin(to_ret, " ");
-			i++;
-		}
-	}
-	else
-		return(no_space[0]);
-	return(to_ret);
-}
-
 void ft_firstcmd(s_cmd *prompt, int *i, int infile)
 {
 	int prevpipe;
@@ -42,18 +14,18 @@ void ft_firstcmd(s_cmd *prompt, int *i, int infile)
 	else
 	{
 		if(!strcmp(prompt->cmd[(*i) + 1].type, "or")) // cmd | ...
-		{
-			ret_val = exec_lastcmd(prompt, i, prevpipe, NULL);
-			printf("ret_val: %d\n", ret_val);
-			or_cmd(ret_val, prompt, i);
-		}
+			or_cmd(prompt->ret, prompt, i);
 		else if(!strcmp(prompt->cmd[(*i) + 1].type, "pipe")) // cmd | ...
 			pipex_cmd(prompt, i, &prevpipe);
 		else if(!strcmp(prompt->cmd[(*i) + 1].type, "and")) // cmd && ...
 		{
-			ret_val = exec_lastcmd(prompt, i, prevpipe, NULL);
 			(*i)++;
-			ft_and(prompt, i, ret_val);
+			ft_and(prompt, i, prompt->ret);
+		}
+		else if(!strncmp(prompt->cmd[*i + 1].tab, ">>", ft_strlen(prompt->cmd[*i].tab)))
+		{
+			(*i)++;
+			ft_redirdoc(prompt->cmd[*i - 1].tab, prompt, i, prevpipe);
 		}
 		else if(!strncmp(prompt->cmd[(*i) + 1].tab, ">", ft_strlen(prompt->cmd[(*i) + 1].tab))) // cmd > outfile ...
 		{
@@ -65,11 +37,6 @@ void ft_firstcmd(s_cmd *prompt, int *i, int infile)
 			exec_lastcmd(prompt, i, prevpipe, NULL);
 			(*i)++;
 			ft_firstredirin(prompt, i);
-		}
-		else if(!strncmp(prompt->cmd[*i + 1].tab, ">>", ft_strlen(prompt->cmd[*i].tab)))
-		{
-			(*i)++;
-			ft_redirdoc(prompt->cmd[*i - 1].tab, prompt, i, prevpipe);
 		}
 	}
 }
@@ -100,36 +67,12 @@ void ft_firstredirin(s_cmd *prompt, int *i)
 		ft_pipe(prompt, i);
 	else if(!strcmp(prompt->cmd[*i].type, "char"))
 		ft_firstcmd(prompt, i, infile);
-	// else if(!strcmp(prompt->cmd[*i].type, "and"))
-	// 	ft_and(prompt, i);
+	else if(!strcmp(prompt->cmd[*i].type, "and"))
+		ft_and(prompt, i, 0);
 	else if(!strncmp(prompt->cmd[(*i)].tab, ">", ft_strlen(prompt->cmd[(*i)].tab)))
-	{
 		ft_redirout(prompt, i);
-	}
 }
 
-void ft_heredocpipex2(s_cmd *prompt, int *i, int ret_val)
-{
-	(void)i;
-	(void)prompt;
-	char *line;
-	(void)line;
-		
-	line = readline(">");
-	if(ret_val)
-		exec_lastcmddoc(line ,prompt, 0, NULL, i);
-}
-
-void ft_heredocpipex(s_cmd *prompt, int *i)
-{
-	(void)i;
-	(void)prompt;
-	char *line;
-	(void)line;
-		
-	line = readline(">");
-	exec_lastcmddoc(line ,prompt, 0, NULL, i);
-}
 
 void ft_heredoc(s_cmd *prompt, int *i)
 {
@@ -161,8 +104,8 @@ void ft_heredoc(s_cmd *prompt, int *i)
 			ft_redirout(prompt, i);
 		else if(!strncmp(prompt->cmd[*i].tab, "<", ft_strlen(prompt->cmd[*i].tab)))
 			ft_firstredirin(prompt, i);
-		// else if(!strcmp(prompt->cmd[*i].type, "and"))
-		// 	ft_and(prompt, i);
+		else if(!strcmp(prompt->cmd[*i].type, "and"))
+			ft_and(prompt, i, 0);
 		else if(!strcmp(prompt->cmd[*i].type, "pipe"))
 			ft_pipe(prompt, i);
 	}
@@ -185,10 +128,43 @@ void ft_redirdoc(char *cmd, s_cmd *prompt, int *i, int infile)
 		(*i)++;
 	}
 	if(cmd)
-		ft_execve(cmd, infile, prompt, i);
+		ft_execve(cmd, infile, prompt, i, outfile);
 	return;
 
 
+}
+
+
+void ft_redirout(s_cmd *prompt, int *i)
+{
+    int outfile;
+    char **tab_otf;
+    (void)outfile;
+
+    (*i)++;
+    tab_otf = ft_split(prompt->cmd[*i].tab, ' ');
+    outfile = open(tab_otf[0], O_TRUNC | O_CREAT | O_WRONLY, 0644);
+    if(prompt->cmd[*i + 1].type)
+        (*i)++;
+    if(*i >= prompt->nb_tabs)
+        return;
+    else if(prompt->cmd[*i].tab[0] == '>')
+        ft_redirout(prompt, i);
+    else if(!strcmp(prompt->cmd[*i].tab, "<"))
+        ft_firstredirin(prompt, i);
+    else if(!strcmp(prompt->cmd[*i].type, "char"))
+        ft_firstcmd(prompt, i, 0);
+    else if(!strcmp(prompt->cmd[*i].type, "and"))
+        ft_and(prompt, i, 0);
+    else if(!strcmp(prompt->cmd[*i].type, "pipe"))
+        ft_pipe(prompt, i);
+}
+
+void ft_parentheses(s_cmd *prompt, int *i)
+{
+	(void)prompt;
+	(void)i;
+	return;
 }
 
 int ft_exec(s_cmd *prompt)
@@ -196,17 +172,17 @@ int ft_exec(s_cmd *prompt)
 	int i;
 
 	i = 0;
-	if(!strcmp(prompt->cmd[i].type, "char")) //si on commance par une commande
+	if(!strcmp(prompt->cmd[i].type, "char")) //si on commance par des parentheses
+		ft_parentheses(prompt, &i);
+	else if(!strcmp(prompt->cmd[i].type, "char")) //si on commance par une commande
 		ft_firstcmd(prompt, &i, 0);
-	//si on commence par un heredoc <<
-	else if(!strncmp(prompt->cmd[i].tab, "<<", ft_strlen(prompt->cmd[i].tab)))
+	else if(!strncmp(prompt->cmd[i].tab, "<<", ft_strlen(prompt->cmd[i].tab))) //si on commence par un heredoc <<
 		ft_heredoc(prompt, &i);
-	else if(!strncmp(prompt->cmd[i].tab, ">>", ft_strlen(prompt->cmd[i].tab)))
+	else if(!strncmp(prompt->cmd[i].tab, ">>", ft_strlen(prompt->cmd[i].tab))) //si on commence par un heredoc >>
 		ft_redirdoc(NULL, prompt, &i, 0);
 	else if(!strncmp(prompt->cmd[i].tab, "<", ft_strlen(prompt->cmd[i].tab))) //si on commence par un redirin
 		ft_firstredirin(prompt, &i);
-	else if(!strncmp(prompt->cmd[i].tab, ">", ft_strlen(prompt->cmd[i].tab)))
+	else if(!strncmp(prompt->cmd[i].tab, ">", ft_strlen(prompt->cmd[i].tab))) //si on commence par un redirin
 		ft_redirout(prompt, &i);
-	//si on commence par un heredoc >>
 	return(0);
 }

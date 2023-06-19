@@ -5,9 +5,9 @@ SRC=	  main.c\
 			parse2.c\
 			parse3.c\
 			utils.c\
-			exec.c\
-			exec2.c\
-			exec3.c\
+			begin-exec.c\
+			exec-functs.c\
+			ft-execve.c\
 			builtin.c\
 			echo-bltn.c\
 			pwd-bltn.c\
@@ -22,6 +22,7 @@ SRC=	  main.c\
 			exit-bltn.c\
 			parentheses.c\
 			utils_pipex.c\
+			utils-exec.c\
 
 CC= cc  
 

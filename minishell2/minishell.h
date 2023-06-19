@@ -40,6 +40,7 @@ typedef struct t_cmd{
     int nb_cmd;
     int exitstatus;
     int index;
+    int ret;
     char tab[1024];
 }               s_cmd;
 
@@ -129,15 +130,14 @@ void expand_status(s_cmd *prompt);
 char *dollar_status(s_cmd *cmd, char *prompt);
 
 //PARENTHESES
-// void parentheses(s_cmd *prompt);
+void ft_parentheses(s_cmd *prompt, int *i);
 
 //EXEC
 int ft_exec(s_cmd *prompt);
 void ft_firstcmd(s_cmd *prompt, int *i, int infile);
 void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe);
-int exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile);
+void exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile);
 void ft_firstredirin(s_cmd *prompt, int *i);
-void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int *i);
 char *after_infile(char *prompt);
 void ft_and(s_cmd *prompt, int *i, int ret_value);
 char *without_spaces(char *cmd);
@@ -150,6 +150,10 @@ void ft_heredoc(s_cmd *prompt, int *i);
 void ft_heredocpipex(s_cmd *prompt, int *i);
 int exec_lastcmddoc(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *i);
 void ft_heredocpipex2(s_cmd *prompt, int *i, int ret_val);
+int exec_lastcmddoc2(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *i);
+void ft_heredocpipex3(s_cmd *prompt, int *i, int ret_val);
+char *without_spaces(char *cmd);
+void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int *i, int outfile);
 
 //UTILS PIPEX
 char	*ft_envir(char **env);

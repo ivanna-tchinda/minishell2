@@ -46,6 +46,9 @@ int main(int ac, char **av, char *envp[])
         ft_exec(&prompt);
         free_token(token);
         free(line);
+        while (wait(NULL)!=-1)
+            ;
+        
     }
     return(1);
 }
