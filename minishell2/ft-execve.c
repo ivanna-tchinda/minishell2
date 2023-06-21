@@ -81,7 +81,7 @@ int exec_lastcmddoc2(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int 
             exit(1);
         }
 		int exitStatus = WEXITSTATUS(childStatus);
-        printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d\n", exitStatus);
+        // printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d\n", exitStatus);
 		if(!exitStatus)
 		{
 			path = ft_path(cmd, var_envir);
@@ -95,6 +95,7 @@ int exec_lastcmddoc2(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int 
 int exec_lastcmddoc(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *i)
 {
 	(void)i;
+	(void)cmd;
 	(void)prompt;
 	char *path;
 	char **args;
@@ -135,13 +136,6 @@ int exec_lastcmddoc(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *
             exit(1);
         }
 		exitStatus = WEXITSTATUS(childStatus);
-        printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d %s\n", exitStatus, cmd);
-		// if(exitStatus)
-		// {
-		// 	path = ft_path(cmd, var_envir);
-		// 	args = ft_split(cmd, ' ');
-		// 	execve(path, args, var_envir);
-		// }
 		return(exitStatus);
 	}
 	return(exitStatus);
@@ -188,7 +182,7 @@ int exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
             exit(1);
         }
 		ret = WEXITSTATUS(childStatus);
-        printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d\n", ret);
+        // printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d\n", ret);
 		
 	}
 	return(ret);

@@ -34,7 +34,7 @@ void ft_parentheses(s_cmd *prompt, int *i, s_token *token, s_cmd *par_prompt)
 	par_prompt->nb_cmd = only_cmd(par_prompt);
 	ret = ft_execpar(par_prompt, &j);
 	// (*i)++;
-	printf("i: %d\n", *i);
+	// printf("i: %d\n", *i);
 	if(*i + 1 < prompt->nb_tabs)
 	{
 		if(!strcmp(prompt->cmd[*i + 1].type, "and"))

@@ -35,7 +35,7 @@ int exec_par(char *cmd, s_cmd *prompt, int prevpipe, int *i)
             exit(1);
         }
 		exitStatus = WEXITSTATUS(childStatus);
-        printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d %s\n", exitStatus, cmd);
+        // printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d %s\n", exitStatus, cmd);
 	}
 	return(exitStatus);
 }

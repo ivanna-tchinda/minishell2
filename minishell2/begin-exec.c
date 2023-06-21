@@ -5,7 +5,7 @@ void ft_firstcmd(int ret_val, s_cmd *prompt, int *i, int infile)
 	int prevpipe;
 
 	prevpipe = dup(infile);
-	if(!ret_val && strcmp(prompt->cmd[*i - 1].type, "or"))
+	if(!ret_val && strcmp(prompt->cmd[*i - 1].type, "or") && strcmp(prompt->cmd[*i + 1].type, "redir"))
 		ret_val = exec_lastcmd(prompt, i, prevpipe, NULL);
 	if((*i) + 1 >= prompt->nb_tabs) //si c'est la derniere commande cmd
 		return;

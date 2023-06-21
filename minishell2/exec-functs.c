@@ -4,7 +4,6 @@
 void or_cmd(int ret_val, s_cmd *prompt, int *i)
 {
     (*i) += 2;
-	printf("i:%d ret: %d tab: %s\n", *i, ret_val, prompt->cmd[*i].tab);
     if(*i >= prompt->nb_tabs)
     {
         ft_heredocpipex2(prompt, i, ret_val); //heredoc
