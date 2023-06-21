@@ -137,9 +137,9 @@ void ft_andpar(s_cmd *prompt, int *i, int ret);
 
 //EXEC
 int ft_exec(s_cmd *prompt, s_token *token);
-void ft_firstcmd(s_cmd *prompt, int *i, int infile);
+void ft_firstcmd(int ret_val, s_cmd *prompt, int *i, int infile);
 void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe);
-void exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile);
+int exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile);
 void ft_firstredirin(s_cmd *prompt, int *i);
 char *after_infile(char *prompt);
 void ft_and(s_cmd *prompt, int *i, int ret_value);

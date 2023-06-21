@@ -4,20 +4,26 @@
 void or_cmd(int ret_val, s_cmd *prompt, int *i)
 {
     (*i) += 2;
-    if(!ret_val && *i < prompt->nb_tabs)
-    {
-        while(strcmp(prompt->cmd[*i].type, "and"))
-            (*i)++;
-    }
+	printf("i:%d ret: %d tab: %s\n", *i, ret_val, prompt->cmd[*i].tab);
     if(*i >= prompt->nb_tabs)
     {
         ft_heredocpipex2(prompt, i, ret_val); //heredoc
         return;
     }
+    if(!ret_val && *i + 1 < prompt->nb_tabs)
+    {
+        while(strcmp(prompt->cmd[*i].type, "and"))
+            (*i)++;
+    }
     else if(*i >= prompt->nb_tabs)
         return;
     if(!strcmp(prompt->cmd[*i].type, "char"))
-        ft_firstcmd(prompt, i, 0);
+        ft_firstcmd(ret_val, prompt, i, 0);
+	else if(!strcmp(prompt->cmd[*i].type, "and"))
+	{
+		(*i)--;
+        ft_and(prompt, i, ret_val);
+	}
     else if(!strcmp(prompt->cmd[*i].tab, ">>"))
         ft_redirdoc(prompt->cmd[*i + 1].tab, prompt, i, 0);
     else if(!strcmp(prompt->cmd[*i].tab, "<<"))
@@ -52,7 +58,7 @@ void outfile_cmd(char *cmd, s_cmd *prompt, int *i, int infile)
         else if(!strcmp(prompt->cmd[*i].type, "pipe"))
         {
             (*i)++;
-            ft_firstcmd(prompt, i, infile);
+            ft_firstcmd(0, prompt, i, infile);
         }
     }
 }
@@ -100,7 +106,7 @@ void ft_pipe(s_cmd *prompt, int *i)
 {
 	(*i)++;
 	if(!strcmp(prompt->cmd[*i].type, "char"))
-		ft_firstcmd(prompt, i, 0);
+		ft_firstcmd(0, prompt, i, 0);
 	else if(!strcmp(prompt->cmd[*i].tab, ">"))
 	{
 		// printf("ici %d, %s\n", *i, prompt->cmd[*i].tab);
@@ -117,21 +123,20 @@ void ft_pipe(s_cmd *prompt, int *i)
 
 void ft_and(s_cmd *prompt, int *i, int ret_value)
 {
-	(void)ret_value;
 	(*i)++;
-	// printf
-	// if(ret_value)
-	// 	return;
-	// printf("%d and cmd: %s\n", *i, prompt->cmd[*i].tab);
-	if((*i) == prompt->nb_tabs)
+	if(ret_value)
+		return;
+	if((*i) >= prompt->nb_tabs)
 	{
 		// printf("ft_heredocpipex2\n");
 		ft_heredocpipex3(prompt, i, ret_value);
 		return;
 	}
 	else if(!strcmp(prompt->cmd[*i + 1].type, "char"))
-		exec_lastcmddoc(prompt->cmd[*i - 2].tab, prompt, 0, NULL, i);
-		// ft_firstcmd(prompt, i, 0);
+	{
+		(*i)++;
+		ft_firstcmd(ret_value, prompt, i, 0);
+	}
 }
 
 void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe)
@@ -174,7 +179,7 @@ void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe)
 		// if(*i >= prompt->nb_tabs)
 		// 	ft_heredocpipex(prompt, i);
 		// else
-			ft_firstcmd(prompt, i, *prevpipe);
+			ft_firstcmd(0, prompt, i, *prevpipe);
 		wait(NULL);
 	}
 }

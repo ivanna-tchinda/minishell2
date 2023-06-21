@@ -3,6 +3,7 @@
 int exec_par(char *cmd, s_cmd *prompt, int prevpipe, int *i)
 {
 	(void)i;
+	(void)prompt;
 	char *path;
 	char **args;
 	int exitStatus = 0;
@@ -16,8 +17,8 @@ int exec_par(char *cmd, s_cmd *prompt, int prevpipe, int *i)
 	{
 		dup2(prevpipe, STDIN_FILENO);
 		close(prevpipe);
-		if(is_builtin(cmd))
-			exec_bltn(cmd, prompt);
+		// if(is_builtin(cmd))
+		// 	exec_bltn(cmd, prompt);
 		if(execve(path, args, var_envir) == -1)
 		{
 			write(2, "minishell: cmd not found\n", 25);

@@ -25,7 +25,7 @@ void attribute_types(s_token *token, char *line)
     int i;
 
     i = -1;
-    while(line[++i])
+    while(line[++i] && i < (int)ft_strlen(line))
     {
         // if((line[i] == 124 && line[i + 1] == 124) || (line[i] == 124 && line[i - 1] == 124))
         //     token[i].type = "or";

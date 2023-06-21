@@ -57,7 +57,7 @@ int check_and(s_info *cmd, int len_cmd)
     int i;
 
     i = -1;
-    while(++i < len_cmd)
+    while(++i < len_cmd && cmd[i].type)
     {
         if(cmd[i].type && strcmp(cmd[i].type, "and") == 0)
         {
@@ -96,7 +96,8 @@ int parse_parentheses(s_cmd *prompt, int *i)
     (*i)--;
     j = ft_strlen(prompt->cmd[*i].tab) - 1;
     while(prompt->cmd[*i].tab[--j] == 32);
-    if(isalpha(prompt->cmd[*i].tab[j]) && (prompt->cmd[*i + 1].type && (strcmp(prompt->cmd[*i + 1].type, "and") && strcmp(prompt->cmd[*i + 1].type, "or"))))
+    if(isalpha(prompt->cmd[*i].tab[j]) && (prompt->cmd[*i + 1].type
+        && (strcmp(prompt->cmd[*i + 1].type, "and") && strcmp(prompt->cmd[*i + 1].type, "or"))))
         return(write(2, "error: unexpected token before ')'\n", 35));
     return(0);
 }

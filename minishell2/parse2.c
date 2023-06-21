@@ -80,7 +80,7 @@ int check_pipe(s_info *cmd, int len_cmd)
     int i;
     
     i = 0;
-    while(i < len_cmd)
+    while(i < len_cmd && cmd[i].type)
     {
         if(cmd[i].type && (strcmp(cmd[i].type, "pipe") == 0 || strcmp(cmd[i].type, "or") == 0))
         {
@@ -101,7 +101,7 @@ int check_redif(s_info *cmd, int len_cmd)
     int i;
 
     i = 0;
-    while(i < len_cmd)
+    while(i < len_cmd && cmd[i].type)
     {
         if((cmd[i].type && !strcmp(cmd[i].type, "redir")))
         {

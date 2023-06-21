@@ -147,11 +147,12 @@ int exec_lastcmddoc(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *
 	return(exitStatus);
 }
 
-void exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
+int exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
 {
 	char *path;
 	char **args;
 	pid_t pid;
+	int ret = 0;
 
 	path = ft_path(prompt->cmd[(*i)].tab, var_envir);
 	args = ft_split(prompt->cmd[(*i)].tab, ' ');
@@ -180,6 +181,15 @@ void exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
 	else
 	{
 		close(prevpipe);
+		int childStatus;
+        pid_t terminatedChildPid = wait(&childStatus);
+		if (terminatedChildPid == -1) {
+            perror("Erreur lors de l'appel à wait");
+            exit(1);
+        }
+		ret = WEXITSTATUS(childStatus);
+        printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d\n", ret);
 		
 	}
+	return(ret);
 }

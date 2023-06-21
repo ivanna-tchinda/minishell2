@@ -1,28 +1,22 @@
 #include "minishell.h"
 
-void ft_firstcmd(s_cmd *prompt, int *i, int infile)
+void ft_firstcmd(int ret_val, s_cmd *prompt, int *i, int infile)
 {
 	int prevpipe;
-	// int ret_val;
 
 	prevpipe = dup(infile);
-	// ret_val = 0;
-	if((*i) + 1 > prompt->nb_tabs)
+	if(!ret_val && strcmp(prompt->cmd[*i - 1].type, "or"))
+		ret_val = exec_lastcmd(prompt, i, prevpipe, NULL);
+	if((*i) + 1 >= prompt->nb_tabs) //si c'est la derniere commande cmd
 		return;
-	if((*i) + 1 == prompt->nb_tabs) //si c'est la derniere commande cmd
-		exec_lastcmd(prompt, i, prevpipe, NULL);
 	else
 	{
 		if(!strcmp(prompt->cmd[(*i) + 1].type, "or")) // cmd | ...
-			or_cmd(prompt->ret, prompt, i);
+			or_cmd(ret_val, prompt, i);
 		else if(!strcmp(prompt->cmd[(*i) + 1].type, "pipe")) // cmd | ...
 			pipex_cmd(prompt, i, &prevpipe);
 		else if(!strcmp(prompt->cmd[(*i) + 1].type, "and")) // cmd && ...
-		{
-			// exec_lastcmd(prompt, i, prevpipe, NULL);
-			// (*i)++;
-			ft_and(prompt, i, prompt->ret);
-		}
+			ft_and(prompt, i, ret_val);
 		else if(!strncmp(prompt->cmd[*i + 1].tab, ">>", ft_strlen(prompt->cmd[*i].tab)))
 		{
 			(*i)++;
@@ -56,7 +50,7 @@ void ft_firstredirin(s_cmd *prompt, int *i)
 	{
 		(*i)++;
 		prompt->cmd[*i].tab = tab_redir[1];
-		ft_firstcmd(prompt, i, infile);
+		ft_firstcmd(0, prompt, i, infile);
 	}
 
 	(*i) += 2;
@@ -67,7 +61,7 @@ void ft_firstredirin(s_cmd *prompt, int *i)
 	else if(!strcmp(prompt->cmd[*i].type, "pipe"))
 		ft_pipe(prompt, i);
 	else if(!strcmp(prompt->cmd[*i].type, "char"))
-		ft_firstcmd(prompt, i, infile);
+		ft_firstcmd(0, prompt, i, infile);
 	else if(!strcmp(prompt->cmd[*i].type, "and"))
 		ft_and(prompt, i, 0);
 	else if(!strncmp(prompt->cmd[(*i)].tab, ">", ft_strlen(prompt->cmd[(*i)].tab)))
@@ -154,7 +148,7 @@ void ft_redirout(s_cmd *prompt, int *i)
     else if(!strcmp(prompt->cmd[*i].tab, "<"))
         ft_firstredirin(prompt, i);
     else if(!strcmp(prompt->cmd[*i].type, "char"))
-        ft_firstcmd(prompt, i, 0);
+        ft_firstcmd(0, prompt, i, 0);
     else if(!strcmp(prompt->cmd[*i].type, "and"))
         ft_and(prompt, i, 0);
     else if(!strcmp(prompt->cmd[*i].type, "pipe"))
@@ -170,7 +164,7 @@ int ft_exec(s_cmd *prompt, s_token *token)
 	if(!strcmp(prompt->cmd[i].type, "parentheses")) //si on commance par des parentheses
 		ft_parentheses(prompt, &i, token, &par_prompt);
 	else if(!strcmp(prompt->cmd[i].type, "char")) //si on commance par une commande
-		ft_firstcmd(prompt, &i, 0);
+		ft_firstcmd(0, prompt, &i, 0);
 	else if(!strncmp(prompt->cmd[i].tab, "<<", ft_strlen(prompt->cmd[i].tab))) //si on commence par un heredoc <<
 		ft_heredoc(prompt, &i);
 	else if(!strncmp(prompt->cmd[i].tab, ">>", ft_strlen(prompt->cmd[i].tab))) //si on commence par un heredoc >>
