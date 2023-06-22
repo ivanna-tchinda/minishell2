@@ -175,6 +175,8 @@ int ft_exec(s_cmd *prompt, s_token *token)
 	s_cmd par_prompt;
 
 	i = 0;
+	if(!prompt->nb_cmd)
+		return 1;
 	if(!strcmp(prompt->cmd[i].type, "parentheses")) //si on commance par des parentheses
 		ft_parentheses(prompt, &i, token, &par_prompt);
 	else if(!strcmp(prompt->cmd[i].type, "char")) //si on commance par une commande

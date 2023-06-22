@@ -60,7 +60,7 @@ char *wildcard_prompt(char *prompt, s_cmd *cmd)
 
 char *wildcard_expand(char *prompt, s_cmd *cmd)
 {
-    if(ft_strchr(prompt, '*'))
+    if(prompt && ft_strchr(prompt, '*'))
         return(wildcard_prompt(prompt, cmd));
     return(prompt);
 }

@@ -184,7 +184,7 @@ int exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
             exit(1);
         }
 		ret = WEXITSTATUS(childStatus);
-		if(is_builtin(prompt->cmd[(*i)].tab))
+		if(prompt->cmd[(*i)].tab && is_builtin(prompt->cmd[(*i)].tab))
 			ret = 0;
         // printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d\n", ret);
 		

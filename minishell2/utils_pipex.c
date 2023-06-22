@@ -26,7 +26,7 @@ char	*to_find(char **path, char *new_av)
 		free(path[i]);
 		if (access(to_find, R_OK) == 0)
 		{
-			free(new_av);
+			// free(new_av);
 			while (path[++i] != NULL)
 				free(path[i]);
 			free(path);
@@ -66,6 +66,8 @@ char	*ft_command(char *av)
 
 	i = 0;
 	j = 0;
+	if(!av)
+		return (av);
 	while (av[i] && av[i] == ' ')
 		i++;
 	j = i;
