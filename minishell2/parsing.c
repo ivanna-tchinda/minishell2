@@ -39,6 +39,7 @@ void attribute_types(s_token *token, char *line)
             }
             token[i].type = "char";
             token[i].token = line[i];
+            continue;
         }
         else if(line[i] == 34)
         {
@@ -50,6 +51,7 @@ void attribute_types(s_token *token, char *line)
             }
             token[i].type = "char";
             token[i].token = line[i];
+            continue;
         }
         else if((line[i] == 124 && (line[i + 1] == 124 || line[i - 1] == 124)) )
             token[i].type = "or";
