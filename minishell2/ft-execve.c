@@ -164,11 +164,13 @@ int exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
 		dup2(prevpipe, STDIN_FILENO);
 		close(prevpipe);
 		if(is_builtin(prompt->cmd[(*i)].tab))
+		{
+			// printf("bltn %s\n", prompt->cmd[(*i)].tab);
 			exec_bltn(prompt->cmd[(*i)].tab, prompt);
+		}
 		else if(execve(path, args, var_envir) == -1)
 		{
 			write(2, "minishell: cmd not found\n", 25);
-			prompt->ret = 1;
 			exit(1);
 		}
 	}
@@ -182,6 +184,8 @@ int exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
             exit(1);
         }
 		ret = WEXITSTATUS(childStatus);
+		if(is_builtin(prompt->cmd[(*i)].tab))
+			ret = 0;
         // printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d\n", ret);
 		
 	}

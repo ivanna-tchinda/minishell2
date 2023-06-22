@@ -70,18 +70,18 @@ int is_builtin(char *cmd)
 
 void exec_bltn(char *cmd, s_cmd *prompt)
 {
-    if(strncmp(cmd, "echo", 4) == 0)
+    if(!strncmp(cmd, "echo", 4))
         echo_bltn(cmd);
-    else if(strncmp(cmd, "cd", 2) == 0)
+    else if(!strncmp(cmd, "cd", 2))
         printf("cd\n");
-    else if(strncmp(cmd, "pwd", 3) == 0)
+    else if(!strncmp(cmd, "pwd", 3))
         pwd_bltn();
-    else if(strncmp(cmd, "export", 6) == 0)
+    else if(!strncmp(cmd, "export", 6))
         export_bltn(cmd);
-    else if(strncmp(cmd, "unset", 5) == 0)
+    else if(!strncmp(cmd, "unset", 5))
         unset_bltn(cmd);
-    else if(strncmp(cmd, "env", 3) == 0)
+    else if(!strncmp(cmd, "env", 3))
         env_bltn();
-    else if(strncmp(cmd, "exit", 4) == 0)
+    else if(!strncmp(cmd, "exit", 4))
         exit_bltn(prompt);
 }
