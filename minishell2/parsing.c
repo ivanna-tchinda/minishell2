@@ -29,16 +29,26 @@ void attribute_types(s_token *token, char *line)
     {
         // if((line[i] == 124 && line[i + 1] == 124) || (line[i] == 124 && line[i - 1] == 124))
         //     token[i].type = "or";
-        if(line[i] == 40)
+        if(line[i] == 39)
         {
-            token[i].type = "parentheses";
-            token[i].token = line[i];
-            while(line[++i] != 41)
+            while(line[i] != 39)
             {
-                token[i].type = "parentheses";
+                token[i].type = "char";
                 token[i].token = line[i];
+                i++;
             }
-            token[i].type = "parentheses";
+            token[i].type = "char";
+            token[i].token = line[i];
+        }
+        else if(line[i] == 34)
+        {
+            while(line[i] != 34)
+            {
+                token[i].type = "char";
+                token[i].token = line[i];
+                i++;
+            }
+            token[i].type = "char";
             token[i].token = line[i];
         }
         else if((line[i] == 124 && (line[i + 1] == 124 || line[i - 1] == 124)) )
@@ -110,7 +120,7 @@ int many_tokens(char *line)
 int ft_parsing(s_cmd *prompt, s_token *token, char *line)
 {
     int len_cmd;
-    if(unclosed_quote(line) || many_tokens(line) || parentheses(line))
+    if(unclosed_quote(line) || many_tokens(line)/*|| parentheses(line)*/)
         return(write(1, "error: parse error\n", 19), 1);
     attribute_types(token, line);
     len_cmd = tab_of_cmd(prompt, token);

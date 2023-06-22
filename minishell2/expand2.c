@@ -67,7 +67,7 @@ char *dollar_sign(char *new_prompt, char *prompt, int *i)
         return(new_prompt);
     }
     while(prompt[*i] != 32 && prompt[*i] != 34 && prompt[*i] != 39
-        && prompt[*i] && prompt[*i + 1] != 36 && prompt[*i + 1] != 42) //!="" && existe && +1!=$
+        && prompt[*i] && prompt[*i + 1] != 36 && prompt[*i + 1] != 42 && prompt[*i + 1] != 41) //!="" && existe && +1!=$
         (*i)++;
     varenv = ft_substr(prompt, j + 1, (*i) - j - 1);
     if(!varenv)

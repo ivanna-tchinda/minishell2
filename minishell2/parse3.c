@@ -52,18 +52,18 @@ void add_totab(s_info *cmd, s_token *token, int *i)
     }
 } //+25 mais ok
 
-int check_and(s_info *cmd, int len_cmd)
+int check_and(s_cmd *prompt, int len_cmd)
 {
     int i;
 
     i = -1;
-    while(++i < len_cmd && cmd[i].type)
+    while(++i < len_cmd && prompt->cmd[i].type)
     {
-        if(cmd[i].type && strcmp(cmd[i].type, "and") == 0)
+        if(prompt->cmd[i].type && strcmp(prompt->cmd[i].type, "and") == 0)
         {
             if(i == 0)
                 return 1;
-            if(strcmp(cmd[i - 1].type, "char") != 0 && strcmp(cmd[i - 1].type, "parentheses"))
+            if(strcmp(prompt->cmd[i - 1].type, "char") != 0 && strcmp(prompt->cmd[i - 1].type, "parentheses"))
                     return(1);
         } 
     }
@@ -141,14 +141,14 @@ void split_parentheses(s_cmd *prompt, s_token *token)
     // j = 0;
     // i_line = 0;
     count = 0;
-    while(i < prompt->nb_tabs)
+    while(prompt->cmd[i].type && i < prompt->nb_tabs)
     {
         count += ft_strlen(prompt->cmd[i].tab);
         i++;
     }
     new_line = NULL;
     i = 0;
-    while(i < prompt->nb_tabs)
+    while(prompt->cmd[i].type && i < prompt->nb_tabs)
     {
         new_line = ft_strjoin(new_line, prompt->cmd[i].tab);
         i++;
@@ -156,6 +156,23 @@ void split_parentheses(s_cmd *prompt, s_token *token)
     free_token(token);
     attribute_types(token, new_line);
     prompt->nb_tabs = tab_of_cmd(prompt, token);
+}
+
+int check_cmd(s_cmd *prompt)
+{
+    int i;
+
+    i = 0;
+    while(prompt->cmd[i].type && i < prompt->nb_tabs)
+    {
+        if(!strcmp(prompt->cmd[i].type, "char") && i+1 < prompt->nb_cmd)
+        {
+            if(prompt->cmd[i + 1].type && (strchr(prompt->cmd[i + 1].tab, '<') || !strcmp(prompt->cmd[i + 1].type, "parentheses")))
+                return (1);
+        }
+        i++;
+    }
+    return (0);
 }
 
 int parse_command(s_cmd *prompt, int len_cmd, s_token *token)
@@ -167,14 +184,17 @@ int parse_command(s_cmd *prompt, int len_cmd, s_token *token)
         return (1);
     if(check_parentheses(prompt))
         return(1);
-    split_parentheses(prompt, token);
-    while(i < len_cmd)
+    if(strchr(prompt->cmd[i].tab, '('))
+        split_parentheses(prompt, token);
+    while(prompt->cmd[i].type)
     {
+        if(check_cmd(prompt))
+            return(write(1, "minishell: no such file or directory\n", 37));
         //cas1: pipe sans arg avant ou apres
-        if(check_pipe(prompt->cmd, len_cmd))
+        else if(check_pipe(prompt->cmd, len_cmd))
             return(write(1, "zsh: parse error near `|'\n", 26));
         //cas2: redirection sans arg avant ou apres
-        else if(check_and(prompt->cmd, len_cmd))
+        else if(check_and(prompt, len_cmd))
             return(write(1, "syntax error near unexpected token `&'\n", 39));
         else if(check_redif(prompt->cmd, len_cmd))
             return(write(1, "zsh: parse error\n", 17));

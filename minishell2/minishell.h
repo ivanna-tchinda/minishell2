@@ -45,6 +45,7 @@ typedef struct t_cmd{
 }               s_cmd;
 
 //PARSING
+int check_and(s_cmd *prompt, int len_cmd);
 int error_characters(char *lineav);
 int ft_parsing(s_cmd *prompt, s_token *token, char *line);
 int ft_nbtokens(s_token *token);
