@@ -29,7 +29,19 @@ void attribute_types(s_token *token, char *line)
     {
         // if((line[i] == 124 && line[i + 1] == 124) || (line[i] == 124 && line[i - 1] == 124))
         //     token[i].type = "or";
-        if(line[i] == 39)
+        if(line[i] == 40)
+        {
+            while(line[i] != 41)
+            {
+                token[i].type = "parentheses";
+                token[i].token = line[i];
+                i++;
+            }
+            token[i].type = "parentheses";
+            token[i].token = line[i];
+            continue;
+        }
+        else if(line[i] == 39)
         {
             while(line[i] != 39)
             {

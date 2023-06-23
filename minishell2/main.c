@@ -41,7 +41,7 @@ int minishell(char *envp[])
         add_history(line);
         expand_cmd(&prompt);
         expand_status(&prompt);
-        signals_d();
+        // signals_d();
         ft_exec(&prompt, token);
         free_token(token);
         free(line);
@@ -53,7 +53,7 @@ int main(int ac, char **av, char **envp)
 {
     (void)ac;
     (void)av;
-    allsignals();
+    // allsignals();
     minishell(envp);
     return 0;
 }

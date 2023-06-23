@@ -5,7 +5,9 @@ void ft_firstcmd(int ret_val, s_cmd *prompt, int *i, int infile)
 	int prevpipe;
 
 	prevpipe = dup(infile);
-	if(!ret_val)
+	if((ret_val && !strcmp(prompt->cmd[*i - 1].type, "or")))
+		ret_val = exec_lastcmd(prompt, i, prevpipe, NULL);
+	else if(!ret_val)
 	{
 		if(*i + 1 < prompt->nb_tabs)
 		{
