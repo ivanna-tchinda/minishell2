@@ -27,7 +27,6 @@ char *dollar_status(s_cmd *cmd, char *prompt)
         }
     }
     new_prompt[i] = '\0';
-    // printf("np: %s, %d\n", new_prompt, cmd->exitstatus);
     return(new_prompt);
 }
 
@@ -38,7 +37,7 @@ void expand_status(s_cmd *prompt)
     i = -1;
     while(++i < prompt->nb_tabs)
     {
-        if(prompt->cmd[i].tab && strchr(prompt->cmd[i].tab, '$'))
+        if(prompt->cmd[i].tab && strchr(prompt->cmd[i].tab, '$')&& strchr(prompt->cmd[i].tab, '?'))
             prompt->cmd[i].tab = dollar_status(prompt, prompt->cmd[i].tab);
     }
 }

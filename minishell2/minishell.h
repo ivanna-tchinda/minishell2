@@ -160,6 +160,8 @@ int exec_lastcmddoc2(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int 
 void ft_heredocpipex3(s_cmd *prompt, int *i, int ret_val);
 char *without_spaces(char *cmd);
 void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int *i, int outfile);
+int exec_cmd(s_cmd *prompt, int *i, int prevpipe, char *outfile);
+int exec_builtin(s_cmd *prompt, int *i, int prevpipe, char *outfile);
 
 //UTILS PIPEX
 char	*ft_envir(char **env);

@@ -143,6 +143,14 @@ int exec_lastcmddoc(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *
 
 int exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
 {
+	if(is_builtin(prompt->cmd[(*i)].tab))
+		return(exec_builtin(prompt, i, prevpipe, outfile));
+	else
+		return(exec_cmd(prompt, i, prevpipe, outfile));
+}
+
+int exec_cmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
+{
 	char *path;
 	char **args;
 	pid_t pid;
@@ -188,6 +196,44 @@ int exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
 			ret = 0;
         // printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d\n", ret);
 		
+	}
+	return(ret);
+}
+
+int exec_builtin(s_cmd *prompt, int *i, int prevpipe, char *outfile)
+{
+	char *path;
+	char **args;
+	pid_t pid;
+	int ret = 0;
+
+	path = ft_path(prompt->cmd[(*i)].tab, var_envir);
+	args = ft_split(prompt->cmd[(*i)].tab, ' ');
+	pid = fork();
+	if(outfile)
+	{
+		int out;
+		out = open(outfile, O_TRUNC | O_CREAT | O_WRONLY, 0644);
+		dup2(out, STDOUT_FILENO);
+		close(out);
+	}
+	if(pid == 0)
+	{
+		exec_bltn(prompt->cmd[(*i)].tab, prompt);
+	}
+	else
+	{
+		close(prevpipe);
+		int childStatus;
+        pid_t terminatedChildPid = wait(&childStatus);
+		if (terminatedChildPid == -1) {
+            perror("Erreur lors de l'appel à wait");
+            exit(1);
+        }
+		ret = WEXITSTATUS(childStatus);
+		if(prompt->cmd[(*i)].tab && is_builtin(prompt->cmd[(*i)].tab))
+			ret = 0;
+        // printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d\n", ret);
 	}
 	return(ret);
 }
