@@ -102,6 +102,8 @@ char *dquoted_prompt(char *new_prompt, char *prompt, int *i)
         if(prompt[*i] == 34)
             break;
     }
+    if(*i == 1)
+        new_prompt = "\0";
     return(new_prompt);
 }
 

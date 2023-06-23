@@ -44,6 +44,8 @@ typedef struct t_cmd{
     char tab[1024];
 }               s_cmd;
 
+int minishell(char *envp[]);
+
 //PARSING
 int check_and(s_cmd *prompt, int len_cmd);
 int error_characters(char *lineav);
@@ -165,6 +167,11 @@ char	*to_find(char **path, char *new_av);
 char	*which_envbis(char *av, char **env);
 char	*ft_command(char *av);
 char	*ft_path(char *av, char **envp);
+
+//SIGNALS
+void sigint(int signal);
+void allsignals();
+void signals_d();
 
 //UTILS
 void free_token(s_token *token);

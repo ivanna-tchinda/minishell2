@@ -24,6 +24,7 @@ SRC=	  main.c\
 			parentheses-utils.c\
 			utils_pipex.c\
 			utils-exec.c\
+			signals.c\
 
 CC= cc  
 
