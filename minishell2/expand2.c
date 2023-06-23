@@ -69,14 +69,14 @@ char *dollar_sign(char *new_prompt, char *prompt, int *i)
     while(prompt[*i] != 32 && prompt[*i] != 34 && prompt[*i] != 39
         && prompt[*i] && prompt[*i + 1] != 36 && prompt[*i + 1] != 42 && prompt[*i + 1] != 41) //!="" && existe && +1!=$
         (*i)++;
-    varenv = ft_substr(prompt, j + 1, (*i) - j - 1);
+    varenv = ft_substr(prompt, j + 1, (*i) - j);
     if(!varenv)
         return(new_prompt);
     goodenv = findenv(varenv);
     if(!new_prompt && goodenv)
         return(goodenv);
     if(!goodenv)
-        return((*i)--, ft_strjoin(new_prompt, ""));
+        return(ft_strjoin(new_prompt, ""));
     return(ft_strjoin(new_prompt, goodenv));
 }
 
