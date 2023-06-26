@@ -3,12 +3,12 @@
 int around_bltn(char *tab, char *bltn, int j)
 {
     if(tab[j + 1] && (tab[j + 1] != 34 && tab[j + 1] != 39 && tab[j+1] != 32))
-        return(1);
-    while(tab[--j] != bltn[0]);
-    j--;
-    if(tab[j - 1] && (tab[j - 1] != 34 || tab[j - 1] != 39 || tab[j-1] != 32))
-        return(1);
-    return(0);
+        return(1);//pb
+    while(tab[j] != bltn[0])
+        j--;
+    if(tab[j - 1] && tab[j - 1] != 34 && tab[j - 1] != 39 && tab[j-1] != 32)
+        return(1);//pb
+    return(0);//ok
 }
 
 int check_command(char *tab, char *bltn) //regarde s'il y a un pb a cote du bltn
@@ -23,16 +23,18 @@ int check_command(char *tab, char *bltn) //regarde s'il y a un pb a cote du bltn
         j = 0;
         if(tab[i] == bltn[j])
         {
-            while(tab[i] && tab[++i] == bltn[++j]);
+            while(bltn[j] && tab[++i] == bltn[++j]);
+                // printf("same %c:%c\n", tab[i], bltn[j]);
+            // printf("j: %d strlen: %ld\n", j, ft_strlen(bltn));
             if(j == (int)ft_strlen(bltn))
             {
                 if(around_bltn(tab, bltn, i-1))
-                    return(0);
+                    return(0);//pb
             }
         }
         i++;
     }
-    return(1);
+    return(1);//ok
 }
 
 int built_intab(char *tab)
@@ -63,9 +65,9 @@ int built_intab(char *tab)
 
 int is_builtin(char *cmd)
 {
-    if(built_intab(cmd) == 1)
+    if(built_intab(cmd) == 1) //ok
         return(1);
-    return(0);
+    return(0);//pb
 }
 
 void exec_bltn(char *cmd, s_cmd *prompt)

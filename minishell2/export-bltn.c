@@ -13,7 +13,16 @@ char *get_var(char *new_var)
     while(new_var[i] && new_var[i] != 32)
         i++;
     len = i;
-    while(new_var[++len]);
+    if(!isalpha(new_var[i + 1]) && new_var[i + 1] != '_')
+        return(write(2, "error\n", 6), NULL);
+    while(new_var[++len])
+    {
+        if(new_var[len] == '=')
+        {
+            if(new_var[len - 1] == ' ')
+                return(write(2, "error\n", 6), NULL);
+        }
+    }
     varenv = (char *)malloc(sizeof(char) * len + 1);
     len = i + 1;
     while(new_var[len])
@@ -88,6 +97,7 @@ void export_bltn(char *new_var)
             env_temp[i] = ft_strdup(nvar);
         else
             env_temp[i] = ft_strdup(var_envir[i]);
+        // printf("var envir: %s\n", env_temp[i]);
         free(var_envir[i]);
     }
     free(var_envir);
