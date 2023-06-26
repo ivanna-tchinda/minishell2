@@ -165,6 +165,7 @@ void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe)
 			exec_bltn(prompt->cmd[(*i)].tab, prompt);
 		else if(execve(path, args, var_envir) == -1)
 		{
+			prompt->exitstatus = 127;
 			write(2, "minishell: cmd not found\n", 25);
 			exit(1);
 		}

@@ -7,18 +7,21 @@ char *quoted_prompt(char *new_prompt, char *prompt, int *i, int quote_type)
     char *ret;
 
     ret = NULL;
-    new_tab = malloc(sizeof(char) * (int)ft_strlen(prompt) - 1);
+    new_tab = " ";
     j = 0;
     while(*i < (int)ft_strlen(prompt) && prompt[*i] != quote_type)
     {
         if(prompt[*i] != quote_type && prompt[*i] && prompt[*i] != 92)
         {
-            new_tab[j] = prompt[*i];
+            if(new_tab)
+                new_tab = join_one(new_tab, prompt[*i]);
+            else 
+                new_tab = alloc_one(prompt[*i]);
             j++;
         }
         (*i)++;
     }
-    new_tab[j] = '\0';
+    new_tab = join_one(new_tab, '\0');
     if(new_prompt)
         ret = ft_strjoin(new_prompt, new_tab);
     else
@@ -68,7 +71,7 @@ char *dollar_sign(char *new_prompt, char *prompt, int *i)
     }
     while(prompt[*i] != 32 && prompt[*i] != 34 && prompt[*i] != 39
         && prompt[*i] && prompt[*i + 1] != 36 && prompt[*i + 1] != 42
-        && prompt[*i + 1] != 41 && prompt[*i + 1] != 93)
+        && prompt[*i + 1] != 41 && prompt[*i + 1] != 93 && prompt[*i + 1] != 37 && prompt[*i + 1] != 92)
         (*i)++;
     varenv = ft_substr(prompt, j + 1, (*i) - j);
     if(!varenv)
@@ -84,6 +87,10 @@ char *dollar_sign(char *new_prompt, char *prompt, int *i)
 
 char *dquoted_prompt(char *new_prompt, char *prompt, int *i)
 {
+    if(!new_prompt)
+        new_prompt = alloc_one(' ');
+    else
+        new_prompt = join_one(new_prompt, ' ');
     while(prompt[*i])
     {
         if(prompt[*i] == 36 && prompt[*i - 1] != 92
@@ -120,13 +127,13 @@ char *dollar_prompt(char *new_prompt, char *prompt, int *i)
         }
         else if(prompt[*i])
         {
-            if(!new_prompt)
+            if(!new_prompt && prompt[*i] != 42)
                 new_prompt = alloc_one(prompt[*i]);
-            else if((*i) < (int)ft_strlen(prompt))
+            else if((*i) < (int)ft_strlen(prompt) && prompt[*i] != 42)
             {
                 if(prompt[*i - 1] == 36)
                     new_prompt = join_one(new_prompt, prompt[*i - 1]);
-                if(prompt[*i] != 34 && prompt[*i] != 39)
+                if(prompt[*i] != 34 && prompt[*i] != 39 && prompt[*i] != 92)
                     new_prompt = join_one(new_prompt, prompt[*i]);
             }
         }

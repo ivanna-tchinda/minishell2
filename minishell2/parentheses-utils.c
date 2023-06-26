@@ -12,6 +12,7 @@ int exec_par(char *cmd, s_cmd *prompt, int prevpipe, int *i)
 
 	path = ft_path(cmd, var_envir);
 	args = ft_split(cmd, ' ');
+	// printf("path: %s args[0]: %s\n", path, args[0]);
 	pid = fork();
 	if(pid == 0)
 	{
@@ -21,6 +22,7 @@ int exec_par(char *cmd, s_cmd *prompt, int prevpipe, int *i)
 		// 	exec_bltn(cmd, prompt);
 		if(execve(path, args, var_envir) == -1)
 		{
+			prompt->exitstatus = 127;
 			write(2, "minishell: cmd not found\n", 25);
 			exit(1);
 			// return(1);
@@ -35,6 +37,8 @@ int exec_par(char *cmd, s_cmd *prompt, int prevpipe, int *i)
             exit(1);
         }
 		exitStatus = WEXITSTATUS(childStatus);
+		if(exitStatus)
+			prompt->exitstatus = 127;
         // printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d %s\n", exitStatus, cmd);
 	}
 	return(exitStatus);

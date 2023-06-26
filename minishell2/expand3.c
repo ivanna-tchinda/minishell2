@@ -58,9 +58,42 @@ char *wildcard_prompt(char *prompt, s_cmd *cmd)
     return(new_prompt);
 }
 
+int wcd_inquote(char *prompt)
+{
+    int i;
+
+    i = 0;
+    while(prompt[i])
+    {
+        if(prompt[i] == 34)
+        {
+            while(prompt[++i] != 34)
+            {
+                if(prompt[i] == '*')
+                    return 1;
+            }
+        }
+        i++;
+    }
+    i = 0;
+    while(prompt[i])
+    {
+        if(prompt[i] == 39)
+        {
+            while(prompt[++i] != 39)
+            {
+                if(prompt[i] == '*')
+                    return 1;
+            }
+        }
+        i++;
+    }
+    return(0);
+}
+
 char *wildcard_expand(char *prompt, s_cmd *cmd)
 {
-    if(prompt && ft_strchr(prompt, '*'))
+    if(prompt && ft_strchr(prompt, '*') && wcd_inquote(prompt))
         return(wildcard_prompt(prompt, cmd));
     return(prompt);
 }

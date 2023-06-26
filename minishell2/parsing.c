@@ -9,14 +9,9 @@ int tab_of_cmd(s_cmd *prompt, s_token *token)
     i = 0;
     i_tab = -1;
     nb_tokens = ft_nbtokens(token);
-    // printf("nb tok: %d\n", nb_tokens);
     prompt->cmd = (s_info *)malloc(sizeof(s_info) * nb_tokens);
     while(++i_tab < nb_tokens)
-    {
         add_totab(&prompt->cmd[i_tab], token, &i);
-        // printf("tab: %s\n", prompt->cmd[i_tab].tab);
-    }
-    // printf("%d\n", nb_tokens);
     return(nb_tokens);
 }
 
@@ -27,8 +22,6 @@ void attribute_types(s_token *token, char *line)
     i = -1;
     while(line[++i] && i < (int)ft_strlen(line))
     {
-        // if((line[i] == 124 && line[i + 1] == 124) || (line[i] == 124 && line[i - 1] == 124))
-        //     token[i].type = "or";
         if(line[i] == 40)
         {
             while(line[i] != 41)
@@ -71,7 +64,7 @@ void attribute_types(s_token *token, char *line)
             token[i].type = "pipe";
         else if((line[i] == 38 && line[i + 1] == 38) || (line[i] == 38 && line[i - 1] == 38))
             token[i].type = "and";
-        else if(line[i] == 60 || line[i] == 62)
+        else if(line[i] == 60 || line[i] == 62 || line[i] == 47)
             token[i].type = "redir";
         else
             token[i].type = "char";
@@ -135,14 +128,14 @@ int ft_parsing(s_cmd *prompt, s_token *token, char *line)
 {
     int len_cmd;
     if(!strcmp(line, "!"))
-        return(1);
-    else if(unclosed_quote(line) || many_tokens(line))
-        return(write(1, "error: parse error\n", 19), 1);
+        return(prompt->exitstatus = 1, 1);
+    else if(unclosed_quote(line) || many_tokens(line)|| parentheses(line))
+        return(prompt->exitstatus = 2, write(1, "error: parse error\n", 19), 1);
     attribute_types(token, line);
     len_cmd = tab_of_cmd(prompt, token);
     prompt->nb_tabs = len_cmd;
     prompt->nb_cmd = only_cmd(prompt);
     if(parse_command(prompt, len_cmd, token))
-        return (1);
+        return (prompt->exitstatus = 2, 1);
     return(0);
 }

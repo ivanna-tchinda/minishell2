@@ -11,6 +11,17 @@ int parentheses(char *cmd)
     par = 0;
     while(i < (int)ft_strlen(cmd))
     {
+        if(cmd[i] == 40)
+        {
+            while(cmd[++i] == 32 || cmd[++i] == 40);
+            if(cmd[i - 1] == 41)
+                return(1);
+        }
+        i++;
+    }
+    i = 0;
+    while(i < (int)ft_strlen(cmd))
+    {
         if(cmd[i] && (cmd[i] == 40 || cmd[i] == 41))
             count++;
         if(cmd[i] && cmd[i] == 40 && cmd[i + 1] == 41)

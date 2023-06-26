@@ -24,6 +24,7 @@ void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int *i, int outfile)
 		else if(execve(path, args, var_envir) == -1)
 		{
 			free(path);
+			prompt->exitstatus = 127;
 			write(2, "minishell: cmd not found\n", 25);
 			exit(0);
 		}
@@ -67,6 +68,7 @@ int exec_lastcmddoc2(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int 
 			exec_bltn(prompt->cmd[*i - 2].tab, prompt);
 		if(execve(path, args, var_envir) == -1)
 		{
+			prompt->exitstatus = 127;
 			write(2, "minishell: cmd not found\n", 25);
 			exit(1);
 			// return(1);
@@ -81,6 +83,8 @@ int exec_lastcmddoc2(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int 
             exit(1);
         }
 		int exitStatus = WEXITSTATUS(childStatus);
+		if(exitStatus)
+			prompt->exitstatus = 127;
         // printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d\n", exitStatus);
 		if(!exitStatus)
 		{
@@ -122,6 +126,7 @@ int exec_lastcmddoc(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *
 			exec_bltn(prompt->cmd[*i - 2].tab, prompt);
 		if(execve(path, args, var_envir) == -1)
 		{
+			prompt->exitstatus = 127;
 			write(2, "minishell: cmd not found\n", 25);
 			exit(1);
 			// return(1);
@@ -136,6 +141,8 @@ int exec_lastcmddoc(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *
             exit(1);
         }
 		exitStatus = WEXITSTATUS(childStatus);
+		if(exitStatus)
+			prompt->exitstatus = 127;
 		return(exitStatus);
 	}
 	return(exitStatus);
@@ -192,6 +199,8 @@ int exec_cmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
             exit(1);
         }
 		ret = WEXITSTATUS(childStatus);
+		if(ret)
+			prompt->exitstatus = 127;
 		if(prompt->cmd[(*i)].tab && is_builtin(prompt->cmd[(*i)].tab))
 			ret = 0;
         // printf("Processus parent : le processus fils s'est terminé avec le code de sortie %d\n", ret);

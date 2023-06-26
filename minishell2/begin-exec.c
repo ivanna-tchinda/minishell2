@@ -62,6 +62,12 @@ void ft_firstredirin(s_cmd *prompt, int *i)
 		return;
 	tab_redir = ft_split(prompt->cmd[(*i) + 1].tab, ' ');
 	infile = open(tab_redir[0], O_RDONLY, 777);
+	if(infile < 0)
+	{
+		prompt->exitstatus = 126;
+		write(2, "no such file or directory\n", 26);
+		return;
+	}
 	if(tab_redir[1])
 	{
 		(*i)++;
@@ -183,13 +189,15 @@ int ft_exec(s_cmd *prompt, s_token *token)
 		ft_parentheses(prompt, &i, token, &par_prompt);
 	else if(!strcmp(prompt->cmd[i].type, "char")) //si on commance par une commande
 		ft_firstcmd(0, prompt, &i, 0);
-	else if(!strncmp(prompt->cmd[i].tab, "<<", ft_strlen(prompt->cmd[i].tab))) //si on commence par un heredoc <<
+	else if(!strncmp(prompt->cmd[i].tab, "<<", 2)) //si on commence par un heredoc <<
 		ft_heredoc(prompt, &i);
-	else if(!strncmp(prompt->cmd[i].tab, ">>", ft_strlen(prompt->cmd[i].tab))) //si on commence par un heredoc >>
+	else if(!strncmp(prompt->cmd[i].tab, ">>", 2)) //si on commence par un heredoc >>
 		ft_redirdoc(NULL, prompt, &i, 0);
 	else if(!strncmp(prompt->cmd[i].tab, "<", ft_strlen(prompt->cmd[i].tab))) //si on commence par un redirin
 		ft_firstredirin(prompt, &i);
 	else if(!strncmp(prompt->cmd[i].tab, ">", ft_strlen(prompt->cmd[i].tab))) //si on commence par un redirin
 		ft_redirout(prompt, &i);
+	else if(!strcmp(prompt->cmd[i].type, "redir")) //si on commence par un redirin
+		ft_firstredirin(prompt, &i);
 	return(0);
 }

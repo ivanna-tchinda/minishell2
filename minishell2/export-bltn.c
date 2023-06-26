@@ -13,14 +13,7 @@ char *get_var(char *new_var)
     while(new_var[i] && new_var[i] != 32)
         i++;
     len = i;
-    while(new_var[++len])
-    {
-        if(new_var[len] == 32)  
-        {
-            write(1, "error\n", 6);
-            return(NULL);
-        } 
-    }
+    while(new_var[++len]);
     varenv = (char *)malloc(sizeof(char) * len + 1);
     len = i + 1;
     while(new_var[len])

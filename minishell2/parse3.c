@@ -96,10 +96,28 @@ int parse_parentheses(s_cmd *prompt, int *i)
     (*i)--;
     j = ft_strlen(prompt->cmd[*i].tab) - 1;
     while(prompt->cmd[*i].tab[--j] == 32);
-    if(isalpha(prompt->cmd[*i].tab[j]) && (prompt->cmd[*i + 1].type
-        && (strcmp(prompt->cmd[*i + 1].type, "and") && strcmp(prompt->cmd[*i + 1].type, "or"))))
+    if(!isalpha(prompt->cmd[*i].tab[j]) && (prompt->cmd[*i + 1].type
+        && (strcmp(prompt->cmd[*i + 1].type, "and") && strcmp(prompt->cmd[*i + 1].type, "or") && strcmp(prompt->cmd[*i + 1].type, "parentheses"))))
         return(write(2, "error: unexpected token before ')'\n", 35));
     return(0);
+}
+
+int multiple_par(char *cmd)
+{
+    int i;
+    int count;
+
+    i = 0;
+    count = 0;
+    while(i < (int)ft_strlen(cmd))
+    {
+        if(cmd[i] && (cmd[i] == 40 || cmd[i] == 41))
+            count++;
+        i++;
+    }
+    if(count > 2)
+        return (1);
+    return 0;
 }
 
 int check_parentheses(s_cmd *prompt)
@@ -111,9 +129,10 @@ int check_parentheses(s_cmd *prompt)
     {
         if(!strcmp(prompt->cmd[i].type, "parentheses"))
         {
-            
             i++;
-            if(strchr(prompt->cmd[i - 1].tab, '|') && strncmp(strchr(prompt->cmd[i - 1].tab, '|'), "||", 2))
+            if(multiple_par(prompt->cmd[i - 1].tab))
+                prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);
+            else if(strchr(prompt->cmd[i - 1].tab, '|') && strncmp(strchr(prompt->cmd[i - 1].tab, '|'), "||", 2))
                 prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);
             else if(strchr(prompt->cmd[i - 1].tab, '>') || strchr(prompt->cmd[i - 1].tab, '<'))
                 prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);
@@ -186,12 +205,12 @@ int parse_command(s_cmd *prompt, int len_cmd, s_token *token)
         return(1);
     if(strchr(prompt->cmd[i].tab, '('))
         split_parentheses(prompt, token);
+    if(check_cmd(prompt))
+        return(write(1, "minishell: no such file or directory\n", 37));
     while(prompt->cmd[i].type)
     {
-        if(check_cmd(prompt))
-            return(write(1, "minishell: no such file or directory\n", 37));
         //cas1: pipe sans arg avant ou apres
-        else if(check_pipe(prompt->cmd, len_cmd))
+        if(check_pipe(prompt->cmd, len_cmd))
             return(write(1, "zsh: parse error near `|'\n", 26));
         //cas2: redirection sans arg avant ou apres
         else if(check_and(prompt, len_cmd))
