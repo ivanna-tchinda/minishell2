@@ -134,7 +134,9 @@ int many_tokens(char *line)
 int ft_parsing(s_cmd *prompt, s_token *token, char *line)
 {
     int len_cmd;
-    if(unclosed_quote(line) || many_tokens(line)/*|| parentheses(line)*/)
+    if(!strcmp(line, "!"))
+        return(1);
+    else if(unclosed_quote(line) || many_tokens(line))
         return(write(1, "error: parse error\n", 19), 1);
     attribute_types(token, line);
     len_cmd = tab_of_cmd(prompt, token);

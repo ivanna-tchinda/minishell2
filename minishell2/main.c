@@ -30,7 +30,15 @@ int minishell(char *envp[])
     while(1)
     {
         line = readline("\033[0;36m\033[1m minishell> \033[0m");
-        if(line && ft_parsing(&prompt, token, line))
+        if(!strcmp(line, ":"))
+        {
+            prompt.exitstatus = 0;
+            free_token(token);
+            add_history(line);
+            free(line);
+            continue;
+        }
+        else if((line && ft_parsing(&prompt, token, line)))
         {
             prompt.exitstatus = 1;
             free_token(token);

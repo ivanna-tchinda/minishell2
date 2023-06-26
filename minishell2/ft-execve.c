@@ -202,13 +202,9 @@ int exec_cmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
 
 int exec_builtin(s_cmd *prompt, int *i, int prevpipe, char *outfile)
 {
-	char *path;
-	char **args;
 	pid_t pid;
 	int ret = 0;
 
-	path = ft_path(prompt->cmd[(*i)].tab, var_envir);
-	args = ft_split(prompt->cmd[(*i)].tab, ' ');
 	pid = fork();
 	if(outfile)
 	{
@@ -218,9 +214,7 @@ int exec_builtin(s_cmd *prompt, int *i, int prevpipe, char *outfile)
 		close(out);
 	}
 	if(pid == 0)
-	{
 		exec_bltn(prompt->cmd[(*i)].tab, prompt);
-	}
 	else
 	{
 		close(prevpipe);

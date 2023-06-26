@@ -9,7 +9,7 @@ char *get_var(char *new_var)
 
     i = 0;
     itab = 0;
-    printf("nv: %s\n", new_var);
+    // printf("nv: %s\n", new_var);
     while(new_var[i] && new_var[i] != 32)
         i++;
     len = i;
@@ -78,7 +78,7 @@ void export_bltn(char *new_var)
     int new_len;
 
     nvar = get_var(new_var);
-    printf("nvar: %s\n", nvar);
+    // printf("nvar: %s\n", nvar);
     if(!nvar)
         return;
     prev_len = -1;

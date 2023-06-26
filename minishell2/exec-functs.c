@@ -175,10 +175,7 @@ void pipex_cmd(s_cmd *prompt, int *i, int *prevpipe)
 		close(*prevpipe);
 		*prevpipe = fd[0];
 		(*i) += 2;
-		// if(*i >= prompt->nb_tabs)
-		// 	ft_heredocpipex(prompt, i);
-		// else
-			ft_firstcmd(0, prompt, i, *prevpipe);
+		ft_firstcmd(0, prompt, i, *prevpipe);
 		wait(NULL);
 	}
 }

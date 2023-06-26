@@ -6,7 +6,7 @@ char *dollar_status(s_cmd *cmd, char *prompt)
     char *new_prompt;
 
     i = -1;
-    new_prompt = malloc(sizeof(char) + 1);
+    new_prompt = NULL;
     while(prompt[++i])
     {
         if(prompt[i] == 63) // ?
@@ -49,7 +49,6 @@ char  *expand_prompt(char *prompt)
 
     i = 0;
     new_prompt = NULL;
-    // printf("prompt: %s\n", prompt);
     while(i < (int)ft_strlen(prompt))
     {
         if(prompt[i] == 39 || prompt[i] == 92)

@@ -1,5 +1,57 @@
 #include "minishell.h"
 
+size_t	len_int(int n)
+{
+	size_t	i;
+	long	nb;
+
+	nb = n;
+	i = 1;
+	if (nb == 2147483648)
+		return (10);
+	if (nb == -2147483648)
+		return (11);
+	if (nb < 0)
+	{
+		nb *= -1;
+		i++;
+	}
+	while (nb > 9)
+	{
+		nb = nb / 10;
+		i++;
+	}
+	return (i);
+}
+
+char	*ft_itoa(int n)
+{
+	char	*str;
+	size_t	i;
+	long	nb;
+
+	nb = n;
+	i = len_int(nb);
+	str = (char *)malloc(sizeof(char) * (i + 1));
+	if (!str)
+		return (NULL);
+	str[i--] = '\0';
+	if (nb == 0)
+		str[0] = 48;
+	if (nb < 0)
+	{
+		str[0] = '-';
+		nb *= -1;
+	}
+	while (nb > 0)
+	{
+		str[i] = 48 + (nb % 10);
+		nb = nb / 10;
+		i--;
+	}
+	return (str);
+}
+
 void free_prompt(s_cmd *prompt)
 {
     int i;
@@ -204,29 +256,6 @@ char *join_one(char *str, char c)
     return(new_str);
 }
 
-size_t	len_int(int n)
-{
-	size_t	i;
-	long	nb;
-
-	nb = n;
-	i = 1;
-	if (nb == 2147483648)
-		return (10);
-	if (nb == -2147483648)
-		return (11);
-	if (nb < 0)
-	{
-		nb *= -1;
-		i++;
-	}
-	while (nb > 9)
-	{
-		nb = nb / 10;
-		i++;
-	}
-	return (i);
-}
 
 int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {

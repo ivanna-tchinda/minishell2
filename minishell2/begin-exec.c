@@ -11,7 +11,7 @@ void ft_firstcmd(int ret_val, s_cmd *prompt, int *i, int infile)
 	{
 		if(*i + 1 < prompt->nb_tabs)
 		{
-			if(strcmp(prompt->cmd[*i + 1].type, "redir"))
+			if(strcmp(prompt->cmd[*i + 1].type, "redir") && strcmp(prompt->cmd[*i + 1].type, "pipe"))
 				ret_val = exec_lastcmd(prompt, i, prevpipe, NULL);
 		}
 		else if(*i - 1 > 0)
