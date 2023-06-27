@@ -130,7 +130,9 @@ int check_parentheses(s_cmd *prompt)
         if(!strcmp(prompt->cmd[i].type, "parentheses"))
         {
             i++;
-            if(multiple_par(prompt->cmd[i - 1].tab))
+            if (parse_parentheses(prompt, &i))
+                return (1);
+            else if(multiple_par(prompt->cmd[i - 1].tab))
                 prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);
             else if(strchr(prompt->cmd[i - 1].tab, '|') && strncmp(strchr(prompt->cmd[i - 1].tab, '|'), "||", 2))
                 prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);
@@ -140,8 +142,6 @@ int check_parentheses(s_cmd *prompt)
                 prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);
             else if((i - 2) > -1 && strcmp(prompt->cmd[i - 2].type, "and") && strcmp(prompt->cmd[i - 2].type, "or") && strcmp(prompt->cmd[i - 2].type, "char"))
                 prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);
-            else if (parse_parentheses(prompt, &i))
-                return (1);
         }
         i++;
     }
@@ -209,8 +209,10 @@ int parse_command(s_cmd *prompt, int len_cmd, s_token *token)
         return(write(1, "minishell: no such file or directory\n", 37));
     while(prompt->cmd[i].type)
     {
+        if(strchr(prompt->cmd[i].tab, ';'))
+            return(write(1, "zsh: parse error\n", 17));
         //cas1: pipe sans arg avant ou apres
-        if(check_pipe(prompt->cmd, len_cmd))
+        else if(check_pipe(prompt->cmd, len_cmd))
             return(write(1, "zsh: parse error near `|'\n", 26));
         //cas2: redirection sans arg avant ou apres
         else if(check_and(prompt, len_cmd))

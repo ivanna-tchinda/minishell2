@@ -155,10 +155,10 @@ int is_directory(s_cmd *prompt, int *i)
 
 int exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
 {
-	if(is_directory(prompt, i))
+	if(strchr(prompt->cmd[*i].tab, '\\') && is_directory(prompt, i))
 		return(prompt->exitstatus=126, 1);
 	else if(is_builtin(prompt->cmd[(*i)].tab))
-		return(exec_builtin(prompt, i, prevpipe, outfile));
+		return(prompt->exitstatus = 0, exec_builtin(prompt, i, prevpipe, outfile));
 	else
 		return(exec_cmd(prompt, i, prevpipe, outfile));
 }

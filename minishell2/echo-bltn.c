@@ -16,6 +16,8 @@ int after_optn(char *line)
 
     i = after_echo(line);
     j = i;
+    while(line[i] == 32)
+        i++;
     while(line[i] == 45)
     {
         while(line[++i] != 32 && line[i])

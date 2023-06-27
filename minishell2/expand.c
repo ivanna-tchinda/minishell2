@@ -71,7 +71,7 @@ char  *expand_prompt(char *prompt)
             new_prompt = dollar_prompt(new_prompt, prompt, &i);
         else
         {
-            if((prompt[i] == 92 && prompt[i + 1] == 36) || prompt[i] == 42)
+            if((prompt[i] == 92 && prompt[i + 1] == 36) || (prompt[i] == 42 && (prompt[i - 1] != 32 && prompt[i + 1] && prompt[i + 1] != 32)))
                 i++;
             if(prompt[i + 1] == 64)
                 i += 2;
@@ -95,8 +95,9 @@ void expand_cmd(s_cmd *prompt)
     {
         prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
         prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
-        if(!ft_split(prompt->cmd[i].tab, ' ')[0])
-            prompt->nb_cmd--;
+        // printf("tab: %s\n", prompt->cmd[i].tab);
+        // if(!ft_split(prompt->cmd[i].tab, ' ')[0])
+        //     prompt->nb_cmd--;
         i++;
     }
     prompt->nb_tabs = i;
