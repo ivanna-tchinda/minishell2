@@ -96,8 +96,15 @@ char *get_var(char *new_var);
 //UNSET
 void unset_bltn(char *cmd);
 
+//CD
+void cd_bltn(char *cmd);
+int run_cd(char **args, char **envp);
+
 //EXIT
-void exit_bltn(s_cmd *prompt);
+void exit_bltn(char *prompt);
+int execute_exit(char **args);
+int check_exit_signs(char **args);
+int check_correct_exit(char **args);
 
 //EXPAND
 void expand_cmd(s_cmd *prompt);

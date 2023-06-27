@@ -25,6 +25,7 @@ SRC=	  main.c\
 			utils_pipex.c\
 			utils-exec.c\
 			signals.c\
+			cd-bltn.c\
 
 CC= cc  
 

@@ -93,11 +93,10 @@ void export_bltn(char *new_var)
     env_temp = (char **)malloc(sizeof(char *) * new_len);
     while(var_envir[++i])
     {
-        if(!strncmp(before_equal(var_envir[i]), nvar, ft_strlen((before_equal(var_envir[i])))))
+        if(!strncmp(before_equal(var_envir[i]), nvar, ft_strlen((before_equal(nvar)))))
             env_temp[i] = ft_strdup(nvar);
         else
             env_temp[i] = ft_strdup(var_envir[i]);
-        // printf("var envir: %s\n", env_temp[i]);
         free(var_envir[i]);
     }
     free(var_envir);

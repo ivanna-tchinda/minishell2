@@ -32,7 +32,8 @@ int minishell(char *envp[])
         line = readline("\033[0;36m\033[1m minishell> \033[0m");
         if(!strcmp(line, ":") || !line[0])
         {
-            prompt.exitstatus = 0;
+            if(!strcmp(line, ":"))
+                prompt.exitstatus = 0;
             free_token(token);
             add_history(line);
             free(line);
@@ -60,7 +61,7 @@ int main(int ac, char **av, char **envp)
 {
     (void)ac;
     (void)av;
-    // allsignals();
+    allsignals();
     minishell(envp);
     return 0;
 }

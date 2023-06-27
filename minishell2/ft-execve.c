@@ -9,7 +9,6 @@ void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int *i, int outfile)
 	(void)i;
 
 	cmd = without_spaces(cmd);
-	// printf("cmd: %s\n", cmd);
 	path = ft_path(cmd, var_envir);
 	args = ft_split(cmd, ' ');
 	pid = fork();
@@ -34,7 +33,6 @@ void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int *i, int outfile)
 		close(prevpipe);
 		close(outfile);
 		wait(NULL);
-		// exit(0);
 	}
 	return;
 }
@@ -58,7 +56,6 @@ int exec_lastcmddoc2(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int 
 		{
 			int out;
 			out = open(outfile, O_TRUNC | O_CREAT | O_WRONLY, 0644);
-			// printf("out: %d\n", out);
 			dup2(out, STDOUT_FILENO);
 			close(out);
 		}
@@ -71,7 +68,6 @@ int exec_lastcmddoc2(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int 
 			prompt->exitstatus = 127;
 			write(2, "minishell: cmd not found\n", 25);
 			exit(1);
-			// return(1);
 		}
 	}
 	else
@@ -129,7 +125,6 @@ int exec_lastcmddoc(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *
 			prompt->exitstatus = 127;
 			write(2, "minishell: cmd not found\n", 25);
 			exit(1);
-			// return(1);
 		}
 	}
 	else
@@ -148,9 +143,21 @@ int exec_lastcmddoc(char *cmd, s_cmd *prompt, int prevpipe, char *outfile, int *
 	return(exitStatus);
 }
 
+int is_directory(s_cmd *prompt, int *i)
+{
+	char **direc;
+
+	direc = ft_split(prompt->cmd[*i].tab, ' ');
+	if(strchr(direc[0], '/'))
+		return(write(2, "minishell: Is a directory\n", 26));
+	return(0);
+}
+
 int exec_lastcmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
 {
-	if(is_builtin(prompt->cmd[(*i)].tab))
+	if(is_directory(prompt, i))
+		return(prompt->exitstatus=126, 1);
+	else if(is_builtin(prompt->cmd[(*i)].tab))
 		return(exec_builtin(prompt, i, prevpipe, outfile));
 	else
 		return(exec_cmd(prompt, i, prevpipe, outfile));

@@ -72,10 +72,11 @@ int is_builtin(char *cmd)
 
 void exec_bltn(char *cmd, s_cmd *prompt)
 {
+    (void)prompt;
     if(!strncmp(cmd, "echo", 4))
         echo_bltn(cmd);
     else if(!strncmp(cmd, "cd", 2))
-        printf("cd\n");
+        cd_bltn(cmd);
     else if(!strncmp(cmd, "pwd", 3))
         pwd_bltn();
     else if(!strncmp(cmd, "export", 6))
@@ -85,5 +86,5 @@ void exec_bltn(char *cmd, s_cmd *prompt)
     else if(!strncmp(cmd, "env", 3))
         env_bltn();
     else if(!strncmp(cmd, "exit", 4))
-        exit_bltn(prompt);
+        exit_bltn(cmd);
 }

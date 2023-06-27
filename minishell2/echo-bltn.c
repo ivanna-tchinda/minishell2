@@ -6,7 +6,7 @@ void env_bltn(void)
 
     i = -1;
     while(var_envir[++i])
-        printf("%d %s\n", i, var_envir[i]);
+        printf("%s\n", var_envir[i]);
 }
 
 int after_optn(char *line)
@@ -80,12 +80,10 @@ void echo_bltn(char *line)
 {
     int i;
 
-    printf("line: %s\n", line);
     if(is_optn(line))
         i = after_echo(line);
     else
         i = after_optn(line);
-    printf("i: %d\n", i);
     if(i == 0)
         return;
     while(line[i] && i < (int)ft_strlen(line))

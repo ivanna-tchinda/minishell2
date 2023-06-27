@@ -99,7 +99,7 @@ char *dquoted_prompt(char *new_prompt, char *prompt, int *i)
             new_prompt = dollar_sign(new_prompt, prompt, i);
         else if(prompt[*i] != 34) //!= ""
         {
-            if(prompt[*i] == 92 || prompt[*i] == 64) //!=\ || !=@
+            if(prompt[*i] == 92|| prompt[*i] == 64) //!=\ || !=@
                 (*i)++;
             if(!new_prompt)
                 new_prompt = alloc_one(prompt[*i]);

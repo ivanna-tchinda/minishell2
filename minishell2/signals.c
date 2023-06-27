@@ -1,9 +1,8 @@
 #include "minishell.h"
-
 void sigint(int signal) 
 {
-    (void)signal;
-	write(STDERR_FILENO, "\n\033[0;36m\033[1m minishell> \033[0m", 29);
+        (void)signal;
+			write(STDERR_FILENO, "\n\033[0;36m\033[1m minishell> \033[0m", 29);
 }
 
 void allsignals()
