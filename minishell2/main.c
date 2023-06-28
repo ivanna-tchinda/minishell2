@@ -13,35 +13,31 @@ void set_envir(char *envp[])
     while(envp[++len_env]);
     var_envir = (char **)malloc(sizeof(char *) * len_env + 1);
     while(++i < len_env)
-    {
         var_envir[i] = ft_strdup(envp[i]);
-        // printf("%d var_envir: %s\n", i, var_envir[i]);
-    }
     var_envir[i] = NULL;
-    // printf("%d var_envir: %s\n", i, var_envir[i]);
 }
 
 int minishell(char *envp[])
 {
-    s_token token[1000];
     s_cmd prompt;
     char *line;
     set_envir(envp);
     while(1)
     {
+        s_token token[1000];
         line = readline("\033[0;36m\033[1m minishell> \033[0m");
         if(!strcmp(line, ":") || !line[0])
         {
             if(!strcmp(line, ":"))
                 prompt.exitstatus = 0;
-            free_token(token);
+            // free_token(token);
             add_history(line);
             free(line);
             continue;
         }
         else if((line && ft_parsing(&prompt, token, line)))
         {
-            free_token(token);
+            // free_token(token);
             add_history(line);
             free(line);
             continue;
@@ -52,7 +48,9 @@ int minishell(char *envp[])
         // signals_d();
         ft_exec(&prompt, token);
         free_token(token);
+        // printf("here\n");
         free(line);
+
     }
     return(1);
 }
