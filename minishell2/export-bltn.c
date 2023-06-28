@@ -14,7 +14,10 @@ char *get_var(char *new_var)
         i++;
     len = i;
     if(!isalpha(new_var[i + 1]) && new_var[i + 1] != '_')
-        return(write(2, "error\n", 6), NULL);
+    {
+        // write(2, &new_var[i+1], 1);
+        return(NULL);
+    }
     while(new_var[++len])
     {
         if(new_var[len] == '=')
@@ -33,12 +36,8 @@ char *get_var(char *new_var)
     }
     varenv[itab] = '\0';
     int j = -1;
-    while(varenv[++j])
-    {
-        if(varenv[j] == 61)
-            return(varenv);
-    }
-    return(NULL);
+    while(varenv[++j]);
+    return(varenv);
 }
 
 int var_alreadyset(char *new_var)
@@ -71,6 +70,15 @@ void modify_env(char *nvar)
     }
 }
 
+void export_nocmd()
+{
+    int i;
+
+    i = -1;
+    while(var_envir[++i])
+        printf("declare -x %s\n", var_envir[i]);
+}
+
 void export_bltn(char *new_var)
 {
     int prev_len;
@@ -80,9 +88,13 @@ void export_bltn(char *new_var)
     int new_len;
 
     nvar = get_var(new_var);
-    // printf("nvar: %s\n", nvar);
     if(!nvar)
+    {
+        export_nocmd();
+        exit(0);
         return;
+    }
+    printf("nvar: %s\n", nvar);
     prev_len = -1;
     i = -1;
     while(var_envir[++prev_len]);
@@ -101,7 +113,11 @@ void export_bltn(char *new_var)
     }
     free(var_envir);
     if(i < new_len)
+    {
         env_temp[i] = ft_strdup(nvar);
+        printf("env: %s\n", env_temp[i]);
+    }
     env_temp[++i] = NULL;
     set_envir(env_temp);
+    // exit(0);
 }

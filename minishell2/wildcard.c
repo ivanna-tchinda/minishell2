@@ -143,6 +143,7 @@ char *before_wcd(char *prompt, s_cmd *cmd)
     len_before = -1;
     while(prompt[++len_before] && prompt[++len_before] != 42);
     before_wcd = ft_substr(prompt, 0, len_before);
+    // printf("before wcd: %s\n", before_wcd);
     if (getcwd(cmd->tab, sizeof(cmd->tab)) != NULL)
     {
         directory = opendir(cmd->tab);
@@ -163,6 +164,7 @@ char *before_wcd(char *prompt, s_cmd *cmd)
         new_prompt = add_toprompt2(nb_files, cmd, directory, direc, before_wcd);
         prompt = tabtochar(new_prompt);
     }
+    // printf("prompt: %s\n", prompt);
     return(prompt);
 }
 

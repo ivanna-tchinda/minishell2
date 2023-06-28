@@ -2,8 +2,13 @@
 
 int around_bltn(char *tab, char *bltn, int j)
 {
-    if(tab[j + 1] && (tab[j + 1] != 34 && tab[j + 1] != 39 && tab[j+1] != 32))
-        return(1);//pb
+    if(tab[j + 1] && tab[j+1] != 32)
+    {
+        while(tab[j] != bltn[0])
+            j--;
+        if(!(tab[j - 1] && tab[j - 1] != 34 && tab[j - 1] != 39))
+            return(1);
+    }
     while(tab[j] != bltn[0])
         j--;
     if(tab[j - 1] && tab[j - 1] != 34 && tab[j - 1] != 39 && tab[j-1] != 32)
@@ -73,7 +78,7 @@ int is_builtin(char *cmd)
 void exec_bltn(char *cmd, s_cmd *prompt)
 {
     (void)prompt;
-    if(!strncmp(cmd, "echo", 4))
+    if(strstr(cmd, "echo"))
         echo_bltn(cmd);
     else if(!strncmp(cmd, "cd", 2))
         cd_bltn(cmd);
@@ -87,4 +92,5 @@ void exec_bltn(char *cmd, s_cmd *prompt)
         env_bltn();
     else if(!strncmp(cmd, "exit", 4))
         exit_bltn(cmd);
+    
 }

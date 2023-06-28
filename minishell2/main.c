@@ -61,7 +61,7 @@ int main(int ac, char **av, char **envp)
 {
     (void)ac;
     (void)av;
-    allsignals();
+    // allsignals();
     minishell(envp);
     return 0;
 }

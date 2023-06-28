@@ -7,7 +7,7 @@ char *quoted_prompt(char *new_prompt, char *prompt, int *i, int quote_type)
     char *ret;
 
     ret = NULL;
-    new_tab = " ";
+    new_tab = "";
     j = 0;
     while(*i < (int)ft_strlen(prompt) && prompt[*i] != quote_type)
     {
@@ -88,14 +88,12 @@ char *dollar_sign(char *new_prompt, char *prompt, int *i)
 char *dquoted_prompt(char *new_prompt, char *prompt, int *i)
 {
     if(!new_prompt)
-        new_prompt = alloc_one(' ');
-    else
-        new_prompt = join_one(new_prompt, ' ');
+        new_prompt = "";
     while(prompt[*i])
     {
         if(prompt[*i] == 36 && prompt[*i - 1] != 92
             && prompt[*i + 1] != 64 && prompt[*i + 1] != 34
-            && prompt[*i + 1] != 39) //$ && -1!=\ && +1!=@
+            && prompt[*i + 1] != 39 && prompt[*i + 1] != 32) //$ && -1!=\ && +1!=@
             new_prompt = dollar_sign(new_prompt, prompt, i);
         else if(prompt[*i] != 34) //!= ""
         {
@@ -127,9 +125,9 @@ char *dollar_prompt(char *new_prompt, char *prompt, int *i)
         }
         else if(prompt[*i])
         {
-            if(!new_prompt && prompt[*i] != 42)
+            if(!new_prompt)
                 new_prompt = alloc_one(prompt[*i]);
-            else if((*i) < (int)ft_strlen(prompt) && prompt[*i] != 42)
+            else if((*i) < (int)ft_strlen(prompt))
             {
                 if(prompt[*i - 1] == 36)
                     new_prompt = join_one(new_prompt, prompt[*i - 1]);

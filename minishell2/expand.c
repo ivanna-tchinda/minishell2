@@ -60,18 +60,18 @@ char  *expand_prompt(char *prompt)
             while(prompt[i] == 32)
                 i++;
         }
-        if(prompt[i] == 39 || (prompt[i] == 92 && prompt[i + 1] == 36))
+        if((prompt[i] == 39  && (prompt[i+1] == 39 || (!isalpha(prompt[i - 1]) && !isalpha(prompt[i + 1])) || (prompt[i] == 92 && prompt[i + 1] == 36))))
         {
             i++;
             new_prompt = quoted_prompt(new_prompt, prompt, &i, 39);
         }
-        else if(prompt[i] == 34)
+        else if(prompt[i] == 34 && (!prompt[i+1] || prompt[i+1] == 39 || (!isalpha(prompt[i - 1])/* && !isalpha(prompt[i + 1])*/)))
             new_prompt = dquoted_prompt(new_prompt, prompt, &i);
         else if(prompt[i] == 36 &&  prompt[i + 1] &&  prompt[i + 1] != 32 && prompt[i + 1] != 64 && prompt[i + 1] != 61 && prompt[i + 1] != 63)
             new_prompt = dollar_prompt(new_prompt, prompt, &i);
         else
         {
-            if((prompt[i] == 92 && prompt[i + 1] == 36) || (prompt[i] == 42 && (prompt[i - 1] != 32 && prompt[i + 1] && prompt[i + 1] != 32)))
+            if((prompt[i] == 92 && prompt[i + 1] == 36))
                 i++;
             if(prompt[i + 1] == 64)
                 i += 2;
@@ -82,6 +82,7 @@ char  *expand_prompt(char *prompt)
         }
         i++;
     }
+    // printf("np: %s\n", new_prompt);
     return(new_prompt);
 }
 
@@ -93,8 +94,9 @@ void expand_cmd(s_cmd *prompt)
     expand_status(prompt);
     while(i < prompt->nb_tabs && prompt->cmd[i].type)
     {
-        prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
         prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
+        // printf("tab: %s\n", prompt->cmd[i].tab);
+        prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
         // printf("tab: %s\n", prompt->cmd[i].tab);
         // if(!ft_split(prompt->cmd[i].tab, ' ')[0])
         //     prompt->nb_cmd--;

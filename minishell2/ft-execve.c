@@ -189,6 +189,7 @@ int exec_cmd(s_cmd *prompt, int *i, int prevpipe, char *outfile)
 		{
 			// printf("bltn %s\n", prompt->cmd[(*i)].tab);
 			exec_bltn(prompt->cmd[(*i)].tab, prompt);
+			exit(0);
 		}
 		else if(execve(path, args, var_envir) == -1)
 		{

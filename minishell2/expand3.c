@@ -34,7 +34,13 @@ char *modify_wildcard(char *prompt, s_cmd *cmd)
     {
         if(prompt[i] == 42)
             count_w++;
+        else if(prompt[i] == 34)
+            while(prompt[++i] && prompt[i] != 34);
+        else if(prompt[i] == 39)
+            while(prompt[++i] && prompt[++i] != 39);
     }
+    if(count_w == 0)
+        return(prompt);
     if(count_w == 1)
         return(one_asterisk(prompt, cmd));
     return(two_asterisk(prompt, cmd));
@@ -53,8 +59,10 @@ char *wildcard_prompt(char *prompt, s_cmd *cmd)
     {
         if(ft_strchr(tab_prompt[i], '*'))
             tab_prompt[i] = modify_wildcard(tab_prompt[i], cmd);
+        // printf("tab:%s\n", tab_prompt[i]);
     }
     new_prompt = tabtochar(tab_prompt);
+    // printf("np:%s\n", new_prompt);
     return(new_prompt);
 }
 
@@ -93,7 +101,7 @@ int wcd_inquote(char *prompt)
 
 char *wildcard_expand(char *prompt, s_cmd *cmd)
 {
-    if(prompt && ft_strchr(prompt, '*') && wcd_inquote(prompt))
+    if(prompt && ft_strchr(prompt, '*'))
         return(wildcard_prompt(prompt, cmd));
     return(prompt);
 }
