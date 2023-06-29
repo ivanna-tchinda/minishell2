@@ -317,6 +317,7 @@ char	*ft_strdup(char *src)
 		str[i] = src[i];
 		i++;
 	}
+	str[i] = '\0';
 	return (str);
 }
 

@@ -13,7 +13,9 @@ void set_envir(char *envp[])
     while(envp[++len_env]);
     var_envir = (char **)malloc(sizeof(char *) * len_env + 1);
     while(++i < len_env)
+    {
         var_envir[i] = ft_strdup(envp[i]);
+    }
     var_envir[i] = NULL;
 }
 

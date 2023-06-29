@@ -69,7 +69,7 @@ char *dollar_sign(char *new_prompt, char *prompt, int *i)
         (*i)++;
         return(new_prompt);
     }
-    while(prompt[*i] != 32 && prompt[*i] != 34 && prompt[*i] != 39
+    while(prompt[*i] && prompt[*i] != 32 && prompt[*i] != 34 && prompt[*i] != 39
         && prompt[*i] && prompt[*i + 1] != 36 && prompt[*i + 1] != 42
         && prompt[*i + 1] != 41 && prompt[*i + 1] != 93 && prompt[*i + 1] != 37 && prompt[*i + 1] != 92)
         (*i)++;
