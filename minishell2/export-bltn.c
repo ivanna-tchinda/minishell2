@@ -93,9 +93,9 @@ void export_bltn(char *new_var)
             env_temp[i] = ft_strdup(nvar);
         else
             env_temp[i] = ft_strdup(var_envir[i]);
-        free(var_envir[i]);
+        free(var_envir[i]); //
     }
-    free(var_envir);
+    free(var_envir);//
     if(i < new_len)
     {
         env_temp[i] = ft_strdup(nvar);

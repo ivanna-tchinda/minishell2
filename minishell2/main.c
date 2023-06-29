@@ -32,14 +32,12 @@ int minishell(char *envp[])
                 prompt.exitstatus = 0;
             // free_token(token);
             add_history(line);
-            free(line);
             continue;
         }
         else if((line && ft_parsing(&prompt, token, line)))
         {
             // free_token(token);
             add_history(line);
-            free(line);
             continue;
         }
         add_history(line);
@@ -47,10 +45,7 @@ int minishell(char *envp[])
         expand_status(&prompt);
         // signals_d();
         ft_exec(&prompt, token);
-        free_token(token);
-        // printf("here\n");
-        free(line);
-
+        free_token(token);//
     }
     return(1);
 }

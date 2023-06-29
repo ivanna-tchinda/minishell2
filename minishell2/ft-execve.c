@@ -22,7 +22,7 @@ void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int *i, int outfile)
 			exec_bltn(cmd, prompt);
 		else if(execve(path, args, var_envir) == -1)
 		{
-			free(path);
+			free(path);//
 			prompt->exitstatus = 127;
 			write(2, "minishell: cmd not found\n", 25);
 			exit(0);
