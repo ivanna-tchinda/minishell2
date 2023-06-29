@@ -63,4 +63,5 @@ void unset_bltn(char *cmd)
     }
     env_temp[i] = NULL;
     set_envir(env_temp);
+    exit(0);
 }

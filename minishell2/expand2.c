@@ -47,6 +47,7 @@ char *findenv(char *varenv)
     i = 0;
     while(var_envir[i])
     {
+        // printf("varenv: %s %ld befeq: %s %ld var_envir[i]: %d\n", varenv, ft_strlen(varenv), before_equal(var_envir[i]),ft_strlen(var_envir[i]), strncmp(beforeq, varenv, ft_strlen(varenv)));
         beforeq = before_equal(var_envir[i]);
         if(strncmp(beforeq, varenv, ft_strlen(varenv)) == 0)
             return(var_envir[i] + ft_strlen(beforeq) + 1);
@@ -71,9 +72,11 @@ char *dollar_sign(char *new_prompt, char *prompt, int *i)
     }
     while(prompt[*i] && prompt[*i] != 32 && prompt[*i] != 34 && prompt[*i] != 39
         && prompt[*i] && prompt[*i + 1] != 36 && prompt[*i + 1] != 42
-        && prompt[*i + 1] != 41 && prompt[*i + 1] != 93 && prompt[*i + 1] != 37 && prompt[*i + 1] != 92)
+        && prompt[*i + 1] != 41 && prompt[*i + 1] != 93 && prompt[*i + 1] != 37 && prompt[*i + 1] != 92 && prompt[*i + 1] != 61)
         (*i)++;
-    varenv = ft_substr(prompt, j + 1, (*i) - j);
+    // printf("i: %d:%c\n", *i, prompt[*i]);
+    varenv = ft_substr(prompt, j + 1, (*i) - j - 1);
+    // printf("varenv: %s\n", varenv);
     if(!varenv)
         return(new_prompt);
     goodenv = findenv(varenv);
@@ -81,6 +84,7 @@ char *dollar_sign(char *new_prompt, char *prompt, int *i)
         return(goodenv);
     if(!goodenv)
         return(ft_strjoin(new_prompt, ""));
+    // printf("goodenv: %s\n", goodenv);
     return(ft_strjoin(new_prompt, goodenv));
 }
 
@@ -122,6 +126,7 @@ char *dollar_prompt(char *new_prompt, char *prompt, int *i)
             new_prompt = dollar_sign(new_prompt, prompt, i);
             if(!new_prompt)
                 (*i)++;
+            continue;
         }
         else if(prompt[*i])
         {

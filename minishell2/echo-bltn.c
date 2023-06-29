@@ -6,7 +6,11 @@ void env_bltn(void)
 
     i = -1;
     while(var_envir[++i])
-        printf("%s\n", var_envir[i]);
+    {
+        if(strchr(var_envir[i], '='))
+            printf("%s\n", var_envir[i]);
+    }
+    exit(0);
 }
 
 int after_optn(char *line)

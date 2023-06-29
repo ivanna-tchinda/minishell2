@@ -14,10 +14,7 @@ char *get_var(char *new_var)
         i++;
     len = i + 1;
     if(!isalpha(new_var[i + 1]) && new_var[i + 1] != '_')
-    {
-        // write(2, &new_var[i+1], 1);
-        return(NULL);
-    }
+        return(write(2, "error\n", 6),exit (0) ,NULL);
     while(new_var[++len])
     {
         if(new_var[len] == '=')
@@ -28,7 +25,7 @@ char *get_var(char *new_var)
     }
     varenv = (char *)malloc(sizeof(char) * len - i + 1);
     len = i + 1;
-    while(new_var[len] && new_var[len] != 32)
+    while(new_var[len])
     {
         varenv[itab] = new_var[len];
         itab++;
@@ -73,6 +70,7 @@ void export_bltn(char *new_var)
     int new_len;
 
     nvar = get_var(new_var);
+    // printf("nvar: %s\n", nvar);
     if(!nvar)
     {
         export_nocmd();
@@ -89,7 +87,7 @@ void export_bltn(char *new_var)
     env_temp = (char **)malloc(sizeof(char *) * new_len);
     while(var_envir[++i])
     {
-        if(!strncmp(before_equal(var_envir[i]), nvar, ft_strlen((before_equal(nvar)))) && ft_strlen(before_equal(nvar)) == ft_strlen(before_equal(var_envir[i])))
+        if(!strncmp(before_equal(var_envir[i]), nvar, ft_strlen((before_equal(nvar)))))
             env_temp[i] = ft_strdup(nvar);
         else
             env_temp[i] = ft_strdup(var_envir[i]);

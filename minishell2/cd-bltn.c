@@ -6,6 +6,7 @@ void cd_bltn(char *cmd)
 
     cd_cmd = ft_split(cmd, ' ');
     run_cd(cd_cmd, var_envir);
+	exit(0);
 }
 
 static int perform_cd(const char *path, char **envp) 

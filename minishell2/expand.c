@@ -65,7 +65,7 @@ char  *expand_prompt(char *prompt)
             i++;
             new_prompt = quoted_prompt(new_prompt, prompt, &i, 39);
         }
-        else if(prompt[i] == 34 && (!prompt[i+1] || prompt[i+1] == 39 || (!isalpha(prompt[i - 1])/* && !isalpha(prompt[i + 1])*/)))
+        else if(prompt[i] == 34 && (!prompt[i+1] || prompt[i+1] == 39  || prompt[i+1]/* || (!isalpha(prompt[i - 1])&& !isalpha(prompt[i + 1])*/))
             new_prompt = dquoted_prompt(new_prompt, prompt, &i);
         else if(prompt[i] == 36 &&  prompt[i + 1] &&  prompt[i + 1] != 32 && prompt[i + 1] != 64 && prompt[i + 1] != 61 && prompt[i + 1] != 63)
             new_prompt = dollar_prompt(new_prompt, prompt, &i);
@@ -95,7 +95,9 @@ void expand_cmd(s_cmd *prompt)
     while(i < prompt->nb_tabs && prompt->cmd[i].type)
     {
         prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
+        // printf("tab: %s\n", prompt->cmd[i].tab);
         prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
+        // printf("tab: %s\n", prompt->cmd[i].tab);
         // if(!ft_split(prompt->cmd[i].tab, ' ')[0])
         //     prompt->nb_cmd--;
         i++;
