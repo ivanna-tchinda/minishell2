@@ -49,8 +49,60 @@ char  *expand_prompt(char *prompt)
 
     i = 0;
     new_prompt = NULL;
+    if(strstr(prompt, "echo"))
+    {
+        while(i < (int)ft_strlen(prompt) && prompt[i])
+        {
+            if(prompt[i] == '$')
+                new_prompt = dollar_prompt(new_prompt, prompt, &i);
+            else if(!new_prompt)
+                new_prompt = alloc_one(prompt[i]);
+            else
+                new_prompt = join_one(new_prompt, prompt[i]);
+            i++;
+        }
+    }
     while(i < (int)ft_strlen(prompt) && prompt[i])
     {
+        if(prompt[i] == '=' && prompt[i + 1] == 34)
+        {
+            if(!new_prompt)
+                new_prompt = alloc_one(prompt[i]);
+            else
+                new_prompt = join_one(new_prompt, prompt[i]);
+            i += 2;
+            while(prompt[i] != 34)
+            {
+                if(prompt[i] == '$')
+                    new_prompt = dollar_prompt(new_prompt, prompt, &i);
+                else
+                {
+                    if(!new_prompt)
+                        new_prompt = alloc_one(prompt[i]);
+                    else
+                        new_prompt = join_one(new_prompt, prompt[i]);
+                }
+                i++;
+                continue;
+            }
+        }
+        else if(prompt[i] == '=' && prompt[i + 1] == 39)
+        {
+            if(!new_prompt)
+                new_prompt = alloc_one(prompt[i]);
+            else
+                new_prompt = join_one(new_prompt, prompt[i]);
+            i += 2;
+            while(prompt[i] != 39)
+            {
+                if(!new_prompt)
+                    new_prompt = alloc_one(prompt[i]);
+                else
+                    new_prompt = join_one(new_prompt, prompt[i]);
+                i++;
+                continue;
+            }
+        }
         if(prompt[i] == 32)
         {
             if(!new_prompt)
@@ -60,7 +112,7 @@ char  *expand_prompt(char *prompt)
             while(prompt[i] == 32)
                 i++;
         }
-        if((prompt[i] == 39  && (prompt[i+1] == 39 || (!isalpha(prompt[i - 1]) && !isalpha(prompt[i + 1])) || (prompt[i] == 92 && prompt[i + 1] == 36))))
+        if((prompt[i] == 39  && (prompt[i+1] || prompt[i+1] == 39 || (!isalpha(prompt[i - 1]) && !isalpha(prompt[i + 1])) || (prompt[i] == 92 && prompt[i + 1] == 36))))
         {
             i++;
             new_prompt = quoted_prompt(new_prompt, prompt, &i, 39);
@@ -97,7 +149,7 @@ void expand_cmd(s_cmd *prompt)
         prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
         // printf("tab: %s\n", prompt->cmd[i].tab);
         prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
-        // printf("tab: %s\n", prompt->cmd[i].tab);
+        printf("tab: %s\n", prompt->cmd[i].tab);
         // if(!ft_split(prompt->cmd[i].tab, ' ')[0])
         //     prompt->nb_cmd--;
         i++;

@@ -87,7 +87,7 @@ char *recup_env(const char *env_param);
 ssize_t find_good_env(const char *env_param) ;
 
 //ENV
-void set_envir(char *envp[]);
+void set_envir(char **envp);
 
 //EXPORT
 void export_bltn(char *new_var);
@@ -169,6 +169,8 @@ char *without_spaces(char *cmd);
 void ft_execve(char *cmd, int prevpipe, s_cmd *prompt, int *i, int outfile);
 int exec_cmd(s_cmd *prompt, int *i, int prevpipe, char *outfile);
 int exec_builtin(s_cmd *prompt, int *i, int prevpipe, char *outfile);
+void set_envir2(char **envp);
+
 
 //UTILS PIPEX
 char	*ft_envir(char **env);

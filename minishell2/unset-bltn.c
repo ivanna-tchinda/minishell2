@@ -53,15 +53,22 @@ void unset_bltn(char *cmd)
     i = -1;
     itab = -1;
     nvar = get_unsetvar(cmd);
+    printf("nvar: %s\n", nvar);
     while(var_envir[++new_len]);
     env_temp = (char **)malloc(sizeof(char *) * new_len);
     while(var_envir[++i])
     {
         if(strncmp(var_envir[i], nvar, ft_strlen(nvar)) || equal_match(nvar))
+        {
+            printf("adding: %s\n", var_envir[i]);
             env_temp[++itab] = ft_strdup(var_envir[i]);
+        }
         free(var_envir[i]);
+        printf("free: %s\n", var_envir[i]);
     }
+    free(var_envir);
     env_temp[i] = NULL;
-    set_envir(env_temp);
+    printf("last: %s\n", env_temp[i]);
+    set_envir2(env_temp);
     exit(0);
 }

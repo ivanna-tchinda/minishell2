@@ -10,6 +10,7 @@ void env_bltn(void)
         if(strchr(var_envir[i], '='))
             printf("%s\n", var_envir[i]);
     }
+    printf("last %s\n", var_envir[i]);
     exit(0);
 }
 
@@ -31,7 +32,8 @@ int after_optn(char *line)
         }
         i++;
     }
-
+    while(line[i] == 32)
+        i++;
     return(i);
 }
 
@@ -53,6 +55,8 @@ int after_echo(char *line)
                 i++;
                 j++;
             }
+            while(line[i] == 32)
+                i++;
             if(j == (int)ft_strlen(echo))
                 return(i);
         }
@@ -93,6 +97,31 @@ void echo_bltn(char *line)
         return;
     while(line[i] && i < (int)ft_strlen(line))
     {
+        if(line[i] == 34)
+        {
+            i++;
+            while(line[i] != 34 && line[i])
+            {
+                printf("%c", line[i]);
+                i++;
+            }
+            continue;
+        }
+        if(line[i] == 39)
+        {
+            i++;
+            while(line[i] != 39 && line[i])
+            {
+                printf("%c", line[i]);
+                i++;
+            }
+            continue;
+        }
+        if(line[i] == 32 && (line[i + 1] == 32 || !line[i + 1]))
+        {
+            i++;
+            continue;
+        }
         printf("%c", line[i]);
         i++;
     }

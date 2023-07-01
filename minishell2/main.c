@@ -2,7 +2,7 @@
 
 char **var_envir = NULL;
 
-void set_envir(char *envp[])
+void set_envir2(char **envp)
 {
     int len_env;
     int i;
@@ -15,7 +15,25 @@ void set_envir(char *envp[])
     while(++i < len_env)
     {
         var_envir[i] = ft_strdup(envp[i]);
+        printf("add: %s\n", envp[i]);
+        free(envp[i]);
     }
+    var_envir[i] = NULL;
+    free(envp);
+}
+
+void set_envir(char **envp)
+{
+    int len_env;
+    int i;
+    (void)i;
+
+    len_env = -1;
+    i = -1;
+    while(envp[++len_env]);
+    var_envir = (char **)malloc(sizeof(char *) * len_env + 1);
+    while(++i < len_env)
+        var_envir[i] = ft_strdup(envp[i]);
     var_envir[i] = NULL;
 }
 

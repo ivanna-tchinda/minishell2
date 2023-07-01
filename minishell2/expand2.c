@@ -85,7 +85,7 @@ char *dollar_sign(char *new_prompt, char *prompt, int *i)
     if(!goodenv)
         return(ft_strjoin(new_prompt, ""));
     // printf("goodenv: %s\n", goodenv);
-    return(ft_strjoin(new_prompt, goodenv));
+    return((*i)++, ft_strjoin(new_prompt, goodenv));
 }
 
 
@@ -108,7 +108,7 @@ char *dquoted_prompt(char *new_prompt, char *prompt, int *i)
             else
                 new_prompt = join_one(new_prompt, prompt[*i]);
         }
-        (*i)++;
+        // (*i)++;
         if(prompt[*i] == 34)
             break;
     }

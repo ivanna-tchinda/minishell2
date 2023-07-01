@@ -12,7 +12,9 @@ char *get_var(char *new_var)
     // printf("nv: %s\n", new_var);
     while(new_var[i] && new_var[i] != 32)
         i++;
-    len = i + 1;
+    while(new_var[i] == 32)
+        i++;
+    len = i;
     if(!isalpha(new_var[i + 1]) && new_var[i + 1] != '_')
         return(write(2, "error\n", 6),exit (0) ,NULL);
     while(new_var[++len])
@@ -24,7 +26,7 @@ char *get_var(char *new_var)
         }
     }
     varenv = (char *)malloc(sizeof(char) * len - i + 1);
-    len = i + 1;
+    len = i;
     while(new_var[len])
     {
         varenv[itab] = new_var[len];
@@ -100,6 +102,6 @@ void export_bltn(char *new_var)
         i++;
     }
     env_temp[i] = NULL;
-    set_envir(env_temp);
+    set_envir2(env_temp);
     // exit(0);
 }
