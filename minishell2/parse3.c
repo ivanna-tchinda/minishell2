@@ -93,7 +93,7 @@ int parse_parentheses(s_cmd *prompt, int *i)
 {
     int j;
 
-    (*i)--;
+    // (*i)--;
     j = ft_strlen(prompt->cmd[*i].tab) - 1;
     while(prompt->cmd[*i].tab[--j] == 32);
     if(!isalpha(prompt->cmd[*i].tab[j]) && (prompt->cmd[*i + 1].type
@@ -129,10 +129,10 @@ int check_parentheses(s_cmd *prompt)
     {
         if(!strcmp(prompt->cmd[i].type, "parentheses"))
         {
-            i++;
             if (parse_parentheses(prompt, &i))
                 return (1);
-            else if(multiple_par(prompt->cmd[i - 1].tab))
+            i++;
+            if(multiple_par(prompt->cmd[i - 1].tab))
                 prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);
             else if(strchr(prompt->cmd[i - 1].tab, '|') && strncmp(strchr(prompt->cmd[i - 1].tab, '|'), "||", 2))
                 prompt->cmd[i - 1].tab = remove_parentheses(prompt->cmd[i - 1].tab);

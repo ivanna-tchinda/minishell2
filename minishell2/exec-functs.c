@@ -122,6 +122,8 @@ void ft_pipe(s_cmd *prompt, int *i)
 
 void ft_and(s_cmd *prompt, int *i, int ret_value)
 {
+	s_token token;
+	s_cmd par_prompt;
 	(*i)++;
 	if(ret_value)
 		return;
@@ -135,6 +137,11 @@ void ft_and(s_cmd *prompt, int *i, int ret_value)
 	{
 		(*i)++;
 		ft_firstcmd(ret_value, prompt, i, 0);
+	}
+	else if(!strcmp(prompt->cmd[*i + 1].type, "parentheses"))
+	{
+		(*i)++;
+		ft_parentheses(prompt, i, &token, &par_prompt);
 	}
 }
 

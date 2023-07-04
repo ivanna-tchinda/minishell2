@@ -9,7 +9,7 @@ int tab_of_cmd(s_cmd *prompt, s_token *token)
     i = 0;
     i_tab = -1;
     nb_tokens = ft_nbtokens(token);
-    prompt->cmd = (s_info *)malloc(sizeof(s_info) * nb_tokens);
+    prompt->cmd = (s_info *)malloc(sizeof(s_info) * nb_tokens + 1);
     while(++i_tab < nb_tokens)
         add_totab(&prompt->cmd[i_tab], token, &i);
     return(nb_tokens);
@@ -70,6 +70,7 @@ void attribute_types(s_token *token, char *line)
             token[i].type = "char";
         token[i].token = line[i];
     }
+    token[i].token = '\0';
 }
 
 int unclosed_quote(char *line)

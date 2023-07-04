@@ -149,7 +149,7 @@ void expand_cmd(s_cmd *prompt)
         prompt->cmd[i].tab = wildcard_expand(prompt->cmd[i].tab, prompt);
         // printf("tab: %s\n", prompt->cmd[i].tab);
         prompt->cmd[i].tab = expand_prompt(prompt->cmd[i].tab);
-        printf("tab: %s\n", prompt->cmd[i].tab);
+        // printf("tab: %s\n", prompt->cmd[i].tab);
         // if(!ft_split(prompt->cmd[i].tab, ' ')[0])
         //     prompt->nb_cmd--;
         i++;
