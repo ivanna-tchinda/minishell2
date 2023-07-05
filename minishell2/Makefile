@@ -26,6 +26,8 @@ SRC=	  main.c\
 			utils-exec.c\
 			signals.c\
 			cd-bltn.c\
+			gnl.c\
+			utils_gnl.c\
 
 CC= cc  
 

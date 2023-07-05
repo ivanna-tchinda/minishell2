@@ -20,6 +20,10 @@
 #include <sys/wait.h>
 #include <dirent.h>
 
+#ifndef BUFFER_SIZE
+#define BUFFER_SIZE 25
+#endif
+
 extern char **var_envir;
 
 typedef struct t_token{
@@ -184,7 +188,19 @@ void sigint(int signal);
 void allsignals();
 void signals_d();
 
+//GNL
+char	*get_next_line(int fd);
+char	*ft_read(int fd, char *varstat);
+char	*fill_afterend(char *buffer);
+char	*fill_beforeend(char *buffer);
+int	is_endline(char *varstat);
+int	ft_lenbuff(char *buffer);
+
 //UTILS
+char	*ft_strtrim(char const *s1, char const *set);
+int	start_trim(char const *s1, char const *set);
+int	end_trim(char const *s1, char const *set, size_t i);
+int	is_in_set(char const s1, char const *set);
 void free_token(s_token *token);
 void free_tab(char **tabl);
 char	**ft_split(char const *s, char c);

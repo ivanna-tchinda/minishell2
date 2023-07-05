@@ -45,7 +45,10 @@ int minishell(char *envp[])
     while(1)
     {
         s_token token[1000];
-        line = readline("\033[0;36m\033[1m minishell> \033[0m");
+        if(!isatty(STDIN_FILENO))
+            line = ft_strtrim(get_next_line(STDIN_FILENO), "\n");
+        else
+            line = readline("\033[0;36m\033[1m minishell> \033[0m");
         if(!strcmp(line, ":") || !line[0])
         {
             if(!strcmp(line, ":"))
@@ -72,8 +75,10 @@ int minishell(char *envp[])
 
 int main(int ac, char **av, char **envp)
 {
-    (void)ac;
     (void)av;
+    (void)ac;
+    if(!isatty(0))
+        return(write(1, "Non non.\n", 9));
     // allsignals();
     minishell(envp);
     return 0;
